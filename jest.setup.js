@@ -1,4 +1,4 @@
-jest.mock('@/components/ui/gluestack-ui-provider', () => ({
+jest.mock('@/src/uikits/gluestack-ui-provider', () => ({
   GluestackUIProvider: ({ children }) => children,
 }));
 

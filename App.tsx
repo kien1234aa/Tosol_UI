@@ -9,10 +9,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as ReduxProvider } from 'react-redux';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { GluestackUIProvider } from '@/src/uikits/gluestack-ui-provider';
 import { RootNavigator } from '@/src/navigation';
-import { store } from '@/src/store';
-import { lightColors } from '@/src/core/theme';
+import { store } from '@/src/redux';
+import { lightColors } from '@/src/configs/theme';
 
 function App() {
   return (

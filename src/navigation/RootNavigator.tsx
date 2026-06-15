@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LoginScreen } from '@/src/features/auth';
-import { SplashScreen } from '@/src/features/splash/screens/SplashScreen';
+import { LoginScreen } from '@/src/screens/login/LoginScreen';
+import { SplashScreen } from '@/src/screens/splash/SplashScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
