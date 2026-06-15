@@ -10,6 +10,7 @@ interface PasswordFieldProps {
   showPassword: boolean;
   onToggleShowPassword: () => void;
   error?: string;
+  testID?: string;
 }
 
 function PasswordFieldComponent({
@@ -19,6 +20,7 @@ function PasswordFieldComponent({
   showPassword,
   onToggleShowPassword,
   error,
+  testID = 'password-input',
 }: PasswordFieldProps) {
   const handleToggle = useCallback(() => {
     onToggleShowPassword();
@@ -31,7 +33,7 @@ function PasswordFieldComponent({
       onChangeText={onChangeText}
       error={error}
       secureTextEntry={!showPassword}
-      testID="password-input"
+      testID={testID}
       rightSlot={
         <InputSlot className="pr-4" onPress={handleToggle}>
           <InputIcon

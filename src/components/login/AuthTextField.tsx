@@ -6,7 +6,7 @@ import {
   FormControlErrorText,
 } from '@/src/uikits/form-control';
 import { Input, InputField } from '@/src/uikits/input';
-import { lightColors } from '@/src/configs/theme';
+import { lightTokens } from '@/src/configs/theme';
 
 export interface AuthTextFieldProps {
   placeholder: string;
@@ -40,7 +40,7 @@ function AuthTextFieldComponent({
         variant="rounded"
         size="xl"
         isInvalid={isInvalid}
-        className="h-14 rounded-2xl border-0 bg-background-100"
+        className="h-14 rounded-2xl border border-outline-100 bg-secondary-200 data-[focus=true]:border-outline-300"
         style={[styles.input, isInvalid && styles.inputInvalid]}>
         <InputField
           placeholder={placeholder}
@@ -51,7 +51,7 @@ function AuthTextFieldComponent({
           autoCorrect={false}
           keyboardType={keyboardType}
           testID={testID}
-          placeholderTextColor={lightColors.typography500}
+          placeholderTextColor={lightTokens.typography500}
           className="text-typography-900"
         />
         {rightSlot}
@@ -70,13 +70,11 @@ function AuthTextFieldComponent({
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: lightColors.inputBackground,
     borderRadius: 16,
     height: 56,
   },
   inputInvalid: {
-    borderWidth: 1,
-    borderColor: lightColors.error500,
+    borderColor: lightTokens.error500,
   },
 });
 

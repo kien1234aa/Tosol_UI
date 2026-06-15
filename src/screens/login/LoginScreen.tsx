@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Center } from '@/src/uikits/center';
@@ -10,19 +10,35 @@ import { animationConfig } from '@/src/configs/theme';
 import type { RootStackScreenProps } from '@/src/navigation/types';
 import {
   AuthFooterLinks,
-  BrandMascot,
+  LoginHeroImage,
   KeyboardAwareScreen,
   LoginForm,
 } from '@/src/components/login';
+import { useAppSelector } from '@/src/hooks/common/useAppSelector';
+import { selectIsAuthenticated } from '@/src/redux/login/authSelectors';
 
 type LoginScreenProps = RootStackScreenProps<'Login'>;
 
-export function LoginScreen(_props: LoginScreenProps) {
+export function LoginScreen({ navigation }: LoginScreenProps) {
   const form = useLoginForm();
   const { contentMaxWidth, horizontalPadding } = useResponsiveLayout();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
-  const handleForgotPassword = useCallback(() => {}, []);
-  const handleRegister = useCallback(() => {}, []);
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      });
+    }
+  }, [isAuthenticated, navigation]);
+
+  const handleForgotPassword = useCallback(() => {
+    navigation.navigate('ForgotPassword');
+  }, [navigation]);
+  const handleRegister = useCallback(() => {
+    navigation.navigate('Register');
+  }, [navigation]);
 
   const { stagger, screenEntry } = animationConfig;
 
@@ -37,7 +53,7 @@ export function LoginScreen(_props: LoginScreenProps) {
           <Animated.View
             entering={FadeInDown.duration(screenEntry)}
             style={styles.fullWidthCenter}>
-            <BrandMascot />
+            <LoginHeroImage />
           </Animated.View>
 
           <Animated.View

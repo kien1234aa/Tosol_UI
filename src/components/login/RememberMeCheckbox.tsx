@@ -25,7 +25,7 @@ function RememberMeCheckboxComponent({
       isChecked={isChecked}
       onChange={onChange}
       accessibilityLabel={label}>
-      <CheckboxIndicator className="rounded-md border-outline-400">
+      <CheckboxIndicator className="rounded-md border-outline-200">
         <CheckboxIcon as={CheckIcon} />
       </CheckboxIndicator>
       <CheckboxLabel className="text-typography-900">{label}</CheckboxLabel>

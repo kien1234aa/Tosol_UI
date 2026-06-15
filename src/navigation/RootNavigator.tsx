@@ -1,7 +1,11 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ForgotPasswordScreen } from '@/src/screens/forgotPassword/ForgotPasswordScreen';
 import { LoginScreen } from '@/src/screens/login/LoginScreen';
+import { RegisterScreen } from '@/src/screens/register/RegisterScreen';
 import { SplashScreen } from '@/src/screens/splash/SplashScreen';
+import { MainTabNavigator } from './MainTabNavigator';
+import { NotificationsScreen } from '@/src/screens/notifications/NotificationsScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,6 +26,14 @@ export function RootNavigator() {
       }}>
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationsScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen name="Main" component={MainTabNavigator} />
     </Stack.Navigator>
   );
 }

@@ -7,7 +7,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
-import { lightColors } from '@/src/configs/theme';
+import { lightTokens } from '@/src/configs/theme';
 
 interface KeyboardAwareScreenProps {
   children: ReactNode;
@@ -25,7 +25,7 @@ const DEFAULT_EDGES: readonly Edge[] = ['top', 'bottom', 'left', 'right'];
 function KeyboardAwareScreenComponent({
   children,
   contentContainerStyle,
-  backgroundColor = lightColors.background0,
+  backgroundColor = lightTokens.background50,
   edges = DEFAULT_EDGES,
 }: KeyboardAwareScreenProps) {
   return (

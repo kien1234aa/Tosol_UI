@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Dimensions, Image, StatusBar, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { darkColors, animationConfig } from '@/src/configs/theme';
+import { darkTokens, animationConfig } from '@/src/configs/theme';
 import type { RootStackScreenProps } from '@/src/navigation/types';
 
 const logo = require('@/assets/images/logo.png');
-const splashIllustration = require('@/assets/images/splash-illustration.png');
+const splashIllustration = require('@/assets/images/mascot_splash.png');
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const LOGO_SIZE = 64;
@@ -27,7 +27,7 @@ export function SplashScreen({ navigation }: SplashScreenProps) {
     <View style={styles.container}>
       <StatusBar
         barStyle="light-content"
-        backgroundColor={darkColors.splashCanvas}
+        backgroundColor={darkTokens.background0}
       />
 
       <View
@@ -57,7 +57,7 @@ export function SplashScreen({ navigation }: SplashScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: darkColors.splashCanvas,
+    backgroundColor: darkTokens.background0,
   },
   content: {
     flex: 1,
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   illustration: {
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.46,
-    maxWidth: 400,
+    width: SCREEN_WIDTH * 0.92,
+    height: SCREEN_HEIGHT * 0.52,
+    maxWidth: 460,
   },
   logoRing: {
     marginTop: 36,
@@ -79,9 +79,9 @@ const styles = StyleSheet.create({
     borderRadius: (LOGO_SIZE + 24) / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: darkColors.backgroundMuted,
+    backgroundColor: darkTokens.backgroundMuted,
     borderWidth: 1,
-    borderColor: darkColors.outline200,
+    borderColor: darkTokens.outline200,
   },
   logo: {
     width: LOGO_SIZE,

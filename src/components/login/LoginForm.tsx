@@ -6,7 +6,7 @@ import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { authCopy } from '@/src/configs';
 import { usePressScale } from '@/src/hooks';
-import { lightColors } from '@/src/configs/theme';
+import { lightTokens } from '@/src/configs/theme';
 import type { UseLoginFormResult } from '@/src/hooks/login';
 import { AuthTextField } from './AuthTextField';
 import { PasswordField } from './PasswordField';
@@ -53,14 +53,18 @@ function LoginFormComponent({ form }: LoginFormProps) {
       <Animated.View style={animatedStyle}>
         <Button
           size="xl"
-          className="mt-2 h-14 w-full rounded-2xl"
+          action="default"
+          variant="solid"
+          className="mt-2 h-14 w-full rounded-2xl border-0"
           style={styles.submitButton}
           isDisabled={form.isSubmitting}
           onPressIn={onPressIn}
           onPressOut={onPressOut}
           onPress={form.onSubmit}>
-          {form.isSubmitting ? <ButtonSpinner color={lightColors.background0} /> : null}
-          <ButtonText className="text-base font-semibold text-white">
+          {form.isSubmitting ? (
+            <ButtonSpinner color={lightTokens.typography0} />
+          ) : null}
+          <ButtonText className="text-base font-semibold text-typography-0">
             {authCopy.submit}
           </ButtonText>
         </Button>
@@ -71,7 +75,7 @@ function LoginFormComponent({ form }: LoginFormProps) {
 
 const styles = StyleSheet.create({
   submitButton: {
-    backgroundColor: lightColors.brandOrange,
+    backgroundColor: lightTokens.tertiary500,
     borderRadius: 16,
     height: 56,
   },

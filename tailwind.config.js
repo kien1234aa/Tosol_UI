@@ -188,7 +188,17 @@ module.exports = {
         extrablack: '950',
       },
       fontSize: {
-        '2xs': '10px',
+        '2xs': ['11px', { lineHeight: '16px' }],
+        xs: ['13px', { lineHeight: '18px' }],
+        sm: ['15px', { lineHeight: '22px' }],
+        base: ['17px', { lineHeight: '24px' }],
+        lg: ['19px', { lineHeight: '26px' }],
+        xl: ['21px', { lineHeight: '28px' }],
+        '2xl': ['25px', { lineHeight: '32px' }],
+        '3xl': ['30px', { lineHeight: '36px' }],
+        '4xl': ['36px', { lineHeight: '40px' }],
+        '5xl': ['48px', { lineHeight: '52px' }],
+        '6xl': ['60px', { lineHeight: '64px' }],
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',

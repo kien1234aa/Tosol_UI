@@ -4,6 +4,7 @@ import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { authCopy } from '@/src/configs';
+import { lightTokens } from '@/src/configs/theme';
 
 interface AuthFooterLinksProps {
   onForgotPassword: () => void;
@@ -23,7 +24,9 @@ function AuthFooterLinksComponent({
       <HStack className="items-center justify-center" space="xs">
         <Text className="text-typography-900">{authCopy.noAccountPrompt}</Text>
         <Pressable onPress={onRegister} accessibilityRole="button">
-          <Text className="font-medium text-error-500">
+          <Text
+            className="font-semibold"
+            style={{ color: lightTokens.tertiary500 }}>
             {authCopy.registerCta}
           </Text>
         </Pressable>

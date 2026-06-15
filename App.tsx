@@ -12,7 +12,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { GluestackUIProvider } from '@/src/uikits/gluestack-ui-provider';
 import { RootNavigator } from '@/src/navigation';
 import { store } from '@/src/redux';
-import { lightColors } from '@/src/configs/theme';
+import { lightTokens } from '@/src/configs/theme';
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
           <GluestackUIProvider mode="light">
             <StatusBar
               barStyle="dark-content"
-              backgroundColor={lightColors.background0}
+              backgroundColor={lightTokens.background50}
             />
             <NavigationContainer>
               <RootNavigator />

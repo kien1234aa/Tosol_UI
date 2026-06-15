@@ -1,5 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { authReducer } from './login/authSlice';
+import { forgotPasswordReducer } from './forgotPassword/forgotPasswordSlice';
+import { registerReducer } from './register/registerSlice';
+import { homeReducer } from './home/homeSlice';
+import { searchReducer } from './search/searchSlice';
+import { cartReducer } from './cart/cartSlice';
+import { ordersReducer } from './orders/ordersSlice';
+import { profileReducer } from './profile/profileSlice';
+import { notificationsReducer } from './notifications/notificationsSlice';
 
 /**
  * Root reducer composes every feature slice. New features register their
@@ -7,6 +15,14 @@ import { authReducer } from './login/authSlice';
  */
 export const rootReducer = combineReducers({
   auth: authReducer,
+  register: registerReducer,
+  forgotPassword: forgotPasswordReducer,
+  home: homeReducer,
+  search: searchReducer,
+  cart: cartReducer,
+  orders: ordersReducer,
+  profile: profileReducer,
+  notifications: notificationsReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
