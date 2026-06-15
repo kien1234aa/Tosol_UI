@@ -1,45 +1,39 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import './global.css';
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { Provider as ReduxProvider } from 'react-redux';
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { RootNavigator } from '@/src/navigation';
+import { store } from '@/src/store';
+import { lightColors } from '@/src/core/theme';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={styles.flex}>
+      <ReduxProvider store={store}>
+        <SafeAreaProvider>
+          <GluestackUIProvider mode="light">
+            <StatusBar
+              barStyle="dark-content"
+              backgroundColor={lightColors.background0}
+            />
+            <NavigationContainer>
+              <RootNavigator />
+            </NavigationContainer>
+          </GluestackUIProvider>
+        </SafeAreaProvider>
+      </ReduxProvider>
+    </GestureHandlerRootView>
   );
 }
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+const styles = { flex: { flex: 1 } } as const;
 
 export default App;
