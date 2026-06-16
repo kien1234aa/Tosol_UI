@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: mainLayout.tabBarHeight + 24,
+    paddingBottom: mainLayout.tabContentBottomPadding,
   },
   emptyContent: {
     flexGrow: 1,

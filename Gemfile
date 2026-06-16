@@ -14,3 +14,6 @@ gem 'bigdecimal'
 gem 'logger'
 gem 'benchmark'
 gem 'mutex_m'
+# Ruby 3.4+/4.0 removed these too; CocoaPods/CFPropertyList need them (kconv comes from nkf).
+gem 'nkf'
+gem 'tsort'

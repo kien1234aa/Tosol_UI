@@ -1,14 +1,29 @@
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import type { CompositeScreenProps } from '@react-navigation/native';
+import type {
+  CompositeScreenProps,
+  NavigatorScreenParams,
+} from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 /** Bottom tab routes shown after login. */
 export type MainTabParamList = {
   Search: undefined;
   Cart: undefined;
-  Home: undefined;
-  Orders: undefined;
+  Home: NavigatorScreenParams<HomeStackParamList> | undefined;
+  Orders: NavigatorScreenParams<OrdersStackParamList> | undefined;
   Profile: undefined;
+};
+
+/** Nested stack inside the Home tab. */
+export type HomeStackParamList = {
+  HomeMain: undefined;
+  AwaitingPayment: undefined;
+  CreateConsignment: undefined;
+  ConsignmentList: undefined;
+  ConsignmentDetail: { orderId: string };
+  DeliveredConsignment: undefined;
+  Wallet: undefined;
+  Estimate: undefined;
 };
 
 /** Nested stack inside the Search tab. */
@@ -21,6 +36,8 @@ export type SearchStackParamList = {
 export type OrdersStackParamList = {
   OrdersMain: undefined;
   OrderDetail: { orderId: string };
+  AwaitingDeposit: undefined;
+  DeliveredOrders: undefined;
 };
 
 /** Nested stack inside the Profile tab. */
@@ -62,6 +79,12 @@ export type OrdersStackScreenProps<
   NativeStackScreenProps<OrdersStackParamList, RouteName>,
   MainTabScreenProps<'Orders'>
 >;
+
+export type HomeStackScreenProps<RouteName extends keyof HomeStackParamList> =
+  CompositeScreenProps<
+    NativeStackScreenProps<HomeStackParamList, RouteName>,
+    MainTabScreenProps<'Home'>
+  >;
 
 export type ProfileStackScreenProps<
   RouteName extends keyof ProfileStackParamList,

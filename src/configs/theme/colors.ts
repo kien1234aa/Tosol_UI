@@ -9,7 +9,7 @@ const rgb = (r: number, g: number, b: number) => `rgb(${r}, ${g}, ${b})`;
 /** Light palette — richer teal brand, stronger contrast, still bright surfaces */
 export const lightTokens = {
   background0: rgb(255, 255, 255),
-  background50: rgb(236, 240, 242),
+  background50: rgb(246, 248, 249),
   background100: rgb(226, 232, 235),
   backgroundMuted: rgb(232, 238, 240),
   secondary100: rgb(240, 243, 244),

@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     height: SEARCH_BAR_HEIGHT,
     borderRadius: SEARCH_BAR_HEIGHT / 2,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.tertiary200,
     alignItems: 'center',
     overflow: 'hidden',

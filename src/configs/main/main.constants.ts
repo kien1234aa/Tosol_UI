@@ -2,7 +2,7 @@
 export const mainTabCopy = {
   search: 'Tìm kiếm',
   cart: 'Giỏ hàng',
-  home: 'Home',
+  home: 'Trang chủ',
   orders: 'Đơn hàng',
   profile: 'Tôi',
 } as const;

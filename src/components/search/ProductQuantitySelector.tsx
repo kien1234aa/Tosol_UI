@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.tertiary200,
   },
   buttonDisabled: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
 });

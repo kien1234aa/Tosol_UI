@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     height: AVATAR_SIZE,
     borderRadius: AVATAR_SIZE / 2,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   iconButton: {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
     position: 'relative',
   },

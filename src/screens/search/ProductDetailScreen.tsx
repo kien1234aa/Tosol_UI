@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { productDetailCopy } from '@/src/configs/search';
+import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
 import { useAddToCart } from '@/src/hooks/cart';
 import { useProductDetail } from '@/src/hooks/search';
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 16,
+    paddingBottom: mainLayout.tabStackFooterPaddingBottom,
     backgroundColor: lightTokens.background0,
     borderTopWidth: 1,
     borderTopColor: lightTokens.outline100,

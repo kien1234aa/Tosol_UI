@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   costRows: {

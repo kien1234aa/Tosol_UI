@@ -2,6 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { personalInfoCopy } from '@/src/configs/profile';
+import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
 import {
   buttonFooterAction,
@@ -134,18 +135,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
   },
   footer: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 16,
+    paddingBottom: mainLayout.tabStackFooterPaddingBottom,
     backgroundColor: lightTokens.background0,
     borderTopWidth: 1,
     borderTopColor: lightTokens.outline100,

@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     borderRadius: STACK_HEADER_BACK_SIZE / 2,
     ...buttonContentCenter,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
 });

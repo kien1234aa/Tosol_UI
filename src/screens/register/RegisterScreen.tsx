@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
+import { fontStyle } from '@/src/configs/theme/fonts';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { Center } from '@/src/uikits/center';
 import { Text } from '@/src/uikits/text';
@@ -92,7 +93,5 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  title: {
-    fontWeight: '600',
-  },
+  title: fontStyle('semibold'),
 });

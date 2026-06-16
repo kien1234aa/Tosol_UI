@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { profileCopy } from '@/src/configs/profile';
+import { mainLayout } from '@/src/configs/main';
 import {
   ProfileDivider,
   ProfileHeader,
@@ -120,6 +121,6 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: mainLayout.tabContentBottomPadding,
   },
 });

@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Headphones } from 'lucide-react-native';
 import { Center } from '@/src/uikits/center';
 import { Pressable } from '@/src/uikits/pressable';
@@ -15,10 +16,16 @@ interface SupportFabProps {
 const ICON_SIZE = 28;
 
 function SupportFabComponent({ onPress }: SupportFabProps) {
+  const insets = useSafeAreaInsets();
   const { animatedStyle, onPressIn, onPressOut } = usePressScale();
 
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
+    <Animated.View
+      style={[
+        styles.container,
+        { bottom: mainLayout.fabBottomOffset + insets.bottom },
+        animatedStyle,
+      ]}>
       <Pressable
         onPress={onPress}
         onPressIn={onPressIn}
@@ -37,7 +44,6 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     right: 16,
-    bottom: mainLayout.fabBottomOffset,
   },
   fab: {
     shadowColor: lightTokens.typography900,

@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 16,
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   discountBadge: {
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   innerDivider: {
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.outline100,
   },
   outlineButton: {
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.tertiary500,
     backgroundColor: lightTokens.background0,
   },

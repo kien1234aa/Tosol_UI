@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 10,
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   quantityControls: {
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.tertiary200,
   },
   quantityButtonDisabled: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     backgroundColor: lightTokens.background100,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   removeButton: {

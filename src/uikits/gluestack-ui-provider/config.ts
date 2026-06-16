@@ -130,7 +130,7 @@ export const config = {
 
     /* Background — light canvas with subtle cool tint */
     '--color-background-0': '255 255 255',
-    '--color-background-50': '236 240 242',
+    '--color-background-50': '246 248 249',
     '--color-background-100': '226 232 235',
     '--color-background-200': '208 216 220',
     '--color-background-300': '190 200 205',

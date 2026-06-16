@@ -8,13 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		53C43A1DBFBD43A68E743DDF /* BeVietnamPro-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3AB9B94CF594E339053DD5D /* BeVietnamPro-SemiBold.ttf */; };
+		5BB7252EDC09410BB8573086 /* BeVietnamPro-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 072E791744694B56A4EE5C58 /* BeVietnamPro-Medium.ttf */; };
+		5FB40C219748415BBFA9B530 /* BeVietnamPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66EBF36EA4F34EC0B945D828 /* BeVietnamPro-Regular.ttf */; };
+		6F2909DB04A84BE299C514FF /* BeVietnamPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F5FA8BA02C84FCC8D5A9375 /* BeVietnamPro-Bold.ttf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B23DD13EECAFEAA3C518C4B5 /* Pods_Tosol_UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A5133D7DF8B5F86E2EE698A /* Pods_Tosol_UI.framework */; };
 		CAEB6CF859BBAAE4DFD55E29 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		1C98BB9261F44C449CBAB13F /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81E6EAB895914AA5896B2DDF /* Inter-Medium.ttf */; };
+		FB1E16504038422FA2F3436F /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F574234CCFA41D78314EE7F /* Inter-Bold.ttf */; };
+		1CCA5CF5E66748C686DA4D31 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 113B5D9A87254886A996AF6F /* Inter-Regular.ttf */; };
+		223ACA60E32F420E97DA642C /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 44205072FBA54F74A6386F49 /* Inter-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		072E791744694B56A4EE5C58 /* BeVietnamPro-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Medium.ttf"; path = "../assets/fonts/BeVietnamPro-Medium.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Tosol_UI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tosol_UI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Tosol_UI/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Tosol_UI/Info.plist; sourceTree = "<group>"; };
@@ -22,9 +31,16 @@
 		3B4392A12AC88292D35C810B /* Pods-Tosol_UI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tosol_UI.debug.xcconfig"; path = "Target Support Files/Pods-Tosol_UI/Pods-Tosol_UI.debug.xcconfig"; sourceTree = "<group>"; };
 		4A5133D7DF8B5F86E2EE698A /* Pods_Tosol_UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tosol_UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5709B34CF0A7D63546082F79 /* Pods-Tosol_UI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tosol_UI.release.xcconfig"; path = "Target Support Files/Pods-Tosol_UI/Pods-Tosol_UI.release.xcconfig"; sourceTree = "<group>"; };
+		66EBF36EA4F34EC0B945D828 /* BeVietnamPro-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Regular.ttf"; path = "../assets/fonts/BeVietnamPro-Regular.ttf"; sourceTree = "<group>"; };
+		6F5FA8BA02C84FCC8D5A9375 /* BeVietnamPro-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Bold.ttf"; path = "../assets/fonts/BeVietnamPro-Bold.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Tosol_UI/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Tosol_UI/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D3AB9B94CF594E339053DD5D /* BeVietnamPro-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-SemiBold.ttf"; path = "../assets/fonts/BeVietnamPro-SemiBold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		81E6EAB895914AA5896B2DDF /* Inter-Medium.ttf */ = {isa = PBXFileReference; name = "Inter-Medium.ttf"; path = "../assets/fonts/Inter-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5F574234CCFA41D78314EE7F /* Inter-Bold.ttf */ = {isa = PBXFileReference; name = "Inter-Bold.ttf"; path = "../assets/fonts/Inter-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		113B5D9A87254886A996AF6F /* Inter-Regular.ttf */ = {isa = PBXFileReference; name = "Inter-Regular.ttf"; path = "../assets/fonts/Inter-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		44205072FBA54F74A6386F49 /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; name = "Inter-SemiBold.ttf"; path = "../assets/fonts/Inter-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +91,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				F715F0468E3645139B75CEAC /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -96,6 +113,22 @@
 				5709B34CF0A7D63546082F79 /* Pods-Tosol_UI.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		F715F0468E3645139B75CEAC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D3AB9B94CF594E339053DD5D /* BeVietnamPro-SemiBold.ttf */,
+				66EBF36EA4F34EC0B945D828 /* BeVietnamPro-Regular.ttf */,
+				072E791744694B56A4EE5C58 /* BeVietnamPro-Medium.ttf */,
+				6F5FA8BA02C84FCC8D5A9375 /* BeVietnamPro-Bold.ttf */,
+				81E6EAB895914AA5896B2DDF /* Inter-Medium.ttf */,
+				5F574234CCFA41D78314EE7F /* Inter-Bold.ttf */,
+				113B5D9A87254886A996AF6F /* Inter-Regular.ttf */,
+				44205072FBA54F74A6386F49 /* Inter-SemiBold.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -161,6 +194,14 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				CAEB6CF859BBAAE4DFD55E29 /* PrivacyInfo.xcprivacy in Resources */,
+				53C43A1DBFBD43A68E743DDF /* BeVietnamPro-SemiBold.ttf in Resources */,
+				5FB40C219748415BBFA9B530 /* BeVietnamPro-Regular.ttf in Resources */,
+				5BB7252EDC09410BB8573086 /* BeVietnamPro-Medium.ttf in Resources */,
+				6F2909DB04A84BE299C514FF /* BeVietnamPro-Bold.ttf in Resources */,
+				1C98BB9261F44C449CBAB13F /* Inter-Medium.ttf in Resources */,
+				FB1E16504038422FA2F3436F /* Inter-Bold.ttf in Resources */,
+				1CCA5CF5E66748C686DA4D31 /* Inter-Regular.ttf in Resources */,
+				223ACA60E32F420E97DA642C /* Inter-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,13 +232,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tosol_UI/Pods-Tosol_UI-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tosol_UI/Pods-Tosol_UI-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -234,13 +271,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tosol_UI/Pods-Tosol_UI-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Tosol_UI/Pods-Tosol_UI-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

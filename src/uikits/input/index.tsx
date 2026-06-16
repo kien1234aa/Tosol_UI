@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { createInput } from '@gluestack-ui/core/input/creator';
-import { View, Pressable, TextInput } from 'react-native';
+import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 import { tva } from '@gluestack-ui/utils/nativewind-utils';
 import {
   withStyleContext,
@@ -105,14 +105,19 @@ type IInputProps = React.ComponentProps<typeof UIInput> &
   VariantProps<typeof inputStyle> & { className?: string };
 const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, IInputProps>(
   function Input(
-    { className, variant = 'outline', size = 'md', ...props },
+    { className, variant = 'outline', size = 'md', style, ...props },
     ref
   ) {
+    const hairlineBorder =
+      variant === 'underlined'
+        ? undefined
+        : { borderWidth: StyleSheet.hairlineWidth };
     return (
       <UIInput
         ref={ref}
         {...props}
         className={inputStyle({ variant, size, class: className })}
+        style={[hairlineBorder, style]}
         context={{ variant, size }}
       />
     );

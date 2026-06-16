@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Package } from 'lucide-react-native';
 import { orderDetailCopy, ordersCopy } from '@/src/configs/orders';
+import { mainLayout } from '@/src/configs/main';
 import {
   formatCnyPrice,
   convertCnyToVnd,
@@ -347,13 +348,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
   },
   divider: {
     height: 1,
@@ -364,19 +360,19 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 10,
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   footer: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 16,
+    paddingBottom: mainLayout.tabStackFooterPaddingBottom,
     backgroundColor: lightTokens.background0,
     borderTopWidth: 1,
     borderTopColor: lightTokens.outline100,
   },
   outlineButton: {
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.error500,
     backgroundColor: lightTokens.background0,
   },

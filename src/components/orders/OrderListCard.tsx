@@ -218,13 +218,8 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 14,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
     overflow: 'visible',
   },
   cardHeader: {
@@ -271,7 +266,7 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 10,
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   quantityBadge: {
@@ -307,7 +302,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     ...buttonContentCenter,
     backgroundColor: lightTokens.background100,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   overlay: {
@@ -321,7 +316,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   actionOption: {

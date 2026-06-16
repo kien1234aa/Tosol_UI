@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
+import { fontStyle } from '@/src/configs/theme/fonts';
 import { Bell } from 'lucide-react-native';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -95,13 +96,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
   },
   avatar: {
     width: AVATAR_SIZE,
@@ -114,9 +110,7 @@ const styles = StyleSheet.create({
   avatarText: {
     letterSpacing: 0.5,
   },
-  name: {
-    fontWeight: '700',
-  },
+  name: fontStyle('semibold'),
   notificationButton: {
     width: NOTIFICATION_SIZE,
     height: NOTIFICATION_SIZE,
@@ -125,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 12,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
     position: 'relative',
   },

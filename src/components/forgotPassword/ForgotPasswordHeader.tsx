@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
+import { fontStyle } from '@/src/configs/theme/fonts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Box } from '@/src/uikits/box';
 import { HStack } from '@/src/uikits/hstack';
@@ -46,9 +47,7 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: 'rgb(235, 245, 247)',
   },
-  title: {
-    fontWeight: '600',
-  },
+  title: fontStyle('semibold'),
 });
 
 export const ForgotPasswordHeader = memo(ForgotPasswordHeaderComponent);

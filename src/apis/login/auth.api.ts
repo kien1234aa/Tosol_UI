@@ -1,4 +1,11 @@
-import type { AuthSession, LoginCredentials } from '@/src/types/login/auth.types';
+import { postJson } from '@/src/apis/http';
+import { apiEndpoints } from '@/src/configs/api';
+import type {
+  AuthSession,
+  LoginApiData,
+  LoginApiUser,
+  LoginCredentials,
+} from '@/src/types/login/auth.types';
 
 /**
  * Auth service abstraction. Swap this implementation for a real HTTP client
@@ -9,27 +16,44 @@ export interface IAuthService {
   login(credentials: LoginCredentials): Promise<AuthSession>;
 }
 
-const MOCK_LATENCY_MS = 900;
+function mapLoginUser(user: LoginApiUser): AuthSession['user'] {
+  return {
+    id: String(user.id),
+    uuid: user.uuid,
+    username: user.email,
+    displayName: user.name,
+    email: user.email,
+    role: user.role,
+    isTosolUser: user.is_tosol_user,
+    isSellerUser: user.is_seller_user,
+    isActive: user.is_active,
+    lastLoginAt: user.last_login_at,
+    seller: user.seller,
+    warehouses: user.warehouses,
+    currentWarehouseId: user.current_warehouse_id,
+    hasMultipleWarehouses: user.has_multiple_warehouses,
+  };
+}
 
-class MockAuthService implements IAuthService {
+function mapLoginResponse(data: LoginApiData): AuthSession {
+  return {
+    user: mapLoginUser(data.user),
+    token: data.token,
+    tokenType: data.token_type,
+    expiresIn: data.expires_in,
+  };
+}
+
+class HttpAuthService implements IAuthService {
   async login(credentials: LoginCredentials): Promise<AuthSession> {
-    await new Promise<void>(resolve =>
-      setTimeout(() => resolve(), MOCK_LATENCY_MS),
-    );
+    const data = await postJson<LoginApiData>(apiEndpoints.login, {
+      email: credentials.username.trim(),
+      password: credentials.password,
+      remember: credentials.rememberMe,
+    });
 
-    if (credentials.password === 'wrong') {
-      throw new Error('Tên đăng nhập hoặc mật khẩu không đúng');
-    }
-
-    return {
-      token: `mock-token-${Date.now()}`,
-      user: {
-        id: 'u-1',
-        username: credentials.username,
-        displayName: credentials.username,
-      },
-    };
+    return mapLoginResponse(data);
   }
 }
 
-export const authService: IAuthService = new MockAuthService();
+export const authService: IAuthService = new HttpAuthService();

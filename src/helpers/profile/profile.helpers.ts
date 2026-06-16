@@ -13,12 +13,16 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^(\+84|0)\d{8,10}$/;
 
 export function buildUserProfile(user: AuthUser | null): UserProfile {
+  if (!user) {
+    return mockUserProfile;
+  }
+
   return {
-    fullName: user?.displayName || mockUserProfile.fullName,
-    username: user?.username || mockUserProfile.username,
-    email: mockUserProfile.email,
-    phone: mockUserProfile.phone,
-    address: mockUserProfile.address,
+    fullName: user.displayName,
+    username: user.username,
+    email: user.email,
+    phone: user.seller?.phone ?? mockUserProfile.phone,
+    address: user.seller?.address ?? mockUserProfile.address,
   };
 }
 

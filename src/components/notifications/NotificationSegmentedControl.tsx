@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     padding: TRACK_PADDING,
     backgroundColor: lightTokens.background0,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
     position: 'relative',
     overflow: 'hidden',

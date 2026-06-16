@@ -1,3 +1,5 @@
+const { families: fontFamilies } = require('./src/configs/theme/fontFamilies.config');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: process.env.DARK_MODE ? process.env.DARK_MODE : 'class',
@@ -175,13 +177,24 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
+        heading: [fontFamilies.semibold],
+        body: [fontFamilies.regular],
         mono: undefined,
-        jakarta: ['var(--font-plus-jakarta-sans)'],
-        roboto: ['var(--font-roboto)'],
+        'sf-pro': [fontFamilies.regular],
+        'sf-pro-medium': [fontFamilies.medium],
+        'sf-pro-semibold': [fontFamilies.semibold],
+        'sf-pro-bold': [fontFamilies.bold],
+        inter: [fontFamilies.regular],
+        'inter-medium': [fontFamilies.medium],
+        'inter-semibold': [fontFamilies.semibold],
+        'inter-bold': [fontFamilies.bold],
+        'be-vietnam': [fontFamilies.regular],
+        'be-vietnam-medium': [fontFamilies.medium],
+        'be-vietnam-semibold': [fontFamilies.semibold],
+        'be-vietnam-bold': [fontFamilies.bold],
+        jakarta: [fontFamilies.regular],
+        roboto: [fontFamilies.regular],
         code: ['var(--font-source-code-pro)'],
-        inter: ['var(--font-inter)'],
         'space-mono': ['var(--font-space-mono)'],
       },
       fontWeight: {
@@ -213,4 +226,26 @@ module.exports = {
       },
     },
   },
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.font-normal': {
+          fontFamily: fontFamilies.regular,
+          fontWeight: '400',
+        },
+        '.font-medium': {
+          fontFamily: fontFamilies.medium,
+          fontWeight: '500',
+        },
+        '.font-semibold': {
+          fontFamily: fontFamilies.semibold,
+          fontWeight: '600',
+        },
+        '.font-bold': {
+          fontFamily: fontFamilies.bold,
+          fontWeight: '700',
+        },
+      });
+    },
+  ],
 };

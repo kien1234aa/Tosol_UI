@@ -1,0 +1,65 @@
+diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
+index c84e9c6..5e48479 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
++++ b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
+@@ -91,9 +91,9 @@ export const TabBarButton = /*#__PURE__*/memo(_ref2 => {
+   return /*#__PURE__*/React.createElement(View, {
+     style: style.wrapper
+   }, /*#__PURE__*/React.createElement(RNReanimated.View, {
+-    style: [animatedStyles, {
+-      backgroundColor: 'green'
+-    }, style.focusedButton]
++    style: [animatedStyles, style.focusedButton, {
++      opacity: 0
++    }]
+   }, /*#__PURE__*/React.createElement(TouchableOpacity, {
+     accessibilityRole: "button",
+     accessibilityLabel: options.tabBarAccessibilityLabel,
+@@ -102,14 +102,11 @@ export const TabBarButton = /*#__PURE__*/memo(_ref2 => {
+     style: [{
+       ...style.focusedButton,
+       ...(mode === 'square' ? style.squareFocusedButton : {}),
+-      backgroundColor: activeTintColor || 'white'
++      backgroundColor: 'transparent',
++      opacity: 0
+     }, isFocused ? focusedButtonStyle : {}],
+     onLongPress: onLongPress
+-  }, options.tabBarIcon ? options.tabBarIcon({
+-    focused: isFocused,
+-    color: 'white',
+-    size: 28
+-  }) : null)));
++  }, null)));
+ });
+ export default TabBarButton;
+ //# sourceMappingURL=tab.bar.button.js.map
+\ No newline at end of file
+diff --git a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js b/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
+index 42497e9..de716f2 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
++++ b/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
+@@ -1,5 +1,5 @@
+ import { StyleSheet } from 'react-native';
+-export const TAB_BAR_HEIGHT = 64;
++export const TAB_BAR_HEIGHT = 52;
+ export const style = StyleSheet.create({
+   barShapeWrapper: {
+     elevation: 11,
+diff --git a/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js b/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js
+index 6df598b..e2ad7a0 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js
++++ b/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js
+@@ -16,10 +16,10 @@ export const style = StyleSheet.create({
+   },
+   focusedButton: {
+     position: 'absolute',
+-    height: 60,
+-    width: 60,
++    height: 52,
++    width: 52,
+     zIndex: -1,
+-    borderRadius: 32,
++    borderRadius: 26,
+     elevation: 10,
+     justifyContent: 'center',
+     alignItems: 'center'
