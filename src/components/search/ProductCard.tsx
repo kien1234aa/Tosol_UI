@@ -33,45 +33,60 @@ function ProductCardComponent({ product, onPress }: ProductCardProps) {
       accessibilityRole="button"
       accessibilityLabel={product.name}
       className="w-full">
-      <VStack className="w-full" space="sm">
-        <Center style={styles.imageWrap}>
-          <Package color={lightTokens.tertiary500} size={ICON_SIZE} />
-        </Center>
+      <Box style={styles.card}>
+        <VStack className="w-full" space="sm">
+          <Center style={styles.imageWrap}>
+            <Package color={lightTokens.tertiary500} size={ICON_SIZE} />
+          </Center>
 
-        <Text
-          size="sm"
-          className="font-medium text-typography-900"
-          numberOfLines={2}
-          style={styles.name}>
-          {product.name}
-        </Text>
+          <Text
+            size="sm"
+            className="font-medium text-typography-900"
+            numberOfLines={2}
+            style={styles.name}>
+            {product.name}
+          </Text>
 
-        <VStack space="xs">
-          <Text size="md" className="font-bold text-tertiary-600">
-            {formatCnyPrice(product.priceCny)}
-          </Text>
-          <Text size="xs" className="text-typography-500">
-            ≈ {formatProductPrice(unitPriceVnd)}
-          </Text>
-          {showOriginalPrice ? (
-            <Text
-              size="xs"
-              className="text-typography-500"
-              style={styles.originalPrice}>
-              {formatCnyPrice(product.originalPriceCny!)}
+          <VStack space="xs">
+            <Text size="md" className="font-bold text-tertiary-600">
+              {formatCnyPrice(product.priceCny)}
             </Text>
-          ) : null}
+            <Text size="xs" className="text-typography-500">
+              ≈ {formatProductPrice(unitPriceVnd)}
+            </Text>
+            {showOriginalPrice ? (
+              <Text
+                size="xs"
+                className="text-typography-500"
+                style={styles.originalPrice}>
+                {formatCnyPrice(product.originalPriceCny!)}
+              </Text>
+            ) : null}
+          </VStack>
         </VStack>
-      </VStack>
+      </Box>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  card: {
+    width: '100%',
+    borderRadius: 12,
+    padding: 10,
+    backgroundColor: lightTokens.background0,
+    borderWidth: 1,
+    borderColor: lightTokens.outline100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
   imageWrap: {
     width: '100%',
     aspectRatio: 1,
-    borderRadius: 12,
+    borderRadius: 10,
     backgroundColor: lightTokens.tertiary50,
     borderWidth: 1,
     borderColor: lightTokens.outline100,

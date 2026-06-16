@@ -12,6 +12,7 @@ import {
   OrderDetailSummary,
 } from '@/src/components/orders/OrderDetailView';
 import { useOrderDetail } from '@/src/hooks/orders';
+import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { OrdersStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -27,9 +28,7 @@ export function OrderDetailScreen({
   const { orderId } = route.params;
   const { order, canPay, canCancel } = useOrderDetail(orderId);
 
-  const handleBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+  const handleBack = useStackGoBack(navigation, 'OrdersMain');
 
   const handlePay = useCallback(() => {
     Alert.alert(orderDetailCopy.paySuccess);

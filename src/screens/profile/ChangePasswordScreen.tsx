@@ -12,6 +12,7 @@ import {
   ProfileStackHeader,
 } from '@/src/components/profile';
 import { useChangePassword } from '@/src/hooks/profile';
+import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { ProfileStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
 import { Pressable } from '@/src/uikits/pressable';
@@ -40,9 +41,7 @@ export function ChangePasswordScreen({ navigation }: ChangePasswordScreenProps) 
     onSubmit,
   } = useChangePassword();
 
-  const handleBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+  const handleBack = useStackGoBack(navigation, 'ProfileMain');
 
   const handleSubmit = useCallback(async () => {
     const didSubmit = await onSubmit();

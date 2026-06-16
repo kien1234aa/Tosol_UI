@@ -6,6 +6,7 @@ import { Box } from '@/src/uikits/box';
 import { VStack } from '@/src/uikits/vstack';
 import { animationConfig } from '@/src/configs/theme';
 import { mainLayout } from '@/src/configs/main';
+import { lightTokens } from '@/src/configs/theme';
 import { useSearch } from '@/src/hooks/search';
 import type { SearchStackScreenProps } from '@/src/navigation/types';
 import type { SearchProduct } from '@/src/types/search/search.types';
@@ -44,22 +45,25 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
   return (
     <Box className="flex-1 bg-background-50">
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled">
-          <VStack className="w-full" space="xl">
-            <Animated.View entering={FadeInDown.duration(screenEntry)}>
-              <SearchHeader
-                query={query}
-                selectedPlatform={selectedPlatform}
-                selectedPlatformLabel={selectedPlatformLabel}
-                onChangeQuery={setQuery}
-                onSelectPlatform={onSelectPlatform}
-                onPressImageSearch={handleImageSearch}
-              />
-            </Animated.View>
+        <VStack className="flex-1">
+          <Animated.View
+            entering={FadeInDown.duration(screenEntry)}
+            style={styles.header}>
+            <SearchHeader
+              query={query}
+              selectedPlatform={selectedPlatform}
+              selectedPlatformLabel={selectedPlatformLabel}
+              onChangeQuery={setQuery}
+              onSelectPlatform={onSelectPlatform}
+              onPressImageSearch={handleImageSearch}
+            />
+          </Animated.View>
 
+          <ScrollView
+            style={styles.scroll}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled">
             <Animated.View
               entering={FadeInDown.duration(screenEntry).delay(stagger)}>
               <ProductGridSection
@@ -67,8 +71,8 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
                 onPressProduct={handleProductPress}
               />
             </Animated.View>
-          </VStack>
-        </ScrollView>
+          </ScrollView>
+        </VStack>
 
         <SupportFab onPress={noop} />
       </SafeAreaView>
@@ -80,9 +84,17 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  header: {
+    backgroundColor: lightTokens.tertiary50,
+    borderBottomWidth: 1,
+    borderBottomColor: lightTokens.outline100,
+  },
+  scroll: {
+    flex: 1,
+  },
   content: {
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 12,
     paddingBottom: mainLayout.tabBarHeight + 32,
   },
 });

@@ -1,5 +1,10 @@
 import React, { memo, useCallback, useState } from 'react';
-import { Modal, Pressable as RNPressable, StyleSheet } from 'react-native';
+import {
+  Modal,
+  Pressable as RNPressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {
   ChevronDown,
   Package,
@@ -35,20 +40,22 @@ const THUMBNAIL_ICON_SIZE = 28;
 
 function DetailRow({ label, value, emphasize = false }: DetailRowProps) {
   return (
-    <HStack className="w-full items-center justify-between">
-      <Text size="xs" className="text-typography-500">
+    <View style={styles.detailRow}>
+      <Text size="xs" className="text-typography-500" style={styles.detailLabel}>
         {label}
       </Text>
       <Text
         size="sm"
+        numberOfLines={1}
         className={
           emphasize
-            ? 'font-semibold text-typography-900'
+            ? 'font-semibold text-tertiary-600'
             : 'font-medium text-typography-900'
-        }>
+        }
+        style={styles.detailValue}>
         {value}
       </Text>
-    </HStack>
+    </View>
   );
 }
 
@@ -87,15 +94,19 @@ function OrderListCardComponent({
   return (
     <>
       <Box style={styles.card}>
-        <Pressable
+        <HStack style={styles.cardHeader}>
+          <Text size="sm" className="font-semibold text-typography-900">
+            {ordersCopy.idLabel} {order.id}
+          </Text>
+          <OrderStatusBadge status={order.status} />
+        </HStack>
+
+        <RNPressable
           onPress={handlePress}
           accessibilityRole="button"
-          accessibilityLabel={ordersCopy.viewDetail}>
-          <Box style={styles.statusWrap}>
-            <OrderStatusBadge status={order.status} />
-          </Box>
-
-          <HStack className="w-full items-start gap-3">
+          accessibilityLabel={ordersCopy.viewDetail}
+          style={styles.bodyPressable}>
+          <HStack style={styles.body}>
             <Box style={styles.thumbnailWrap}>
               <Center style={styles.thumbnail}>
                 <Package
@@ -110,8 +121,13 @@ function OrderListCardComponent({
               </Center>
             </Box>
 
-            <VStack className="min-w-0 flex-1" space="xs">
-              <DetailRow label={ordersCopy.idLabel} value={order.id} />
+            <VStack style={styles.details} space="xs">
+              <Text
+                size="sm"
+                numberOfLines={2}
+                className="font-medium leading-5 text-typography-900">
+                {order.productName}
+              </Text>
               <DetailRow
                 label={ordersCopy.createdAtLabel}
                 value={formatOrderDate(order.createdAt)}
@@ -131,18 +147,18 @@ function OrderListCardComponent({
               />
             </VStack>
           </HStack>
-        </Pressable>
+        </RNPressable>
 
-        <HStack className="mt-3 w-full items-center justify-end gap-2">
-          <Pressable
+        <HStack style={styles.footer}>
+          <RNPressable
             onPress={handleRemove}
             accessibilityRole="button"
             accessibilityLabel={ordersCopy.deleteOrder}
             style={styles.deleteButton}>
             <Trash2 color={lightTokens.error500} size={18} />
-          </Pressable>
+          </RNPressable>
 
-          <Pressable
+          <RNPressable
             onPress={handleOpenActions}
             accessibilityRole="button"
             accessibilityLabel={ordersCopy.actions}
@@ -153,7 +169,7 @@ function OrderListCardComponent({
               </Text>
               <ChevronDown color={lightTokens.typography900} size={18} />
             </HStack>
-          </Pressable>
+          </RNPressable>
         </HStack>
       </Box>
 
@@ -196,10 +212,10 @@ function OrderListCardComponent({
 
 const styles = StyleSheet.create({
   card: {
-    position: 'relative',
+    width: '100%',
     borderRadius: 14,
     paddingHorizontal: 14,
-    paddingTop: 36,
+    paddingTop: 14,
     paddingBottom: 14,
     backgroundColor: lightTokens.background0,
     borderWidth: 1,
@@ -209,15 +225,45 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 2,
+    overflow: 'visible',
   },
-  statusWrap: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
+  cardHeader: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    gap: 8,
+  },
+  bodyPressable: {
+    width: '100%',
+  },
+  body: {
+    width: '100%',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  details: {
+    flex: 1,
+    minWidth: 0,
+  },
+  detailRow: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  detailLabel: {
+    flexShrink: 0,
+  },
+  detailValue: {
+    flex: 1,
+    textAlign: 'right',
   },
   thumbnailWrap: {
     width: 72,
     height: 72,
+    flexShrink: 0,
     position: 'relative',
   },
   thumbnail: {
@@ -239,6 +285,13 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.tertiary500,
     borderWidth: 1.5,
     borderColor: lightTokens.background0,
+  },
+  footer: {
+    width: '100%',
+    marginTop: 12,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
   },
   deleteButton: {
     width: 36,

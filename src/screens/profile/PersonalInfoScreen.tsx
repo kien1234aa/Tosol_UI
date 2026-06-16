@@ -14,6 +14,7 @@ import {
   ProfileStackHeader,
 } from '@/src/components/profile';
 import { usePersonalInfo } from '@/src/hooks/profile';
+import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { ProfileStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
 import { Pressable } from '@/src/uikits/pressable';
@@ -25,9 +26,7 @@ type PersonalInfoScreenProps = ProfileStackScreenProps<'PersonalInfo'>;
 export function PersonalInfoScreen({ navigation }: PersonalInfoScreenProps) {
   const { values, errors, onChangeField, onSave } = usePersonalInfo();
 
-  const handleBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+  const handleBack = useStackGoBack(navigation, 'ProfileMain');
 
   const handleSave = useCallback(() => {
     const didSave = onSave();

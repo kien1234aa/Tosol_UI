@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { FlatList, ListRenderItem, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { mainLayout } from '@/src/configs/main';
 import { useOrdersList } from '@/src/hooks/orders';
 import type { OrdersStackScreenProps } from '@/src/navigation/types';
 import type { OrderListItem } from '@/src/types/orders/orders.types';
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 24,
+    paddingBottom: mainLayout.tabBarHeight + 24,
   },
   emptyContent: {
     flexGrow: 1,

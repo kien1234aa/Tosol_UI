@@ -1,16 +1,16 @@
 import React, { memo, type ReactNode } from 'react';
-import { StyleSheet } from 'react-native';
+import { Pressable as RNPressable, StyleSheet } from 'react-native';
 import { ChevronLeft } from 'lucide-react-native';
 import { lightTokens } from '@/src/configs/theme';
 import { buttonContentCenter } from '@/src/configs/theme/buttonLayout';
 import { Box } from '@/src/uikits/box';
-import { Center } from '@/src/uikits/center';
 import { Heading } from '@/src/uikits/heading';
 import { HStack } from '@/src/uikits/hstack';
-import { Pressable } from '@/src/uikits/pressable';
 
 export const STACK_HEADER_SLOT_WIDTH = 72;
 export const STACK_HEADER_BACK_SIZE = 40;
+
+const BACK_HIT_SLOP = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
 interface StackHeaderProps {
   title: string;
@@ -29,32 +29,35 @@ function StackHeaderComponent({
 }: StackHeaderProps) {
   return (
     <Box style={styles.container}>
-      <HStack className="relative w-full items-center">
-        <Center style={styles.sideSlot}>
+      <HStack className="w-full items-center justify-between">
+        <Box style={styles.sideSlot}>
           {onPressBack ? (
-            <Pressable
+            <RNPressable
               onPress={onPressBack}
               accessibilityRole="button"
               accessibilityLabel={backAccessibilityLabel}
+              hitSlop={BACK_HIT_SLOP}
               style={styles.backButton}>
               <ChevronLeft color={lightTokens.typography900} size={24} />
-            </Pressable>
+            </RNPressable>
           ) : null}
-        </Center>
+        </Box>
 
-        <Heading
-          size="md"
-          numberOfLines={1}
-          className={
-            uppercase
-              ? 'absolute inset-x-0 text-center font-bold uppercase text-typography-900'
-              : 'absolute inset-x-0 text-center font-bold text-typography-900'
-          }
-          pointerEvents="none">
-          {title}
-        </Heading>
+        <Box style={styles.titleContainer}>
+          <Heading
+            size="md"
+            numberOfLines={1}
+            className={
+              uppercase
+                ? 'text-center font-bold uppercase text-typography-900'
+                : 'text-center font-bold text-typography-900'
+            }
+            style={styles.title}>
+            {title}
+          </Heading>
+        </Box>
 
-        <Center style={styles.sideSlot}>{rightAction ?? null}</Center>
+        <Box style={styles.sideSlot}>{rightAction ?? null}</Box>
       </HStack>
     </Box>
   );
@@ -71,6 +74,19 @@ const styles = StyleSheet.create({
   sideSlot: {
     width: STACK_HEADER_SLOT_WIDTH,
     minHeight: STACK_HEADER_BACK_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleContainer: {
+    flex: 1,
+    minWidth: 0,
+    paddingHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    width: '100%',
+    textAlign: 'center',
   },
   backButton: {
     width: STACK_HEADER_BACK_SIZE,

@@ -6,25 +6,25 @@
  */
 const rgb = (r: number, g: number, b: number) => `rgb(${r}, ${g}, ${b})`;
 
-/** Light steel palette — secondary / background / outline tokens */
+/** Light palette — richer teal brand, stronger contrast, still bright surfaces */
 export const lightTokens = {
   background0: rgb(255, 255, 255),
-  background50: rgb(246, 246, 246),
-  background100: rgb(242, 241, 241),
-  backgroundMuted: rgb(247, 248, 247),
-  secondary100: rgb(246, 246, 246),
-  secondary200: rgb(242, 242, 242),
-  outline100: rgb(230, 230, 230),
-  outline200: rgb(221, 220, 219),
+  background50: rgb(236, 240, 242),
+  background100: rgb(226, 232, 235),
+  backgroundMuted: rgb(232, 238, 240),
+  secondary100: rgb(240, 243, 244),
+  secondary200: rgb(232, 236, 238),
+  outline100: rgb(200, 208, 212),
+  outline200: rgb(180, 190, 196),
   typography0: rgb(254, 254, 255),
-  typography500: rgb(140, 140, 140),
-  typography900: rgb(38, 38, 39),
-  /** Logo brand teal — sampled from logo.png (#4C7F8C) */
-  tertiary50: rgb(235, 245, 247),
-  tertiary100: rgb(204, 227, 232),
-  tertiary200: rgb(158, 199, 208),
-  tertiary500: rgb(76, 127, 140),
-  tertiary600: rgb(58, 109, 122),
+  typography500: rgb(105, 112, 118),
+  typography900: rgb(22, 30, 36),
+  /** Richer brand teal — deeper than logo sample for UI contrast */
+  tertiary50: rgb(220, 238, 243),
+  tertiary100: rgb(186, 222, 230),
+  tertiary200: rgb(148, 198, 210),
+  tertiary500: rgb(46, 113, 133),
+  tertiary600: rgb(34, 95, 112),
   error500: rgb(230, 53, 53),
 } as const;
 

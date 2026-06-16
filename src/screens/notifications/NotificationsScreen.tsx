@@ -7,6 +7,7 @@ import {
   NotificationsHeader,
 } from '@/src/components/notifications';
 import { useNotificationsList } from '@/src/hooks/notifications';
+import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { RootStackScreenProps } from '@/src/navigation/types';
 import type {
   AppNotification,
@@ -31,9 +32,7 @@ export function NotificationsScreen({ navigation }: NotificationsScreenProps) {
     onMarkAllRead,
   } = useNotificationsList();
 
-  const handleBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+  const handleBack = useStackGoBack(navigation, 'Main');
 
   const handleSelectFilter = useCallback(
     (filter: string) => {

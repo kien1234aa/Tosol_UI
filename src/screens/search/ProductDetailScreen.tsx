@@ -5,6 +5,7 @@ import { productDetailCopy } from '@/src/configs/search';
 import { lightTokens } from '@/src/configs/theme';
 import { useAddToCart } from '@/src/hooks/cart';
 import { useProductDetail } from '@/src/hooks/search';
+import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { SearchStackScreenProps } from '@/src/navigation/types';
 import {
   ProductDetailActions,
@@ -34,9 +35,7 @@ export function ProductDetailScreen({
   } = useProductDetail(productId);
   const { addToCart } = useAddToCart();
 
-  const handleBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+  const handleBack = useStackGoBack(navigation, 'SearchMain');
 
   const handleAddToCart = useCallback(() => {
     if (!product) {

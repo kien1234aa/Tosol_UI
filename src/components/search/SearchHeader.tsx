@@ -39,7 +39,7 @@ function SearchHeaderComponent({
 
   return (
     <Box style={styles.container}>
-      <VStack className="w-full" space="md">
+      <VStack className="w-full" space="sm">
         <Text size="md" className="font-medium text-typography-900">
           {searchCopy.greeting}
         </Text>
@@ -82,17 +82,10 @@ function SearchHeaderComponent({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: lightTokens.tertiary50,
-    borderWidth: 1,
-    borderColor: lightTokens.outline100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
   },
   searchBar: {
     height: SEARCH_BAR_HEIGHT,

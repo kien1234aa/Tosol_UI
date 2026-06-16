@@ -3,6 +3,7 @@ export { MainTabNavigator } from './MainTabNavigator';
 export { SearchStackNavigator } from './SearchStackNavigator';
 export { OrdersStackNavigator } from './OrdersStackNavigator';
 export { ProfileStackNavigator } from './ProfileStackNavigator';
+export { useStackGoBack } from './useStackGoBack';
 export type {
   MainTabParamList,
   MainTabScreenProps,
