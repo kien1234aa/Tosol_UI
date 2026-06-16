@@ -1,0 +1,15 @@
+---
+description: App TOSOL mobile chỉ dành cho seller — không thêm tính năng admin
+globs:
+  - src/**/*
+alwaysApply: true
+---
+
+# Seller-only app
+
+- App mobile TOSOL **chỉ dành cho seller/nhân viên seller**. Không implement menu, route, màn hình hay luồng **quản trị hệ thống** (admin platform).
+- Login chặn admin/kế toán/thủ kho qua `isRoleBlockedFromApp` trong `src/features/auth/types/appRole.ts`.
+- `AppRole` hiện tại luôn là `'seller'`; không thêm nhánh `appRole === 'admin'` cho UI mới.
+- Tính năng seller hợp lệ: bán hàng, danh mục, hàng hóa/kho của seller, tài chính seller, cài đặt shop (TK ngân hàng, đối tác VC **kết nối**, webhooks, nhân viên).
+- **Không làm trên app:** bảng giá VC toàn hệ thống, cấu hình TOSOL platform, danh mục đối tác VC (tạo catalog), quản lý users/sellers/warehouses toàn cục, dashboard admin.
+- Thao tác kho phức tạp (đóng gói/nhập/xuất trên detail) có thể hướng web kho nếu chưa có API mutation — đó là giới hạn API, không phải feature admin app.

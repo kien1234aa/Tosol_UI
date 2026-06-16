@@ -4,4 +4,10 @@ export const API_BASE_URL =
 
 export const apiEndpoints = {
   login: '/login',
+  shops: '/shops',
+} as const;
+
+export const shopsQueryParams = {
+  perPage: 50,
+  filterIsActive: true,
 } as const;

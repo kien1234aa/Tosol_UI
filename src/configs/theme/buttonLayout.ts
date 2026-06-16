@@ -1,5 +1,7 @@
 import { Platform, type TextStyle, type ViewStyle } from 'react-native';
-import { mainLayout } from '@/src/configs/main/layout.constants';
+
+const FOOTER_ACTION_HEIGHT = 48;
+const PRIMARY_BUTTON_HEIGHT = 56;
 
 /** Centers label/icon inside Pressable-based buttons on native. */
 export const buttonContentCenter: ViewStyle = {
@@ -10,13 +12,13 @@ export const buttonContentCenter: ViewStyle = {
 
 export const buttonFooterAction: ViewStyle = {
   ...buttonContentCenter,
-  height: mainLayout.footerActionHeight,
+  height: FOOTER_ACTION_HEIGHT,
   borderRadius: 12,
 };
 
 export const buttonPrimaryCta: ViewStyle = {
   ...buttonContentCenter,
-  height: mainLayout.primaryButtonHeight,
+  height: PRIMARY_BUTTON_HEIGHT,
   borderRadius: 12,
 };
 

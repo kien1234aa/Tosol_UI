@@ -1,5 +1,3 @@
-export { store, type AppDispatch, type AppStore, type RootState } from './store';
-export * from './login';
-export * from './register';
-export * from './forgotPassword';
-export * from './home';
+export { store, persistor } from '@/src/app/store';
+export type { RootState, AppDispatch } from '@/src/app/store';
+export { useAppDispatch, useAppSelector } from '@/src/app/hooks';

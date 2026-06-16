@@ -1,11 +1,29 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
+      "@app/*": ["src/app/*"],
+      "@assets/*": ["src/assets/*"],
+      "@config/*": ["src/config/*"],
+      "@configs/*": ["src/configs/*"],
+      "@features/*": ["src/features/*"],
+      "@locales/*": ["src/locales/*"],
+      "@mappers/*": ["src/mappers/*"],
+      "@navigation/*": ["src/navigation/*"],
+      "@services/*": ["src/services/*"],
+      "@shared/*": ["src/shared/*"],
       "tailwind.config": ["./tailwind.config.js"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts", "types/**/*.d.ts"],
-  "exclude": ["**/node_modules", "**/Pods"]
+  "exclude": [
+    "**/node_modules",
+    "**/Pods",
+    "**/*.web.tsx",
+    "**/*.web.ts",
+    "**/index.next15.tsx",
+    "**/uikits/gluestack-ui-provider/script.ts"
+  ]
 }

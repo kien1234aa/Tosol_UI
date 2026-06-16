@@ -1,65 +1,348 @@
+diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
+index f1d127f..dce6337 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
++++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
+@@ -39,8 +39,8 @@ const FabTabBar = _ref => {
+     width,
+     height
+   }, setDimensions] = (0, _react.useState)({
+-    width: _reactNative.Dimensions.get('window').width,
+-    height: _reactNative.Dimensions.get('window').height
++    width: 0,
++    height: 0
+   });
+   const {
+     bottom
+@@ -51,6 +51,7 @@ const FabTabBar = _ref => {
+   const initialPosition = isRtl ? -width + tabsWidthValue * (state.routes.length - 1 - state.index) : -width + tabsWidthValue * state.index;
+   const animatedValueLength = (0, _reactNativeReanimated.useSharedValue)(initialPosition);
+   const offset = tabsRealWidth < tabWidth ? tabWidth - tabsRealWidth : (tabsRealWidth - tabWidth) * -1;
++  const didInitLayoutRef = _react.default.useRef(false);
+   (0, _react.useEffect)(() => {
+     animatedValueLength.value = initialPosition;
+   }, [isRtl]);
+@@ -62,10 +63,22 @@ const FabTabBar = _ref => {
+     };
+   });
+   (0, _react.useEffect)(() => {
++    if (width <= 0) {
++      return;
++    }
++    if (!didInitLayoutRef.current) {
++      didInitLayoutRef.current = true;
++      animatedValueLength.value = initialPosition - offset / 2;
++      return;
++    }
+     animatedValueLength.value = (0, _reactNativeReanimated.withSpring)(initialPosition - offset / 2, springConfig || defaultSpringConfig);
+   }, [width, height, state, tabsWidthValue, offset, animatedValueLength, springConfig, initialPosition]);
+-  const animationValueThreshold = (0, _reactNativeReanimated.useSharedValue)(0);
++  const animationValueThreshold = (0, _reactNativeReanimated.useSharedValue)(state.index);
+   (0, _react.useEffect)(() => {
++    if (!didInitLayoutRef.current) {
++      animationValueThreshold.value = state.index;
++      return;
++    }
+     animationValueThreshold.value = (0, _reactNativeReanimated.withSpring)(state.index, springConfig || defaultSpringConfig);
+     /*Animated.spring(animationValueThreshold, {
+       toValue: state.index,
+@@ -91,7 +104,8 @@ const FabTabBar = _ref => {
+     style: [_bottomTab.style.container, {
+       marginBottom: bottom,
+       height: _bottomTab.TAB_BAR_HEIGHT,
+-      flexDirection: isRtl ? 'row-reverse' : 'row'
++      flexDirection: isRtl ? 'row-reverse' : 'row',
++      opacity: width > 0 ? 1 : 0
+     }, bottomBarContainerStyle,
+     // apply style from descriptor
+     currentDescriptor.options.tabBarStyle]
+@@ -104,7 +118,8 @@ const FabTabBar = _ref => {
+   }), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+     style: [_bottomTab.style.fabButtonsContainer, {
+       flexDirection: isRtl ? 'row-reverse' : 'row'
+-    }]
++    }],
++    pointerEvents: 'box-none'
+   }, state.routes.map((route, index) => {
+     const {
+       options
+diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
+index 27c9f3b..b7601ae 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
++++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
+@@ -26,7 +26,7 @@ const BarButton = /*#__PURE__*/(0, _react.memo)(_ref => {
+     focusedButtonStyle,
+     springConfig
+   } = _ref;
+-  const animationValueThreshold = (0, _reactNativeReanimated.useSharedValue)(0);
++  const animationValueThreshold = (0, _reactNativeReanimated.useSharedValue)(isFocused ? 0 : 1);
+   (0, _react.useEffect)(() => {
+     if (isFocused) {
+       animationValueThreshold.value = (0, _reactNativeReanimated.withSpring)(0, springConfig || defaultSpringConfig);
+@@ -48,7 +48,8 @@ const BarButton = /*#__PURE__*/(0, _react.memo)(_ref => {
+     };
+   });
+   return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+-    style: _tabBarButton.style.wrapper
++    style: _tabBarButton.style.wrapper,
++    pointerEvents: 'box-none'
+   }, /*#__PURE__*/_react.default.createElement(_reactNativeReanimated.default.View, {
+     style: animatedStyles
+   }, /*#__PURE__*/_react.default.createElement(_reactNative.TouchableOpacity, {
+@@ -83,7 +84,7 @@ const TabBarButton = /*#__PURE__*/(0, _react.memo)(_ref2 => {
+     focusedButtonStyle,
+     mode
+   } = _ref2;
+-  const animationValueThreshold = (0, _reactNativeReanimated.useSharedValue)(0);
++  const animationValueThreshold = (0, _reactNativeReanimated.useSharedValue)(isFocused ? 0 : 1);
+   (0, _react.useEffect)(() => {
+     if (isFocused) {
+       animationValueThreshold.value = (0, _reactNativeReanimated.withSpring)(0, springConfig || defaultSpringConfig);
+@@ -99,11 +100,10 @@ const TabBarButton = /*#__PURE__*/(0, _react.memo)(_ref2 => {
+     };
+   });
+   return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+-    style: _tabBarButton.style.wrapper
++    style: _tabBarButton.style.wrapper,
++    pointerEvents: 'box-none'
+   }, /*#__PURE__*/_react.default.createElement(_reactNativeReanimated.default.View, {
+-    style: [animatedStyles, {
+-      backgroundColor: 'green'
+-    }, _tabBarButton.style.focusedButton]
++    style: [animatedStyles, _tabBarButton.style.focusedButton]
+   }, /*#__PURE__*/_react.default.createElement(_reactNative.TouchableOpacity, {
+     accessibilityRole: "button",
+     accessibilityLabel: options.tabBarAccessibilityLabel,
+diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
+index dcfdb5b..f9fd490 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
++++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
+@@ -29,7 +29,7 @@ const style = _reactNative.StyleSheet.create({
+     flex: 1,
+     flexDirection: 'row',
+     width: '100%',
+-    zIndex: -1,
++    zIndex: 0,
+     height: TAB_BAR_HEIGHT
+   }
+ });
+diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/tab.bar.button.styles.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/tab.bar.button.styles.js
+index 8c0355c..61a1c9a 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/tab.bar.button.styles.js
++++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/tab.bar.button.styles.js
+@@ -10,8 +10,7 @@ const style = _reactNative.StyleSheet.create({
+     justifyContent: 'center',
+     alignItems: 'center',
+     flex: 1,
+-    zIndex: 1,
+-    elevation: 12
++    zIndex: 1
+   },
+   squareFocusedButton: {
+     borderRadius: 16
+@@ -24,9 +23,8 @@ const style = _reactNative.StyleSheet.create({
+     position: 'absolute',
+     height: 60,
+     width: 60,
+-    zIndex: -1,
++    zIndex: 2,
+     borderRadius: 32,
+-    elevation: 10,
+     justifyContent: 'center',
+     alignItems: 'center'
+   },
+@@ -35,7 +33,6 @@ const style = _reactNative.StyleSheet.create({
+     alignItems: 'center',
+     flex: 1,
+     width: '100%',
+-    elevation: 12,
+     zIndex: 12
+   }
+ });
+diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
+index e97bc3c..7954520 100644
+--- a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
++++ b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
+@@ -30,8 +30,8 @@ export const FabTabBar = _ref => {
+     width,
+     height
+   }, setDimensions] = useState({
+-    width: Dimensions.get('window').width,
+-    height: Dimensions.get('window').height
++    width: 0,
++    height: 0
+   });
+   const {
+     bottom
+@@ -42,6 +42,7 @@ export const FabTabBar = _ref => {
+   const initialPosition = isRtl ? -width + tabsWidthValue * (state.routes.length - 1 - state.index) : -width + tabsWidthValue * state.index;
+   const animatedValueLength = useSharedValue(initialPosition);
+   const offset = tabsRealWidth < tabWidth ? tabWidth - tabsRealWidth : (tabsRealWidth - tabWidth) * -1;
++  const didInitLayoutRef = React.useRef(false);
+   useEffect(() => {
+     animatedValueLength.value = initialPosition;
+   }, [isRtl]);
+@@ -53,10 +54,22 @@ export const FabTabBar = _ref => {
+     };
+   });
+   useEffect(() => {
++    if (width <= 0) {
++      return;
++    }
++    if (!didInitLayoutRef.current) {
++      didInitLayoutRef.current = true;
++      animatedValueLength.value = initialPosition - offset / 2;
++      return;
++    }
+     animatedValueLength.value = withSpring(initialPosition - offset / 2, springConfig || defaultSpringConfig);
+   }, [width, height, state, tabsWidthValue, offset, animatedValueLength, springConfig, initialPosition]);
+-  const animationValueThreshold = useSharedValue(0);
++  const animationValueThreshold = useSharedValue(state.index);
+   useEffect(() => {
++    if (!didInitLayoutRef.current) {
++      animationValueThreshold.value = state.index;
++      return;
++    }
+     animationValueThreshold.value = withSpring(state.index, springConfig || defaultSpringConfig);
+     /*Animated.spring(animationValueThreshold, {
+       toValue: state.index,
+@@ -82,7 +95,8 @@ export const FabTabBar = _ref => {
+     style: [style.container, {
+       marginBottom: bottom,
+       height: TAB_BAR_HEIGHT,
+-      flexDirection: isRtl ? 'row-reverse' : 'row'
++      flexDirection: isRtl ? 'row-reverse' : 'row',
++      opacity: width > 0 ? 1 : 0
+     }, bottomBarContainerStyle,
+     // apply style from descriptor
+     currentDescriptor.options.tabBarStyle]
+@@ -95,7 +109,8 @@ export const FabTabBar = _ref => {
+   }), /*#__PURE__*/React.createElement(View, {
+     style: [style.fabButtonsContainer, {
+       flexDirection: isRtl ? 'row-reverse' : 'row'
+-    }]
++    }],
++    pointerEvents: 'box-none'
+   }, state.routes.map((route, index) => {
+     const {
+       options
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
-index c84e9c6..5e48479 100644
+index c84e9c6..25d9dce 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
-@@ -91,9 +91,9 @@ export const TabBarButton = /*#__PURE__*/memo(_ref2 => {
+@@ -17,7 +17,7 @@ export const BarButton = /*#__PURE__*/memo(_ref => {
+     focusedButtonStyle,
+     springConfig
+   } = _ref;
+-  const animationValueThreshold = useSharedValue(0);
++  const animationValueThreshold = useSharedValue(isFocused ? 0 : 1);
+   useEffect(() => {
+     if (isFocused) {
+       animationValueThreshold.value = withSpring(0, springConfig || defaultSpringConfig);
+@@ -39,7 +39,8 @@ export const BarButton = /*#__PURE__*/memo(_ref => {
+     };
+   });
    return /*#__PURE__*/React.createElement(View, {
-     style: style.wrapper
+-    style: style.wrapper
++    style: style.wrapper,
++    pointerEvents: 'box-none'
+   }, /*#__PURE__*/React.createElement(RNReanimated.View, {
+     style: animatedStyles
+   }, /*#__PURE__*/React.createElement(TouchableOpacity, {
+@@ -73,7 +74,7 @@ export const TabBarButton = /*#__PURE__*/memo(_ref2 => {
+     focusedButtonStyle,
+     mode
+   } = _ref2;
+-  const animationValueThreshold = useSharedValue(0);
++  const animationValueThreshold = useSharedValue(isFocused ? 0 : 1);
+   useEffect(() => {
+     if (isFocused) {
+       animationValueThreshold.value = withSpring(0, springConfig || defaultSpringConfig);
+@@ -89,11 +90,10 @@ export const TabBarButton = /*#__PURE__*/memo(_ref2 => {
+     };
+   });
+   return /*#__PURE__*/React.createElement(View, {
+-    style: style.wrapper
++    style: style.wrapper,
++    pointerEvents: 'box-none'
    }, /*#__PURE__*/React.createElement(RNReanimated.View, {
 -    style: [animatedStyles, {
 -      backgroundColor: 'green'
 -    }, style.focusedButton]
-+    style: [animatedStyles, style.focusedButton, {
-+      opacity: 0
-+    }]
++    style: [animatedStyles, style.focusedButton]
    }, /*#__PURE__*/React.createElement(TouchableOpacity, {
      accessibilityRole: "button",
      accessibilityLabel: options.tabBarAccessibilityLabel,
-@@ -102,14 +102,11 @@ export const TabBarButton = /*#__PURE__*/memo(_ref2 => {
-     style: [{
-       ...style.focusedButton,
-       ...(mode === 'square' ? style.squareFocusedButton : {}),
--      backgroundColor: activeTintColor || 'white'
-+      backgroundColor: 'transparent',
-+      opacity: 0
-     }, isFocused ? focusedButtonStyle : {}],
-     onLongPress: onLongPress
--  }, options.tabBarIcon ? options.tabBarIcon({
--    focused: isFocused,
--    color: 'white',
--    size: 28
--  }) : null)));
-+  }, null)));
- });
- export default TabBarButton;
- //# sourceMappingURL=tab.bar.button.js.map
-\ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js b/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
-index 42497e9..de716f2 100644
+index 42497e9..37e0c1d 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
-@@ -1,5 +1,5 @@
- import { StyleSheet } from 'react-native';
--export const TAB_BAR_HEIGHT = 64;
-+export const TAB_BAR_HEIGHT = 52;
- export const style = StyleSheet.create({
-   barShapeWrapper: {
-     elevation: 11,
+@@ -22,7 +22,7 @@ export const style = StyleSheet.create({
+     flex: 1,
+     flexDirection: 'row',
+     width: '100%',
+-    zIndex: -1,
++    zIndex: 0,
+     height: TAB_BAR_HEIGHT
+   }
+ });
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js b/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js
-index 6df598b..e2ad7a0 100644
+index 6df598b..73e010e 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/styles/tab.bar.button.styles.js
-@@ -16,10 +16,10 @@ export const style = StyleSheet.create({
+@@ -4,8 +4,7 @@ export const style = StyleSheet.create({
+     justifyContent: 'center',
+     alignItems: 'center',
+     flex: 1,
+-    zIndex: 1,
+-    elevation: 12
++    zIndex: 1
    },
-   focusedButton: {
+   squareFocusedButton: {
+     borderRadius: 16
+@@ -18,9 +17,8 @@ export const style = StyleSheet.create({
      position: 'absolute',
--    height: 60,
--    width: 60,
-+    height: 52,
-+    width: 52,
-     zIndex: -1,
--    borderRadius: 32,
-+    borderRadius: 26,
-     elevation: 10,
+     height: 60,
+     width: 60,
+-    zIndex: -1,
++    zIndex: 2,
+     borderRadius: 32,
+-    elevation: 10,
      justifyContent: 'center',
      alignItems: 'center'
+   },
+@@ -29,7 +27,6 @@ export const style = StyleSheet.create({
+     alignItems: 'center',
+     flex: 1,
+     width: '100%',
+-    elevation: 12,
+     zIndex: 12
+   }
+ });
+diff --git a/node_modules/rn-wave-bottom-bar/src/styles/tab.bar.button.styles.tsx b/node_modules/rn-wave-bottom-bar/src/styles/tab.bar.button.styles.tsx
+index 322988b..231c802 100644
+--- a/node_modules/rn-wave-bottom-bar/src/styles/tab.bar.button.styles.tsx
++++ b/node_modules/rn-wave-bottom-bar/src/styles/tab.bar.button.styles.tsx
+@@ -6,7 +6,6 @@ export const style = StyleSheet.create({
+     alignItems: 'center',
+     flex: 1,
+     zIndex: 1,
+-    elevation: 12,
+   },
+   squareFocusedButton: {
+     borderRadius: 16,
+@@ -18,7 +17,6 @@ export const style = StyleSheet.create({
+     width: 60,
+     zIndex: -1,
+     borderRadius: 32,
+-    elevation: 10,
+     justifyContent: 'center',
+     alignItems: 'center',
+   },
+@@ -27,7 +25,6 @@ export const style = StyleSheet.create({
+     alignItems: 'center',
+     flex: 1,
+     width: '100%',
+-    elevation: 12,
+     zIndex: 12,
+   },
+ });

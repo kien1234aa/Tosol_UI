@@ -1,0 +1,924 @@
+{
+  "auth": {
+    "welcomeTitle": "TOSOL Fulfillment\nへようこそ！",
+    "welcomeSubtitle": "続行するにはログインしてください",
+    "email": "メール",
+    "emailPlaceholder": "メールアドレス",
+    "password": "パスワード",
+    "passwordPlaceholder": "パスワード",
+    "showPassword": "パスワードを表示",
+    "hidePassword": "パスワードを非表示",
+    "rememberMe": "ログイン状態を保持",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "signIn": "ログイン",
+    "loginFailed": "ログインに失敗しました",
+    "forgotPasswordTitle": "パスワードを忘れた場合",
+    "forgotPasswordBody": "機能は開発中です",
+    "a11yThemeToLight": "ライトテーマに切り替え",
+    "a11yThemeToDark": "ダークテーマに切り替え"
+  },
+  "role": {
+    "admin": "管理者",
+    "accountant": "経理",
+    "seller": "販売者",
+    "warehouse_manager": "倉庫管理者",
+    "unknown": "販売者",
+    "member": "メンバー"
+  },
+  "nav": {
+    "group": {
+      "category": "カタログ",
+      "finance": "財務",
+      "sales": "販売",
+      "home": "ホーム",
+      "goodsSeller": "商品",
+      "warehouseMgmt": "倉庫管理"
+    },
+    "drawer": {
+      "dashboard": "ダッシュボード",
+      "orders": "注文",
+      "shipping": "配送",
+      "returns": "返品",
+      "products": "商品",
+      "priceLists": "価格表",
+      "suppliers": "仕入先",
+      "customers": "顧客",
+      "myInventory": "在庫管理",
+      "myInventorySeller": "マイ在庫",
+      "purchase": "仕入れ",
+      "comboPack": "コンボ梱包",
+      "stockAlerts": "在庫アラート",
+      "locations": "ロケーション",
+      "layoutMap": "倉庫マップ",
+      "invoices": "請求書",
+      "settlements": "決済",
+      "payments": "支払い",
+      "paymentPortal": "決済ポータル",
+      "gatewayAdmin": "ゲートウェイ取引",
+      "gatewaySeller": "ゲートウェイ取引",
+      "servicePricing": "サービス料金",
+      "shops": "店舗",
+      "bankAccounts": "銀行口座",
+      "carriers": "配送業者",
+      "webhooks": "Webhooks",
+      "staff": "スタッフ",
+      "adminUsers": "ユーザー",
+      "adminSellers": "販売者",
+      "adminWarehouses": "倉庫",
+      "adminCurrencies": "通貨",
+      "activityLog": "活動ログ",
+      "packing": "梱包",
+      "outbound": "出庫",
+      "inbound": "入庫",
+      "transfer": "移動",
+      "shipTosolConfig": "TOSOL設定",
+      "shipPricing": "配送料金",
+      "shopFallback": "店舗",
+      "shopNamed": "店舗 #{{id}}"
+    },
+    "tab": {
+      "seller": {
+        "orders": "販売",
+        "catalog": "カタログ",
+        "dash": "ダッシュボード",
+        "goods": "商品",
+        "finance": "財務"
+      },
+      "admin": {
+        "orders": "販売",
+        "catalog": "カタログ",
+        "dash": "ダッシュボード",
+        "goods": "倉庫",
+        "finance": "財務"
+      },
+      "warehouseManager": {
+        "shipping": "配送伝票"
+      }
+    },
+    "bottomDefault": {
+      "orders": "販売",
+      "catalog": "カタログ",
+      "dash": "ダッシュボード",
+      "goods": "倉庫",
+      "finance": "財務"
+    },
+    "drawerMenu": {
+      "dashboard": "ダッシュボード",
+      "sales": "販売",
+      "category": "カタログ",
+      "goods": "商品",
+      "finance": "財務",
+      "settings": "設定",
+      "allOrders": "すべての注文",
+      "shipments": "配送",
+      "returns": "返品"
+    }
+  },
+  "header": {
+    "welcomeBack": "おかえりなさい、",
+    "warehouseAll": "すべての倉庫",
+    "userDefault": "ユーザー",
+    "warehouseDefault": "倉庫",
+    "choose": "選択",
+    "brandA11y": "TOSOL — 設定",
+    "notificationsA11y": "通知",
+    "notificationsCount": "通知 {{count}} 件",
+    "accountA11y": "アカウント — {{name}}",
+    "language": "言語",
+    "appearance": "外観",
+    "themeDark": "ダーク",
+    "themeLight": "ライト",
+    "accountTitle": "アカウント",
+    "personalInfo": "個人情報",
+    "personalInfoTitle": "個人情報",
+    "logout": "ログアウト",
+    "loggingOut": "ログアウト中…",
+    "fullName": "氏名",
+    "role": "役割",
+    "organization": "組織",
+    "changePassword": "パスワードを変更",
+    "notificationsTitle": "通知",
+    "pushTitle": "端末で通知を受け取る",
+    "pushSub": "注文やアラートの通知を受け取る（プッシュ連携は今後対応）。",
+    "notifPlaceholder": "詳細な通知一覧はAPI提供後にここに表示されます。",
+    "markRead": "すべて既読（バッジをクリア）",
+    "notifToastLabel": "通知があるときにトーストを表示",
+    "adminGroup": {
+      "management": "管理",
+      "warehouse": "倉庫・仕入れ",
+      "shipping": "配送"
+    },
+    "settings": "設定",
+    "close": "閉じる",
+    "closeMenu": "メニューを閉じる"
+  },
+  "notifications": {
+    "backA11y": "戻る",
+    "empty": "通知はありません",
+    "errorLoad": "通知を読み込めませんでした",
+    "detailTitle": "通知の詳細",
+    "detailSentAt": "送信日時 {{date}}",
+    "detailSectionMessage": "本文",
+    "detailSectionData": "付属データ",
+    "detailType": "種別",
+    "detailCategory": "カテゴリ",
+    "detailSeverity": "重要度",
+    "detailInternalType": "内部タイプ",
+    "detailActionUrl": "リンク",
+    "detailReadState": "既読",
+    "detailReadYes": "はい",
+    "detailReadNo": "いいえ",
+    "time": {
+      "justNow": "たった今",
+      "minutesAgo": "{{count}}分前",
+      "hoursAgo": "{{count}}時間前",
+      "daysAgo": "{{count}}日前"
+    }
+  },
+  "language": {
+    "title": "言語",
+    "vi": "ベトナム語",
+    "en": "英語",
+    "ja": "日本語"
+  },
+  "drawer": {
+    "closeMenu": "メニューを閉じる",
+    "logout": "ログアウト",
+    "themeA11yLight": "ライトモードに切り替え",
+    "themeA11yDark": "ダークモードに切り替え",
+    "themeHintDark": "ダーク — タップでライト",
+    "themeHintLight": "ライト — タップでダーク",
+    "loadingShops": "店舗を読み込み中…",
+    "retry": "再試行"
+  },
+  "warehousePicker": {
+    "title": "倉庫を選択",
+    "updating": "更新中...",
+    "allRowTitle": "{{sellerName}} — {{all}}",
+    "noFilterSubtitle": "倉庫で絞り込まない"
+  },
+  "common": {
+    "dash": "—",
+    "yes": "はい",
+    "no": "いいえ",
+    "retry": "再試行",
+    "back": "戻る",
+    "import": "取り込み",
+    "done": "完了",
+    "refreshA11y": "更新",
+    "moreProducts": "他 +{{count}} 商品",
+    "listToolbar": {
+      "advancedFilter": "詳細フィルター",
+      "filter": "フィルター",
+      "refreshA11y": "更新",
+      "clearFilters": "フィルターをクリア",
+      "itemCount": "{{count}} 件"
+    },
+    "listRefreshing": "更新中…",
+    "view": "表示",
+    "quickActions": "クイック操作",
+    "errorTitle": "エラー",
+    "notice": "お知らせ",
+    "missingInfo": "情報が不足しています",
+    "saved": "保存しました",
+    "genericFailure": "操作を完了できませんでした。",
+    "cancel": "キャンセル",
+    "confirm": "確認"
+  },
+  "orders": {
+    "actions": {
+      "createOrderPlus": "+ 注文を作成",
+      "createOrderShort": "注文を作成"
+    },
+    "list": {
+      "scopeNamed": "範囲: {{name}}",
+      "scopeNumbered": "範囲: 店舗 #{{id}}",
+      "statPending": "確認待ち",
+      "statProcessing": "処理中",
+      "statDelivered": "配達済み",
+      "statHasIssue": "問題あり",
+      "clearFilters": "リストの絞り込みを解除",
+      "sectionList": "一覧",
+      "searchPlaceholder": "注文番号・顧客で検索…",
+      "advancedFilter": "詳細フィルター",
+      "refreshA11y": "更新",
+      "itemCount": "{{count}} 件",
+      "moreProducts": "×{{count}} 商品"
+    },
+    "advFilter": {
+      "all": "すべて",
+      "title": "詳細フィルター",
+      "subtitle": "ステータス・支払い・作成日で注文一覧を絞り込みます。",
+      "activeNone": "条件が選択されていません。下の項目をタップして設定してください。",
+      "activeSome": "{{count}} 件の条件を選択中 — 適用で一覧を再読み込みします。",
+      "sectionMainTitle": "ステータスと支払い",
+      "sectionMainSub": "処理段階・支払いステータス・問題フラグで絞り込みます。",
+      "fieldStatus": "ステータス",
+      "fieldPayment": "支払い",
+      "fieldIssue": "問題のある注文",
+      "sectionDateTitle": "注文作成日時",
+      "sectionDateSub": "任意 — この期間に作成された注文のみ表示します。",
+      "reset": "リセット",
+      "resetA11y": "フィルターをリセット",
+      "apply": "適用",
+      "pickerStatus": "ステータス",
+      "pickerPayment": "支払い",
+      "pickerIssue": "問題のある注文",
+      "closeOverlayA11y": "オーバーレイを閉じる",
+      "closeA11y": "閉じる",
+      "dateInvalidTitle": "日付が無効です",
+      "dateInvalidBody": "「開始日」は「終了日」以前である必要があります。",
+      "payment": {
+        "pending": "未払い",
+        "partial_paid": "一部支払い",
+        "paid": "支払済み",
+        "voided": "無効",
+        "pending_refund": "返金待ち",
+        "refunded": "返金済み"
+      },
+      "apiStatus": {
+        "pending_transfer": "転送待ち",
+        "transferring": "転送中",
+        "transfer_failed": "転送失敗",
+        "ready_to_ship": "出荷準備完了",
+        "shipped": "配送中"
+      }
+    },
+    "progressTitle": "進捗",
+    "progressStep": {
+      "created": "注文作成済み",
+      "confirmed": "確認済み",
+      "packing": "梱包中",
+      "readyToShip": "出荷準備完了",
+      "shipped": "発送済み",
+      "delivered": "配達完了"
+    },
+    "quickDockTitle": "クイック操作",
+    "overviewTitle": "注文概要",
+    "overviewCustomer": "顧客",
+    "overviewPhone": "電話",
+    "overviewOrderDate": "注文日",
+    "overviewCreator": "作成者",
+    "overviewSubtotal": "小計",
+    "overviewShipping": "送料",
+    "overviewTotal": "合計",
+    "overviewCod": "代金引換",
+    "quickActions": {
+      "viewInvoice": "請求書を見る",
+      "viewPayment": "支払いを見る",
+      "markIssue": "問題をフラグ",
+      "cancelPacking": "梱包をキャンセル",
+      "cancelOrder": "注文をキャンセル",
+      "resolveIssue": "問題を解決",
+      "confirmOrder": "注文を確認"
+    },
+    "paymentMethod": {
+      "cod": "代金引換（COD）",
+      "bankTransfer": "銀行振込"
+    },
+    "shipPayer": {
+      "buyer": "購入者",
+      "seller": "販売者"
+    },
+    "status": {
+      "pending": "処理待ち",
+      "confirmed": "確認済み",
+      "packing": "梱包中",
+      "ready_to_ship": "出荷準備完了",
+      "shipped": "配送中",
+      "transferring": "転送中",
+      "pending_transfer": "転送待ち",
+      "transfer_failed": "転送失敗",
+      "delivered": "配達済み",
+      "cancelled": "キャンセル",
+      "returned": "返品済み",
+      "partially_returned": "一部返品",
+      "partial_return": "一部返品",
+      "fully_returned": "全額返品"
+    },
+    "historyMilestone": {
+      "created": "注文作成済み",
+      "confirmed": "確認済み",
+      "packed": "梱包済み",
+      "ready": "出荷準備完了",
+      "shipped": "発送済み",
+      "delivered": "配達完了"
+    },
+    "history": {
+      "progressMeta": "進捗 {{current}}/{{total}}（注文ステータス別）",
+      "progressUnknown": "進捗 —（注文ステータス別）"
+    },
+    "screen": {
+      "breadcrumb": "注文"
+    },
+    "pill": {
+      "row": {
+        "cancelled": "キャンセル",
+        "pending": "確認待ち",
+        "confirmed": "確認済み",
+        "packing": "梱包中",
+        "shipping": "配送中",
+        "ready": "出荷準備完了",
+        "delivered": "配達済み",
+        "transferring": "転送中",
+        "pending_transfer": "転送待ち",
+        "transfer_failed": "転送失敗",
+        "returned": "返品済み",
+        "partially_returned": "一部返品"
+      },
+      "payment": {
+        "disabled": "無効",
+        "pending_payment": "未払い",
+        "paid": "支払済み",
+        "partial_payment": "一部支払い",
+        "pending_refund": "返金待ち",
+        "refunded": "返金済み"
+      }
+    },
+    "ui": {
+      "heroTotal": "注文合計",
+      "orderPlaced": "注文日 {{date}}",
+      "issueFlagBanner": "この注文に問題フラグが付いています。詳細タブを確認するか、必要に応じてWebで対応してください。",
+      "packingBanner": "この注文は倉庫で梱包中です。必要に応じてWebで詳細を確認してください。",
+      "markIssueTitle": "問題をフラグ",
+      "markIssueHint": "この注文の問題を簡潔に記入してください。",
+      "markIssuePlaceholder": "例：欠品、住所誤り…",
+      "send": "送信",
+      "close": "閉じる",
+      "cancelPackingTitle": "梱包をキャンセル",
+      "cancelPackingHint": "理由を入力してください。注文は確認待ちに戻ります。",
+      "cancelPackingPlaceholder": "例：在庫不足、修正が必要…",
+      "cancelOrderTitle": "注文をキャンセル",
+      "cancelOrderHint": "理由を入力してください。注文はキャンセルされ、アプリから元に戻せません。",
+      "cancelOrderPlaceholder": "例：顧客都合、重複注文…",
+      "cancelOrderButton": "注文をキャンセル"
+    },
+    "detail": {
+      "orderDetailTitle": "注文の詳細",
+      "orderCode": "注文番号",
+      "status": "ステータス",
+      "payment": "支払い",
+      "paymentMethod": "支払い方法",
+      "channelWarehouseTitle": "販売チャネルと倉庫",
+      "shop": "店舗",
+      "seller": "販売者",
+      "packingWarehouse": "梱包倉庫",
+      "shippingWarehouse": "出荷倉庫",
+      "shippingInfoTitle": "配送情報",
+      "shipPayer": "送料負担者",
+      "shippingFee": "配送料",
+      "collectCod": "代金引換",
+      "relatedOrdersTitle": "関連注文",
+      "packingOrder": "梱包オーダー",
+      "outboundOrder": "出庫伝票",
+      "productsOverviewTitle": "商品概要",
+      "totalProducts": "商品数",
+      "totalQty": "合計数量",
+      "itemsTotal": "商品合計",
+      "productListTitle": "明細一覧",
+      "colHash": "#",
+      "colProduct": "商品",
+      "colQty": "数量",
+      "colUnitPrice": "単価",
+      "noProductLines": "明細がありません。",
+      "paymentOverviewTitle": "支払い概要",
+      "totalAmount": "合計",
+      "paid": "支払済み",
+      "remaining": "残額",
+      "paymentApiHint": "API連携後に追加の支払い操作が表示されます。",
+      "paymentHistoryTitle": "支払い履歴",
+      "noPaymentsTitle": "支払いなし",
+      "noPaymentsSub": "この注文の支払い記録はありません。",
+      "shippingTitle": "配送",
+      "trackingNumber": "追跡番号",
+      "carrier": "配送業者",
+      "carrierFeeShort": "配送料",
+      "weight": "重量",
+      "carrierStatus": "配送ステータス",
+      "recipientTitle": "受取人情報",
+      "fullName": "氏名",
+      "phoneShort": "電話",
+      "address": "住所",
+      "deliveryProgressTitle": "配送の進捗",
+      "deliveryProgressHint": "パートナーからの追跡詳細はAPI提供後に表示されます。",
+      "currentStatusTitle": "現在のステータス",
+      "historyTitle": "履歴",
+      "milestonesTitle": "主なマイルストーン",
+      "eventCol": "イベント",
+      "dateCol": "日付",
+      "activityTitle": "アクティビティ",
+      "activityCreated": "販売注文を作成 — {{date}}",
+      "activityLogHint": "詳細ログ（ステータス変更、操作者など）はアクティビティログAPI利用時に表示されます。",
+      "activityCount": "{{count}}件",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "ログがありません",
+      "activityEmptyHint": "この注文の操作はここに表示されます。",
+      "activityLoadFailed": "活動ログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityOrderCode": "注文 {{code}}",
+      "activityItemsCount": "{{count}} 商品",
+      "activityTotal": "合計 {{amount}}",
+      "activityAutoConfirmed": "自動確認",
+      "activityDescriptions": {
+        "sale_order_created": "注文を作成",
+        "sale_order_confirmed": "注文を確認",
+        "sale_order_cancelled": "注文をキャンセル",
+        "sale_order_packed": "梱包",
+        "sale_order_shipped": "発送",
+        "sale_order_delivered": "配達完了",
+        "sale_order_issue_marked": "問題をマーク",
+        "sale_order_issue_resolved": "問題を解決",
+        "sale_order_updated": "注文を更新",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "confirmed": "確認",
+        "cancelled": "キャンセル"
+      }
+    },
+    "errors": {
+      "loadDetail": "注文を読み込めませんでした"
+    },
+    "alert": {
+      "resolveSuccess": "問題を解決しました",
+      "confirmSuccess": "注文を確認しました",
+      "confirmOrderTitle": "注文を確認",
+      "confirmOrderBody": "注文は梱包中に移ります。続行しますか？",
+      "resolveTitle": "問題を解決",
+      "resolveBody": "問題が解決され、注文の問題フラグを解除してよいですか？",
+      "notImplemented": "この機能はアプリではまだ利用できません。",
+      "issueNeedDescription": "問題の内容を入力してください。",
+      "issueSavedTitle": "保存しました",
+      "issueSavedBody": "この注文に問題フラグを付けました。",
+      "cancelPackingNeedReason": "梱包キャンセルの理由を入力してください。",
+      "cancelPackingSuccess": "梱包をキャンセルしました",
+      "cancelOrderNeedReason": "注文キャンセルの理由を入力してください。",
+      "cancelOrderSuccess": "注文をキャンセルしました",
+      "invoiceNotFound": "この注文に関連する請求書が見つかりません。",
+      "invoiceOrPaymentNotFound": "この注文の請求書または支払い取引が見つかりません。",
+      "paymentNotFound": "この注文の支払い取引はまだありません。"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "おはようございます",
+      "afternoon": "こんにちは",
+      "evening": "こんばんは"
+    },
+    "subtitleAdmin": "選択した期間のシステム概要です。",
+    "subtitleSeller": "本日の活動の概要です。",
+    "customRange": {
+      "title": "期間を指定",
+      "hint": "日付は YYYY-MM-DD 形式で入力",
+      "from": "開始日",
+      "to": "終了日",
+      "invalidFrom": "開始日が無効です (YYYY-MM-DD)",
+      "invalidTo": "終了日が無効です (YYYY-MM-DD)",
+      "invalidRange": "期間を処理できません",
+      "backdropClose": "閉じる"
+    },
+    "range": {
+      "7d": "過去7日間",
+      "30d": "過去30日間",
+      "thisMonth": "今月",
+      "lastMonth": "先月",
+      "custom": "カスタム"
+    },
+    "errors": {
+      "loadAdmin": "管理ダッシュボードを読み込めませんでした",
+      "loadSeller": "販売ダッシュボードを読み込めませんでした"
+    },
+    "noData": "データがありません",
+    "noOrderData": "注文データがありません。",
+    "admin": {
+      "totalSellers": "販売者合計",
+      "totalOrders": "注文合計",
+      "totalRevenue": "売上合計",
+      "totalSkus": "SKU合計",
+      "ordersByStatus": "ステータス別注文",
+      "systemOverview": "システム概要",
+      "warehouses": "倉庫",
+      "sellers": "販売者",
+      "fulfillmentRate": "完了率",
+      "avgOrderValue": "平均注文額",
+      "activeOfTotal": "稼働 {{active}} / 合計 {{total}}",
+      "pctComplete": "{{pct}}% 完了",
+      "allSellersHint": "全販売者",
+      "productCountHint": "{{count}} 商品",
+      "cancelledInPeriod": "この期間にキャンセルされた注文 {{count}} 件"
+    },
+    "sellerTile": {
+      "awaiting": "処理待ち",
+      "inProgress": "処理中",
+      "readyToShip": "出荷準備完了",
+      "revenue": "売上合計"
+    },
+    "seller": {
+      "ordersByStatus": "ステータス別注文",
+      "salesOverview": "販売概要",
+      "totalOrders": "注文合計",
+      "fulfillmentRate": "完了率",
+      "inventoryValue": "在庫評価額",
+      "totalSkuItems": "SKU / 品目合計",
+      "cancelledInPeriod": "この期間にキャンセルされた注文 {{count}} 件"
+    },
+    "adminQuick": {
+      "sellers": "販売者",
+      "warehouses": "倉庫",
+      "users": "ユーザー",
+      "activityLog": "アクティビティログ"
+    },
+    "footerHome": "ホーム",
+    "supportTitle": "サポート",
+    "supportBody": "システム管理者またはカスタマーサポートにお問い合わせください。",
+    "supportLink": "サポート",
+    "warehouseMgr": {
+      "loadError": "倉庫ダッシュボードを読み込めませんでした。",
+      "subtitle": "本日の活動概要です。",
+      "pendingTasks": "未処理の作業",
+      "todayActivity": "本日の活動",
+      "inventoryTitle": "在庫概要",
+      "quickActions": "クイック操作",
+      "quick": {
+        "inbound": "入庫伝票",
+        "outbound": "出庫伝票"
+      },
+      "kpi": {
+        "awaitingInbound": "入庫待ち",
+        "awaitingPacking": "梱包待ち",
+        "awaitingOutbound": "出庫待ち",
+        "completedToday": "本日完了"
+      },
+      "chart": {
+        "inbound": "入庫",
+        "packing": "梱包",
+        "outbound": "出庫"
+      },
+      "activity": {
+        "inboundDone": "入庫完了",
+        "outboundDone": "出庫完了",
+        "delivered": "配送完了"
+      },
+      "inv": {
+        "totalSku": "SKU合計",
+        "available": "利用可能",
+        "reserved": "引当済",
+        "damaged": "破損"
+      }
+    }
+  },
+  "financeInvoice": {
+    "rowStatus": {
+      "pending": "未払い",
+      "partial": "一部支払済",
+      "paid": "支払済",
+      "overdue": "期限超過",
+      "draft": "下書き",
+      "cancelled": "キャンセル"
+    },
+    "detail": {
+      "breadcrumb": "請求書",
+      "loadFailed": "請求書を読み込めませんでした",
+      "billingPeriod": "対象期間:",
+      "dueDate": "支払期限:",
+      "bannerOverdue": "支払期限を過ぎています。早めに対応してください。",
+      "bannerPending": "未払いの請求書です。期限までにお支払いください。",
+      "summaryTitle": "集計",
+      "subtotal": "税抜小計",
+      "taxLine": "税金 ({{pct}}%)",
+      "grandTotal": "合計",
+      "settlementNote": "お支払いは精算で管理されます",
+      "settlementAlertTitle": "精算",
+      "settlementAlertBody": "精算参照 {{ref}}。",
+      "settlementLink": "精算を見る",
+      "settlementLinkWithRef": "精算を見る ({{ref}})"
+    }
+  },
+  "warehouseOutbound": {
+    "status": {
+      "pending": "保留中",
+      "picking": "ピッキング中",
+      "ready": "出荷準備完了",
+      "completed": "完了",
+      "cancelled": "キャンセル"
+    },
+    "statusOther": "その他",
+    "type": {
+      "sale": "販売",
+      "transfer": "倉庫間移動",
+      "return": "返品",
+      "disposal": "廃棄"
+    },
+    "typeFallback": "出庫",
+    "linked": {
+      "saleOrder": "注文 {{orderNumber}}",
+      "transfer": "移動 {{orderNumber}}",
+      "source": "元 {{orderNumber}}",
+      "sourceWarehouse": "元 {{orderNumber}} · {{warehouse}}"
+    },
+    "listQty": {
+      "picked": "{{picked}}/{{total}} 個",
+      "linesOnly": "{{count}} 行"
+    },
+    "detail": {
+      "breadcrumb": "出庫",
+      "fallbackTitle": " · 詳細",
+      "loadFailed": "出庫伝票を読み込めませんでした",
+      "warehouseWebOnly": "倉庫作業（ピッキング・出庫など）は現在、倉庫管理のWebで行います。",
+      "activityTitle": "アクティビティログ",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "ログがありません",
+      "activityEmptyHint": "この出庫伝票の操作はここに表示されます。",
+      "activityLoadFailed": "アクティビティログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityOrderCode": "参照 {{code}}",
+      "activityDescriptions": {
+        "outbound_order_created": "出庫伝票を作成",
+        "outbound_order_updated": "出庫伝票を更新",
+        "outbound_order_cancelled": "出庫伝票をキャンセル",
+        "outbound_order_picked": "出庫ピッキング完了",
+        "outbound_order_completed": "出庫伝票を完了",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "cancelled": "キャンセル"
+      }
+    },
+    "banner": {
+      "pending": "伝票は保留中です。ピッキング・出庫は倉庫管理のWebで行います。",
+      "picking": "この伝票のピッキングを実施中です。",
+      "ready": "ピッキング完了 — 出荷・出庫の準備ができています。",
+      "completed": "この出庫伝票は完了しました。",
+      "cancelled": "この伝票はキャンセルされました。"
+    },
+    "create": {
+      "modalTitle": "新規出庫伝票を作成",
+      "modalSubtitle": "手動作成: 在庫移動（調整）、仕入先返品、販売者返品、廃棄 など",
+      "selectType": "出庫タイプ",
+      "typeBalanceTransfer": "倉庫間移動（調整）",
+      "typeDisposal": "廃棄",
+      "typeReturnSupplier": "仕入先返品",
+      "typeReturnSeller": "販売者返品",
+      "typeSale": "販売出庫",
+      "typeTransferSale": "倉庫間移動（販売）",
+      "warehouse": "倉庫を選択",
+      "destinationWarehouse": "移動先倉庫",
+      "note": "メモ",
+      "addProduct": "商品を追加",
+      "searchPlaceholder": "商品を検索…",
+      "emptyLines": "商品がまだありません。検索して出庫伝票に追加してください。",
+      "cancel": "キャンセル",
+      "submit": "出庫伝票を作成",
+      "successTitle": "作成しました",
+      "successBody": "出庫伝票を作成しました。",
+      "needWarehouse": "出庫元倉庫を選択してください。",
+      "needDestination": "出庫元と異なる移動先倉庫を選択してください。",
+      "needItems": "数量が0より大きい商品を1件以上追加してください。",
+      "openCreate": "+ 伝票を作成",
+      "qty": "数量",
+      "sectionLabel": "出庫"
+    },
+    "meta": {
+      "pickProgress": "ピック進捗: {{pct}}%",
+      "requiresPacking": "梱包あり"
+    },
+    "footer": {
+      "overviewTitle": "概要",
+      "lineItems": "明細行",
+      "linesCount": "{{count}} 行",
+      "quantity": "数量",
+      "pickProgress": "ピッキング進捗",
+      "quickDockTitle": "クイック操作",
+      "actionPick": "ピック",
+      "actionShip": "出庫・出荷",
+      "actionCancel": "伝票取消"
+    }
+  },
+  "warehouseInbound": {
+    "status": {
+      "pending": "保留中",
+      "receiving": "入庫中",
+      "completed": "完了",
+      "cancelled": "キャンセル"
+    },
+    "statusOther": "その他",
+    "type": {
+      "purchase": "仕入",
+      "return": "返品入庫",
+      "transfer": "倉庫間移動",
+      "adjustment": "調整"
+    },
+    "typeFallback": "入庫",
+    "linked": {
+      "purchase": "発注 {{orderNumber}}",
+      "sale": "受注 {{orderNumber}}",
+      "transfer": "移動 {{orderNumber}}"
+    },
+    "listQty": {
+      "received": "{{rec}}/{{exp}} 受入",
+      "linesOnly": "{{count}} 行",
+      "damaged": "破損: {{count}}"
+    },
+    "detail": {
+      "breadcrumb": "入庫",
+      "fallbackTitle": " · 詳細",
+      "loadFailed": "入庫伝票を読み込めませんでした",
+      "warehouseWebOnly": "倉庫作業（入庫・完了など）は現在、倉庫管理のWebで行います。",
+      "activityTitle": "アクティビティログ",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "ログがありません",
+      "activityEmptyHint": "この入庫伝票の操作はここに表示されます。",
+      "activityLoadFailed": "アクティビティログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityOrderCode": "参照 {{code}}",
+      "activityDescriptions": {
+        "inbound_order_created": "入庫伝票を作成",
+        "inbound_order_updated": "入庫伝票を更新",
+        "inbound_order_cancelled": "入庫伝票をキャンセル",
+        "inbound_order_received": "入庫受領",
+        "inbound_order_completed": "入庫伝票を完了",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "cancelled": "キャンセル"
+      }
+    },
+    "banner": {
+      "pending": "伝票は保留中です。入庫・更新は倉庫管理のWebで行います。",
+      "receiving": "在庫への入庫を実施中です。",
+      "completed": "この入庫伝票は完了しました。",
+      "cancelled": "この入庫伝票はキャンセルされました。"
+    },
+    "meta": {
+      "receiveProgress": "入庫進捗: {{pct}}%"
+    },
+    "footer": {
+      "overviewTitle": "概要",
+      "inboundLines": "入庫行",
+      "linesCount": "{{count}} 行",
+      "quantity": "数量",
+      "receiveProgress": "入庫進捗",
+      "quickDockTitle": "クイック操作",
+      "actionReceive": "入庫受入",
+      "actionComplete": "完了",
+      "actionCancel": "キャンセル"
+    }
+  },
+  "warehousePacking": {
+    "detail": {
+      "activityTitle": "アクティビティログ",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "ログがありません",
+      "activityEmptyHint": "この梱包オーダーの操作はここに表示されます。",
+      "activityLoadFailed": "アクティビティログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityOrderCode": "参照 {{code}}",
+      "activityDescriptions": {
+        "packing_order_created": "梱包オーダーを作成",
+        "packing_order_updated": "梱包オーダーを更新",
+        "packing_order_cancelled": "梱包オーダーをキャンセル",
+        "packing_order_packed": "梱包完了",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "cancelled": "キャンセル"
+      }
+    }
+  },
+  "customers": {
+    "detail": {
+      "activityTitle": "アクティビティログ",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "ログがありません",
+      "activityEmptyHint": "この顧客の操作はここに表示されます。",
+      "activityLoadFailed": "アクティビティログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityName": "名称 {{name}}",
+      "activityDescriptions": {
+        "customer_created": "顧客を作成",
+        "customer_updated": "顧客を更新",
+        "customer_deleted": "顧客を削除",
+        "customer_activated": "顧客を有効化",
+        "customer_deactivated": "顧客を無効化",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "activated": "有効化",
+        "deactivated": "無効化"
+      }
+    }
+  },
+  "suppliers": {
+    "detail": {
+      "activityTitle": "アクティビティログ",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "ログがありません",
+      "activityEmptyHint": "この仕入先の操作はここに表示されます。",
+      "activityLoadFailed": "アクティビティログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityName": "名称 {{name}}",
+      "activityDescriptions": {
+        "supplier_created": "仕入先を作成",
+        "supplier_updated": "仕入先を更新",
+        "supplier_deleted": "仕入先を削除",
+        "supplier_activated": "仕入先を有効化",
+        "supplier_deactivated": "仕入先を無効化",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "activated": "有効化",
+        "deactivated": "無効化"
+      }
+    }
+  },
+  "purchaseOrders": {
+    "detail": {
+      "activityTitle": "アクティビティ",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "アクティビティがありません",
+      "activityEmptyHint": "この発注書の操作はここに表示されます。",
+      "activityLoadFailed": "アクティビティログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityOrderCode": "コード {{code}}",
+      "activityItemsCount": "{{count}} 商品",
+      "activityTotal": "合計 {{amount}}",
+      "activityDescriptions": {
+        "purchase_order_created": "発注書を作成",
+        "purchase_order_updated": "発注書を更新",
+        "purchase_order_cancelled": "発注書をキャンセル",
+        "purchase_order_approved": "発注書を承認",
+        "purchase_order_received": "発注書の入庫",
+        "purchase_order_completed": "発注書を完了",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "cancelled": "キャンセル"
+      }
+    }
+  },
+  "shops": {
+    "detail": {
+      "activityTitle": "アクティビティログ",
+      "activityLoading": "ログを読み込み中…",
+      "activityEmptyTitle": "ログがありません",
+      "activityEmptyHint": "この店舗の操作はここに表示されます。",
+      "activityLoadFailed": "アクティビティログを読み込めませんでした",
+      "activityFallback": "アクティビティ",
+      "activityShopName": "名称 {{name}}",
+      "activityPlatform": "プラットフォーム {{platform}}",
+      "activityPlatformShopId": "Shop ID {{id}}",
+      "activityDescriptions": {
+        "shop_created": "店舗を作成",
+        "shop_updated": "店舗を更新",
+        "shop_deleted": "店舗を削除",
+        "shop_activated": "店舗を有効化",
+        "shop_deactivated": "店舗を無効化",
+        "created": "作成",
+        "updated": "更新",
+        "deleted": "削除",
+        "activated": "有効化",
+        "deactivated": "無効化"
+      }
+    }
+  }
+}

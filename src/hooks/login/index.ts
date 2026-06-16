@@ -1,1 +1,1 @@
-export { useLoginForm, type UseLoginFormResult } from './useLoginForm';
+export { useSellerLoginForm, type UseSellerLoginFormResult } from './useSellerLoginForm';

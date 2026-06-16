@@ -1,0 +1,924 @@
+{
+  "auth": {
+    "welcomeTitle": "Chào mừng đến với\nTOSOL Fulfillment!",
+    "welcomeSubtitle": "Vui lòng đăng nhập để tiếp tục",
+    "email": "Email",
+    "emailPlaceholder": "Địa chỉ email",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Mật khẩu",
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "signIn": "Đăng nhập",
+    "loginFailed": "Đăng nhập thất bại",
+    "forgotPasswordTitle": "Quên mật khẩu",
+    "forgotPasswordBody": "Chức năng đang phát triển",
+    "a11yThemeToLight": "Chuyển giao diện sáng",
+    "a11yThemeToDark": "Chuyển giao diện tối"
+  },
+  "role": {
+    "admin": "Quản trị",
+    "accountant": "Kế toán",
+    "seller": "Nhà bán",
+    "warehouse_manager": "Quản lý kho",
+    "unknown": "Nhà bán",
+    "member": "Thành viên"
+  },
+  "nav": {
+    "group": {
+      "category": "Danh mục",
+      "finance": "Tài chính",
+      "sales": "Bán hàng",
+      "home": "Trang chủ",
+      "goodsSeller": "Hàng hóa",
+      "warehouseMgmt": "Quản lý kho"
+    },
+    "drawer": {
+      "dashboard": "Dashboard",
+      "orders": "Đơn hàng",
+      "shipping": "Đơn vận chuyển",
+      "returns": "Trả hàng",
+      "products": "Sản phẩm",
+      "priceLists": "Bảng giá",
+      "suppliers": "Nhà cung cấp",
+      "customers": "Khách hàng",
+      "myInventory": "Quản lý tồn kho",
+      "myInventorySeller": "Tồn kho của tôi",
+      "purchase": "Mua hàng",
+      "comboPack": "Đóng gói combo",
+      "stockAlerts": "Cảnh báo tồn kho",
+      "locations": "Vị trí kho",
+      "layoutMap": "Sơ đồ kho",
+      "invoices": "Hóa đơn",
+      "settlements": "Quyết toán",
+      "payments": "Thanh toán",
+      "paymentPortal": "Cổng thanh toán",
+      "gatewayAdmin": "Giao dịch cổng TT",
+      "gatewaySeller": "Cổng giao dịch TT",
+      "servicePricing": "Bảng giá dịch vụ",
+      "shops": "Cửa hàng",
+      "bankAccounts": "Tài khoản ngân hàng",
+      "carriers": "Đối tác vận chuyển",
+      "webhooks": "Webhooks",
+      "staff": "Nhân viên",
+      "adminUsers": "Người dùng",
+      "adminSellers": "Người bán",
+      "adminWarehouses": "Kho hàng",
+      "adminCurrencies": "Tiền tệ",
+      "activityLog": "Nhật ký hoạt động",
+      "packing": "Đóng gói",
+      "outbound": "Xuất kho",
+      "inbound": "Nhập kho",
+      "transfer": "Chuyển kho",
+      "shipTosolConfig": "Cấu hình TOSOL",
+      "shipPricing": "Bảng giá vận chuyển",
+      "shopFallback": "Cửa hàng",
+      "shopNamed": "Cửa hàng #{{id}}"
+    },
+    "tab": {
+      "seller": {
+        "orders": "Bán hàng",
+        "catalog": "Danh mục",
+        "dash": "Dashboard",
+        "goods": "Hàng hóa",
+        "finance": "Tài chính"
+      },
+      "admin": {
+        "orders": "Bán Hàng",
+        "catalog": "Danh Mục",
+        "dash": "Dashboard",
+        "goods": "Quản Lý Kho",
+        "finance": "Tài Chính"
+      },
+      "warehouseManager": {
+        "shipping": "Đơn vận chuyển"
+      }
+    },
+    "bottomDefault": {
+      "orders": "Bán hàng",
+      "catalog": "Danh mục",
+      "dash": "Dashboard",
+      "goods": "Quản lý kho",
+      "finance": "Tài chính"
+    },
+    "drawerMenu": {
+      "dashboard": "Dashboard",
+      "sales": "Bán hàng",
+      "category": "Danh mục",
+      "goods": "Hàng hóa",
+      "finance": "Tài chính",
+      "settings": "Cài đặt",
+      "allOrders": "Tất cả đơn hàng",
+      "shipments": "Đơn vận chuyển",
+      "returns": "Trả hàng"
+    }
+  },
+  "header": {
+    "welcomeBack": "Chào mừng trở lại,",
+    "warehouseAll": "Tất cả kho",
+    "userDefault": "Người dùng",
+    "warehouseDefault": "Kho hàng",
+    "choose": "Chọn",
+    "brandA11y": "TOSOL — Cài đặt",
+    "notificationsA11y": "Thông báo",
+    "notificationsCount": "{{count}} thông báo",
+    "accountA11y": "Tài khoản — {{name}}",
+    "language": "Ngôn ngữ",
+    "appearance": "Giao diện",
+    "themeDark": "Tối",
+    "themeLight": "Sáng",
+    "accountTitle": "Tài khoản",
+    "personalInfo": "Thông tin cá nhân",
+    "personalInfoTitle": "Thông tin cá nhân",
+    "logout": "Đăng xuất",
+    "loggingOut": "Đang đăng xuất…",
+    "fullName": "Họ tên",
+    "role": "Vai trò",
+    "organization": "Tổ chức",
+    "changePassword": "Đổi mật khẩu",
+    "notificationsTitle": "Thông báo",
+    "pushTitle": "Nhận thông báo trên thiết bị",
+    "pushSub": "Bật để nhận tin khi có đơn, cảnh báo (sẽ nối dịch vụ đẩy sau).",
+    "notifPlaceholder": "Danh sách thông báo chi tiết sẽ hiển thị tại đây khi có API.",
+    "markRead": "Đánh dấu đã đọc (xóa số trên icon)",
+    "notifToastLabel": "Hiện toast khi có thông báo",
+    "adminGroup": {
+      "management": "Quản lý",
+      "warehouse": "Kho & mua hàng",
+      "shipping": "Vận chuyển"
+    },
+    "settings": "Cài đặt",
+    "close": "Đóng",
+    "closeMenu": "Đóng menu"
+  },
+  "notifications": {
+    "backA11y": "Quay lại",
+    "empty": "Chưa có thông báo",
+    "errorLoad": "Không tải được danh sách thông báo",
+    "detailTitle": "Chi tiết thông báo",
+    "detailSentAt": "Gửi lúc {{date}}",
+    "detailSectionMessage": "Nội dung",
+    "detailSectionData": "Dữ liệu kèm theo",
+    "detailType": "Loại",
+    "detailCategory": "Danh mục",
+    "detailSeverity": "Mức độ",
+    "detailInternalType": "Mã loại",
+    "detailActionUrl": "Liên kết",
+    "detailReadState": "Đã đọc",
+    "detailReadYes": "Rồi",
+    "detailReadNo": "Chưa",
+    "time": {
+      "justNow": "Vừa xong",
+      "minutesAgo": "{{count}} phút trước",
+      "hoursAgo": "{{count}} giờ trước",
+      "daysAgo": "{{count}} ngày trước"
+    }
+  },
+  "language": {
+    "title": "Ngôn ngữ",
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "ja": "日本語"
+  },
+  "drawer": {
+    "closeMenu": "Đóng menu",
+    "logout": "Đăng xuất",
+    "themeA11yLight": "Bật chế độ sáng",
+    "themeA11yDark": "Bật chế độ tối",
+    "themeHintDark": "Đang tối — chạm để sáng",
+    "themeHintLight": "Đang sáng — chạm để tối",
+    "loadingShops": "Đang tải shop…",
+    "retry": "Thử lại"
+  },
+  "warehousePicker": {
+    "title": "Chọn kho",
+    "updating": "Đang cập nhật...",
+    "allRowTitle": "{{sellerName}} — {{all}}",
+    "noFilterSubtitle": "Không lọc theo kho"
+  },
+  "common": {
+    "dash": "—",
+    "yes": "Có",
+    "no": "Không",
+    "retry": "Thử lại",
+    "back": "Quay lại",
+    "import": "Nhập",
+    "done": "Xong",
+    "refreshA11y": "Tải lại",
+    "moreProducts": "+{{count}} sản phẩm khác",
+    "listToolbar": {
+      "advancedFilter": "Bộ lọc nâng cao",
+      "filter": "Bộ lọc",
+      "refreshA11y": "Làm mới",
+      "clearFilters": "Xóa bộ lọc",
+      "itemCount": "{{count}} mục"
+    },
+    "listRefreshing": "Đang cập nhật…",
+    "view": "Xem",
+    "quickActions": "Thao tác nhanh",
+    "errorTitle": "Lỗi",
+    "notice": "Thông báo",
+    "missingInfo": "Thiếu thông tin",
+    "saved": "Đã lưu",
+    "genericFailure": "Không thực hiện được.",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận"
+  },
+  "orders": {
+    "actions": {
+      "createOrderPlus": "+ Tạo đơn hàng",
+      "createOrderShort": "Tạo đơn"
+    },
+    "list": {
+      "scopeNamed": "Phạm vi: {{name}}",
+      "scopeNumbered": "Phạm vi: Cửa hàng #{{id}}",
+      "statPending": "Chờ xác nhận",
+      "statProcessing": "Đang xử lý",
+      "statDelivered": "Đã giao",
+      "statHasIssue": "Có vấn đề",
+      "clearFilters": "Bỏ lọc danh sách",
+      "sectionList": "Danh sách",
+      "searchPlaceholder": "Tìm theo mã đơn, khách hàng…",
+      "advancedFilter": "Bộ lọc nâng cao",
+      "refreshA11y": "Làm mới",
+      "itemCount": "{{count}} mục",
+      "moreProducts": "×{{count}} sản phẩm khác"
+    },
+    "advFilter": {
+      "all": "Tất cả",
+      "title": "Bộ lọc nâng cao",
+      "subtitle": "Tinh chỉnh danh sách đơn hàng theo trạng thái, thanh toán và ngày tạo.",
+      "activeNone": "Chưa chọn điều kiện. Chạm từng ô bên dưới để thiết lập lọc.",
+      "activeSome": "Đang chọn {{count}} điều kiện — bấm Áp dụng để tải lại danh sách.",
+      "sectionMainTitle": "Trạng thái & thanh toán",
+      "sectionMainSub": "Lọc theo giai đoạn xử lý đơn, trạng thái thanh toán và đơn có đánh dấu vấn đề.",
+      "fieldStatus": "Trạng thái",
+      "fieldPayment": "Thanh toán",
+      "fieldIssue": "Đơn hàng có vấn đề",
+      "sectionDateTitle": "Thời gian tạo đơn",
+      "sectionDateSub": "Tuỳ chọn — chỉ hiển thị đơn được tạo trong khoảng ngày này.",
+      "reset": "Đặt lại",
+      "resetA11y": "Đặt lại bộ lọc",
+      "apply": "Áp dụng",
+      "pickerStatus": "Trạng thái",
+      "pickerPayment": "Thanh toán",
+      "pickerIssue": "Đơn hàng có vấn đề",
+      "closeOverlayA11y": "Đóng overlay",
+      "closeA11y": "Đóng",
+      "dateInvalidTitle": "Ngày không hợp lệ",
+      "dateInvalidBody": "“Từ ngày” phải trước hoặc bằng “Đến ngày”.",
+      "payment": {
+        "pending": "Chờ thanh toán",
+        "partial_paid": "Thanh toán một phần",
+        "paid": "Đã thanh toán",
+        "voided": "Vô hiệu",
+        "pending_refund": "Chờ hoàn tiền",
+        "refunded": "Đã hoàn tiền"
+      },
+      "apiStatus": {
+        "pending_transfer": "Chờ chuyển kho",
+        "transferring": "Đang chuyển kho",
+        "transfer_failed": "Lỗi chuyển kho",
+        "ready_to_ship": "Sẵn sàng giao",
+        "shipped": "Đang giao"
+      }
+    },
+    "progressTitle": "Tiến độ",
+    "progressStep": {
+      "created": "Đã tạo đơn",
+      "confirmed": "Đã xác nhận",
+      "packing": "Đang đóng gói",
+      "readyToShip": "Sẵn sàng giao",
+      "shipped": "Đã vận chuyển",
+      "delivered": "Đã giao hàng"
+    },
+    "quickDockTitle": "Thao tác nhanh",
+    "overviewTitle": "Tổng quan đơn hàng",
+    "overviewCustomer": "Khách",
+    "overviewPhone": "Điện thoại",
+    "overviewOrderDate": "Ngày đặt",
+    "overviewCreator": "Người tạo",
+    "overviewSubtotal": "Tạm tính",
+    "overviewShipping": "Phí ship",
+    "overviewTotal": "Tổng tiền",
+    "overviewCod": "COD",
+    "quickActions": {
+      "viewInvoice": "Xem hóa đơn",
+      "viewPayment": "Xem thanh toán",
+      "markIssue": "Đánh dấu vấn đề",
+      "cancelPacking": "Hủy đóng gói",
+      "cancelOrder": "Hủy đơn",
+      "resolveIssue": "Giải quyết vấn đề",
+      "confirmOrder": "Xác nhận đơn"
+    },
+    "paymentMethod": {
+      "cod": "Thu hộ (COD)",
+      "bankTransfer": "Chuyển khoản"
+    },
+    "shipPayer": {
+      "buyer": "Người mua",
+      "seller": "Người bán"
+    },
+    "status": {
+      "pending": "Chờ xử lý",
+      "confirmed": "Đã xác nhận",
+      "packing": "Đang đóng gói",
+      "ready_to_ship": "Sẵn sàng giao",
+      "shipped": "Đang giao",
+      "transferring": "Đang chuyển",
+      "pending_transfer": "Chờ chuyển",
+      "transfer_failed": "Chuyển thất bại",
+      "delivered": "Đã giao",
+      "cancelled": "Đã hủy",
+      "returned": "Đã trả hàng",
+      "partially_returned": "Trả một phần",
+      "partial_return": "Trả một phần",
+      "fully_returned": "Trả toàn bộ"
+    },
+    "historyMilestone": {
+      "created": "Đã tạo đơn",
+      "confirmed": "Đã xác nhận",
+      "packed": "Đã đóng gói",
+      "ready": "Sẵn sàng giao",
+      "shipped": "Đã vận chuyển",
+      "delivered": "Đã giao hàng"
+    },
+    "history": {
+      "progressMeta": "Tiến độ {{current}}/{{total}} theo trạng thái đơn.",
+      "progressUnknown": "Tiến độ — theo trạng thái đơn."
+    },
+    "screen": {
+      "breadcrumb": "Đơn hàng"
+    },
+    "pill": {
+      "row": {
+        "cancelled": "Đã hủy",
+        "pending": "Chờ xác nhận",
+        "confirmed": "Đã xác nhận",
+        "packing": "Đang đóng gói",
+        "shipping": "Đang giao",
+        "ready": "Sẵn sàng giao",
+        "delivered": "Đã giao",
+        "transferring": "Đang chuyển kho",
+        "pending_transfer": "Chờ chuyển kho",
+        "transfer_failed": "Lỗi chuyển kho",
+        "returned": "Đã trả hàng",
+        "partially_returned": "Trả một phần"
+      },
+      "payment": {
+        "disabled": "Vô hiệu",
+        "pending_payment": "Chờ thanh toán",
+        "paid": "Đã thanh toán",
+        "partial_payment": "Thanh toán một phần",
+        "pending_refund": "Chờ hoàn tiền",
+        "refunded": "Đã hoàn tiền"
+      }
+    },
+    "ui": {
+      "heroTotal": "Tổng đơn",
+      "orderPlaced": "Đặt {{date}}",
+      "issueFlagBanner": "Đơn đang được đánh dấu có vấn đề. Kiểm tra chi tiết tab và xử lý trên web nếu cần.",
+      "packingBanner": "Đơn hàng đang được đóng gói tại kho. Theo dõi chi tiết trên web nếu cần.",
+      "markIssueTitle": "Đánh dấu vấn đề",
+      "markIssueHint": "Mô tả ngắn gọn vấn đề với đơn hàng này.",
+      "markIssuePlaceholder": "Ví dụ: Thiếu hàng, sai địa chỉ…",
+      "send": "Gửi",
+      "close": "Đóng",
+      "cancelPackingTitle": "Hủy đóng gói",
+      "cancelPackingHint": "Nhập lý do hủy đóng gói. Đơn sẽ về trạng thái chờ xác nhận.",
+      "cancelPackingPlaceholder": "Ví dụ: Thiếu hàng, cần chỉnh lại…",
+      "cancelOrderTitle": "Hủy đơn",
+      "cancelOrderHint": "Nhập lý do hủy. Đơn sẽ chuyển sang trạng thái đã hủy và không thể hoàn tác từ ứng dụng.",
+      "cancelOrderPlaceholder": "Ví dụ: Khách đổi ý, trùng đơn…",
+      "cancelOrderButton": "Hủy đơn"
+    },
+    "detail": {
+      "orderDetailTitle": "Chi tiết đơn hàng",
+      "orderCode": "Mã đơn",
+      "status": "Trạng thái",
+      "payment": "Thanh toán",
+      "paymentMethod": "Phương thức thanh toán",
+      "channelWarehouseTitle": "Kênh bán hàng & Thông tin kho",
+      "shop": "Cửa hàng",
+      "seller": "Nhà bán",
+      "packingWarehouse": "Kho đóng gói",
+      "shippingWarehouse": "Kho xuất hàng",
+      "shippingInfoTitle": "Thông tin vận chuyển",
+      "shipPayer": "Người trả phí ship",
+      "shippingFee": "Phí vận chuyển",
+      "collectCod": "Thu hộ COD",
+      "relatedOrdersTitle": "Đơn hàng liên quan",
+      "packingOrder": "Đơn đóng gói",
+      "outboundOrder": "Đơn xuất kho",
+      "productsOverviewTitle": "Tổng quan sản phẩm",
+      "totalProducts": "Tổng sản phẩm",
+      "totalQty": "Tổng số lượng",
+      "itemsTotal": "Tổng tiền hàng",
+      "productListTitle": "Danh sách sản phẩm",
+      "colHash": "#",
+      "colProduct": "Sản phẩm",
+      "colQty": "SL",
+      "colUnitPrice": "Đơn giá",
+      "noProductLines": "Chưa có dòng sản phẩm.",
+      "paymentOverviewTitle": "Tổng quan thanh toán",
+      "totalAmount": "Tổng tiền",
+      "paid": "Đã thanh toán",
+      "remaining": "Còn lại",
+      "paymentApiHint": "Thêm thanh toán / link thanh toán sẽ có khi tích hợp thêm API.",
+      "paymentHistoryTitle": "Lịch sử thanh toán",
+      "noPaymentsTitle": "Chưa có thanh toán",
+      "noPaymentsSub": "Chưa có thanh toán nào được ghi nhận cho đơn hàng này.",
+      "shippingTitle": "Vận chuyển",
+      "trackingNumber": "Mã vận đơn",
+      "carrier": "Đối tác VC",
+      "carrierFeeShort": "Phí VC",
+      "weight": "Trọng lượng",
+      "carrierStatus": "Trạng thái VC",
+      "recipientTitle": "Thông tin người nhận",
+      "fullName": "Họ tên",
+      "phoneShort": "SĐT",
+      "address": "Địa chỉ",
+      "deliveryProgressTitle": "Tiến trình giao hàng",
+      "deliveryProgressHint": "Chi tiết trạng thái vận đơn từ đối tác sẽ hiển thị khi API cung cấp thêm.",
+      "currentStatusTitle": "Trạng thái hiện tại",
+      "historyTitle": "Lịch sử",
+      "milestonesTitle": "Các mốc thời gian quan trọng",
+      "eventCol": "Sự kiện",
+      "dateCol": "Ngày",
+      "activityTitle": "Lịch sử hoạt động",
+      "activityCreated": "Đã tạo đơn bán hàng — {{date}}",
+      "activityLogHint": "Nhật ký chi tiết (thay đổi trạng thái, người thao tác…) sẽ hiển thị khi có API activity log.",
+      "activityCount": "{{count}} mục",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên đơn sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityOrderCode": "Mã {{code}}",
+      "activityItemsCount": "{{count}} sản phẩm",
+      "activityTotal": "Tổng {{amount}}",
+      "activityAutoConfirmed": "Tự xác nhận",
+      "activityDescriptions": {
+        "sale_order_created": "Tạo đơn hàng",
+        "sale_order_confirmed": "Xác nhận đơn hàng",
+        "sale_order_cancelled": "Hủy đơn hàng",
+        "sale_order_packed": "Đóng gói đơn hàng",
+        "sale_order_shipped": "Giao đơn hàng",
+        "sale_order_delivered": "Giao thành công",
+        "sale_order_issue_marked": "Đánh dấu vấn đề",
+        "sale_order_issue_resolved": "Xử lý xong vấn đề",
+        "sale_order_updated": "Cập nhật đơn hàng",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "confirmed": "Xác nhận",
+        "cancelled": "Hủy"
+      }
+    },
+    "errors": {
+      "loadDetail": "Không tải được đơn hàng"
+    },
+    "alert": {
+      "resolveSuccess": "Giải quyết vấn đề thành công",
+      "confirmSuccess": "Xác nhận đơn thành công",
+      "confirmOrderTitle": "Xác nhận đơn",
+      "confirmOrderBody": "Đơn sẽ chuyển sang trạng thái đang đóng gói. Tiếp tục?",
+      "resolveTitle": "Giải quyết vấn đề",
+      "resolveBody": "Xác nhận vấn đề đã được xử lý và gỡ đánh dấu vấn đề khỏi đơn hàng?",
+      "notImplemented": "Chức năng này chưa được triển khai trên ứng dụng.",
+      "issueNeedDescription": "Vui lòng nhập mô tả vấn đề.",
+      "issueSavedTitle": "Đã lưu",
+      "issueSavedBody": "Đơn hàng đã được đánh dấu có vấn đề.",
+      "cancelPackingNeedReason": "Vui lòng nhập lý do hủy đóng gói.",
+      "cancelPackingSuccess": "Hủy đóng gói thành công",
+      "cancelOrderNeedReason": "Vui lòng nhập lý do hủy đơn.",
+      "cancelOrderSuccess": "Hủy đơn thành công",
+      "invoiceNotFound": "Chưa tìm thấy hóa đơn liên quan đơn này.",
+      "invoiceOrPaymentNotFound": "Không tìm thấy hóa đơn hoặc giao dịch thanh toán cho đơn này.",
+      "paymentNotFound": "Chưa có giao dịch thanh toán cho đơn này."
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Chào buổi sáng",
+      "afternoon": "Chào buổi chiều",
+      "evening": "Chào buổi tối"
+    },
+    "subtitleAdmin": "Tổng quan hệ thống trong kỳ đã chọn.",
+    "subtitleSeller": "Đây là tổng quan hoạt động của bạn hôm nay.",
+    "customRange": {
+      "title": "Tùy chỉnh khoảng thời gian",
+      "hint": "Nhập ngày theo định dạng YYYY-MM-DD",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "invalidFrom": "Từ ngày không hợp lệ (YYYY-MM-DD)",
+      "invalidTo": "Đến ngày không hợp lệ (YYYY-MM-DD)",
+      "invalidRange": "Không thể xử lý khoảng ngày",
+      "backdropClose": "Đóng"
+    },
+    "range": {
+      "7d": "7 ngày qua",
+      "30d": "30 ngày qua",
+      "thisMonth": "Tháng này",
+      "lastMonth": "Tháng trước",
+      "custom": "Tùy chỉnh"
+    },
+    "errors": {
+      "loadAdmin": "Không tải được dashboard quản trị",
+      "loadSeller": "Không tải được dashboard bán hàng"
+    },
+    "noData": "Chưa có dữ liệu",
+    "noOrderData": "Chưa có dữ liệu đơn hàng.",
+    "admin": {
+      "totalSellers": "Tổng seller",
+      "totalOrders": "Tổng đơn hàng",
+      "totalRevenue": "Tổng doanh thu",
+      "totalSkus": "Tổng SKU",
+      "ordersByStatus": "Đơn hàng theo trạng thái",
+      "systemOverview": "Tổng quan hệ thống",
+      "warehouses": "Kho hàng",
+      "sellers": "Người bán",
+      "fulfillmentRate": "Tỷ lệ hoàn thành",
+      "avgOrderValue": "Giá trị TB/đơn",
+      "activeOfTotal": "{{active}} hoạt động / {{total}} tổng",
+      "pctComplete": "{{pct}}% hoàn thành",
+      "allSellersHint": "Tất cả seller",
+      "productCountHint": "{{count}} sản phẩm",
+      "cancelledInPeriod": "{{count}} đơn hàng đã hủy trong kỳ"
+    },
+    "sellerTile": {
+      "awaiting": "Chờ xử lý",
+      "inProgress": "Đang xử lý",
+      "readyToShip": "Sẵn sàng giao",
+      "revenue": "Tổng doanh thu"
+    },
+    "seller": {
+      "ordersByStatus": "Đơn hàng theo trạng thái",
+      "salesOverview": "Tổng quan bán hàng",
+      "totalOrders": "Tổng đơn hàng",
+      "fulfillmentRate": "Tỷ lệ hoàn thành",
+      "inventoryValue": "Giá trị tồn kho",
+      "totalSkuItems": "Tổng SKU / hàng",
+      "cancelledInPeriod": "{{count}} đơn hàng đã hủy trong kỳ"
+    },
+    "adminQuick": {
+      "sellers": "Người bán",
+      "warehouses": "Kho hàng",
+      "users": "Người dùng",
+      "activityLog": "Nhật ký hoạt động"
+    },
+    "footerHome": "Trang chủ",
+    "supportTitle": "Hỗ trợ",
+    "supportBody": "Vui lòng liên hệ quản trị hệ thống hoặc bộ phận chăm sóc khách hàng của bạn.",
+    "supportLink": "Hỗ trợ",
+    "warehouseMgr": {
+      "loadError": "Không tải được dashboard kho.",
+      "subtitle": "Đây là tổng quan hoạt động của bạn hôm nay.",
+      "pendingTasks": "Công việc chờ xử lý",
+      "todayActivity": "Hoạt động hôm nay",
+      "inventoryTitle": "Tổng quan tồn kho",
+      "quickActions": "Thao tác nhanh",
+      "quick": {
+        "inbound": "Đơn nhập kho",
+        "outbound": "Đơn xuất kho"
+      },
+      "kpi": {
+        "awaitingInbound": "Chờ nhập kho",
+        "awaitingPacking": "Chờ đóng gói",
+        "awaitingOutbound": "Chờ xuất kho",
+        "completedToday": "Hoàn thành hôm nay"
+      },
+      "chart": {
+        "inbound": "Nhập kho",
+        "packing": "Đóng gói",
+        "outbound": "Xuất kho"
+      },
+      "activity": {
+        "inboundDone": "Nhập kho hoàn thành",
+        "outboundDone": "Xuất kho hoàn thành",
+        "delivered": "Đơn đã giao"
+      },
+      "inv": {
+        "totalSku": "Tổng SKU",
+        "available": "Có sẵn",
+        "reserved": "Đã giữ",
+        "damaged": "Hư hỏng"
+      }
+    }
+  },
+  "financeInvoice": {
+    "rowStatus": {
+      "pending": "Chờ thanh toán",
+      "partial": "Thanh toán một phần",
+      "paid": "Đã thanh toán",
+      "overdue": "Quá hạn",
+      "draft": "Nháp",
+      "cancelled": "Đã hủy"
+    },
+    "detail": {
+      "breadcrumb": "Hóa đơn",
+      "loadFailed": "Không tải được hóa đơn",
+      "billingPeriod": "Kỳ:",
+      "dueDate": "Hạn thanh toán:",
+      "bannerOverdue": "Hóa đơn quá hạn thanh toán. Vui lòng xử lý sớm.",
+      "bannerPending": "Hóa đơn chờ thanh toán. Vui lòng thanh toán trước ngày đến hạn",
+      "summaryTitle": "Tổng hợp",
+      "subtotal": "Tổng trước thuế",
+      "taxLine": "Tiền thuế ({{pct}}%)",
+      "grandTotal": "Tổng cộng",
+      "settlementNote": "Thanh toán được theo dõi qua Đối soát",
+      "settlementAlertTitle": "Đối soát",
+      "settlementAlertBody": "Tham chiếu đối soát {{ref}}.",
+      "settlementLink": "Xem Đối Soát",
+      "settlementLinkWithRef": "Xem Đối Soát ({{ref}})"
+    }
+  },
+  "warehouseOutbound": {
+    "status": {
+      "pending": "Chờ xử lý",
+      "picking": "Đang lấy hàng",
+      "ready": "Sẵn sàng giao",
+      "completed": "Hoàn tất",
+      "cancelled": "Đã hủy"
+    },
+    "statusOther": "Khác",
+    "type": {
+      "sale": "Bán hàng",
+      "transfer": "Chuyển kho",
+      "return": "Trả hàng",
+      "disposal": "Thanh lý"
+    },
+    "typeFallback": "Xuất kho",
+    "linked": {
+      "saleOrder": "Đơn {{orderNumber}}",
+      "transfer": "Chuyển {{orderNumber}}",
+      "source": "Nguồn {{orderNumber}}",
+      "sourceWarehouse": "Nguồn {{orderNumber}} · {{warehouse}}"
+    },
+    "listQty": {
+      "picked": "{{picked}}/{{total}} SP",
+      "linesOnly": "{{count}} dòng hàng"
+    },
+    "detail": {
+      "breadcrumb": "Xuất kho",
+      "fallbackTitle": " · Chi tiết",
+      "loadFailed": "Không tải được phiếu xuất kho",
+      "warehouseWebOnly": "Thao tác kho (lấy hàng, xuất giao…) hiện thực hiện trên web quản lý kho.",
+      "activityTitle": "Lịch sử hoạt động",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên phiếu xuất kho sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityOrderCode": "Mã {{code}}",
+      "activityDescriptions": {
+        "outbound_order_created": "Tạo phiếu xuất kho",
+        "outbound_order_updated": "Cập nhật phiếu xuất kho",
+        "outbound_order_cancelled": "Hủy phiếu xuất kho",
+        "outbound_order_picked": "Lấy hàng phiếu xuất",
+        "outbound_order_completed": "Hoàn tất phiếu xuất kho",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "cancelled": "Hủy"
+      }
+    },
+    "banner": {
+      "pending": "Phiếu đang chờ xử lý. Thao tác lấy hàng / xuất kho thực hiện trên web quản lý kho.",
+      "picking": "Đang lấy hàng theo phiếu.",
+      "ready": "Đã lấy đủ — sẵn sàng giao / xuất.",
+      "completed": "Phiếu xuất kho đã hoàn tất.",
+      "cancelled": "Phiếu đã hủy."
+    },
+    "create": {
+      "modalTitle": "Tạo phiếu xuất kho mới",
+      "modalSubtitle": "Các loại có thể tạo thủ công: Chuyển kho (cân bằng), Trả nhà cung cấp, Trả seller, Tiêu hủy",
+      "selectType": "Chọn loại xuất kho",
+      "typeBalanceTransfer": "Chuyển kho (cân bằng)",
+      "typeDisposal": "Tiêu hủy",
+      "typeReturnSupplier": "Trả nhà cung cấp",
+      "typeReturnSeller": "Trả seller",
+      "typeSale": "Xuất bán",
+      "typeTransferSale": "Chuyển kho (bán hàng)",
+      "warehouse": "Chọn kho",
+      "destinationWarehouse": "Kho đích",
+      "note": "Ghi chú",
+      "addProduct": "Thêm sản phẩm",
+      "searchPlaceholder": "Tìm sản phẩm...",
+      "emptyLines": "Chưa thêm sản phẩm nào. Tìm và thêm sản phẩm vào phiếu xuất kho",
+      "cancel": "Hủy",
+      "submit": "Tạo phiếu xuất kho",
+      "successTitle": "Đã tạo",
+      "successBody": "Phiếu xuất kho đã được tạo.",
+      "needWarehouse": "Chọn kho nguồn.",
+      "needDestination": "Chọn kho đích khác kho nguồn.",
+      "needItems": "Thêm ít nhất một sản phẩm với số lượng > 0.",
+      "openCreate": "+ Tạo phiếu",
+      "qty": "SL",
+      "sectionLabel": "Lệnh xuất kho"
+    },
+    "meta": {
+      "pickProgress": "Tiến độ lấy: {{pct}}%",
+      "requiresPacking": "Có đóng gói"
+    },
+    "footer": {
+      "overviewTitle": "Tổng quan",
+      "lineItems": "Dòng hàng",
+      "linesCount": "{{count}} dòng",
+      "quantity": "Số lượng",
+      "pickProgress": "Tiến độ lấy hàng",
+      "quickDockTitle": "Thao tác nhanh",
+      "actionPick": "Lấy hàng",
+      "actionShip": "Xuất giao",
+      "actionCancel": "Hủy phiếu"
+    }
+  },
+  "warehouseInbound": {
+    "status": {
+      "pending": "Chờ xử lý",
+      "receiving": "Đang nhận",
+      "completed": "Hoàn tất",
+      "cancelled": "Đã hủy"
+    },
+    "statusOther": "Khác",
+    "type": {
+      "purchase": "Mua hàng",
+      "return": "Hoàn trả",
+      "transfer": "Chuyển kho",
+      "adjustment": "Điều chỉnh"
+    },
+    "typeFallback": "Nhập kho",
+    "linked": {
+      "purchase": "Đơn mua {{orderNumber}}",
+      "sale": "Đơn bán {{orderNumber}}",
+      "transfer": "Chuyển {{orderNumber}}"
+    },
+    "listQty": {
+      "received": "{{rec}}/{{exp}} nhận",
+      "linesOnly": "{{count}} dòng hàng",
+      "damaged": "Hỏng: {{count}}"
+    },
+    "detail": {
+      "breadcrumb": "Nhập kho",
+      "fallbackTitle": " · Chi tiết",
+      "loadFailed": "Không tải được phiếu nhập kho",
+      "warehouseWebOnly": "Thao tác kho (nhận hàng, hoàn tất…) hiện thực hiện trên web quản lý kho.",
+      "activityTitle": "Lịch sử hoạt động",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên phiếu nhập kho sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityOrderCode": "Mã {{code}}",
+      "activityDescriptions": {
+        "inbound_order_created": "Tạo phiếu nhập kho",
+        "inbound_order_updated": "Cập nhật phiếu nhập kho",
+        "inbound_order_cancelled": "Hủy phiếu nhập kho",
+        "inbound_order_received": "Nhận hàng phiếu nhập",
+        "inbound_order_completed": "Hoàn tất phiếu nhập kho",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "cancelled": "Hủy"
+      }
+    },
+    "banner": {
+      "pending": "Phiếu chờ xử lý. Nhận hàng và cập nhật trên web quản lý kho.",
+      "receiving": "Đang nhận hàng vào kho.",
+      "completed": "Phiếu nhập đã hoàn tất.",
+      "cancelled": "Phiếu nhập đã hủy."
+    },
+    "meta": {
+      "receiveProgress": "Tiến độ nhận: {{pct}}%"
+    },
+    "footer": {
+      "overviewTitle": "Tổng quan",
+      "inboundLines": "Dòng nhập",
+      "linesCount": "{{count}} dòng",
+      "quantity": "Số lượng",
+      "receiveProgress": "Tiến độ nhận",
+      "quickDockTitle": "Thao tác nhanh",
+      "actionReceive": "Nhận hàng",
+      "actionComplete": "Hoàn tất",
+      "actionCancel": "Hủy"
+    }
+  },
+  "warehousePacking": {
+    "detail": {
+      "activityTitle": "Lịch sử hoạt động",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên đơn đóng gói sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityOrderCode": "Mã {{code}}",
+      "activityDescriptions": {
+        "packing_order_created": "Tạo đơn đóng gói",
+        "packing_order_updated": "Cập nhật đơn đóng gói",
+        "packing_order_cancelled": "Hủy đơn đóng gói",
+        "packing_order_packed": "Hoàn tất đóng gói",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "cancelled": "Hủy"
+      }
+    }
+  },
+  "customers": {
+    "detail": {
+      "activityTitle": "Nhật ký hoạt động",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên khách hàng sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityName": "Tên {{name}}",
+      "activityDescriptions": {
+        "customer_created": "Tạo khách hàng",
+        "customer_updated": "Cập nhật khách hàng",
+        "customer_deleted": "Xóa khách hàng",
+        "customer_activated": "Kích hoạt khách hàng",
+        "customer_deactivated": "Vô hiệu hóa khách hàng",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "activated": "Kích hoạt",
+        "deactivated": "Vô hiệu hóa"
+      }
+    }
+  },
+  "suppliers": {
+    "detail": {
+      "activityTitle": "Nhật ký hoạt động",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên nhà cung cấp sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityName": "Tên {{name}}",
+      "activityDescriptions": {
+        "supplier_created": "Tạo nhà cung cấp",
+        "supplier_updated": "Cập nhật nhà cung cấp",
+        "supplier_deleted": "Xóa nhà cung cấp",
+        "supplier_activated": "Kích hoạt nhà cung cấp",
+        "supplier_deactivated": "Vô hiệu hóa nhà cung cấp",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "activated": "Kích hoạt",
+        "deactivated": "Vô hiệu hóa"
+      }
+    }
+  },
+  "purchaseOrders": {
+    "detail": {
+      "activityTitle": "Lịch sử hoạt động",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên đơn mua hàng sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityOrderCode": "Mã {{code}}",
+      "activityItemsCount": "{{count}} sản phẩm",
+      "activityTotal": "Tổng {{amount}}",
+      "activityDescriptions": {
+        "purchase_order_created": "Tạo đơn mua hàng",
+        "purchase_order_updated": "Cập nhật đơn mua hàng",
+        "purchase_order_cancelled": "Hủy đơn mua hàng",
+        "purchase_order_approved": "Duyệt đơn mua hàng",
+        "purchase_order_received": "Nhận hàng đơn mua",
+        "purchase_order_completed": "Hoàn thành đơn mua hàng",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "cancelled": "Hủy"
+      }
+    }
+  },
+  "shops": {
+    "detail": {
+      "activityTitle": "Nhật ký hoạt động",
+      "activityLoading": "Đang tải nhật ký…",
+      "activityEmptyTitle": "Chưa có nhật ký",
+      "activityEmptyHint": "Các thao tác trên cửa hàng sẽ được ghi lại tại đây.",
+      "activityLoadFailed": "Không tải được nhật ký hoạt động",
+      "activityFallback": "Hoạt động",
+      "activityShopName": "Tên {{name}}",
+      "activityPlatform": "Nền tảng {{platform}}",
+      "activityPlatformShopId": "Shop ID {{id}}",
+      "activityDescriptions": {
+        "shop_created": "Tạo cửa hàng",
+        "shop_updated": "Cập nhật cửa hàng",
+        "shop_deleted": "Xóa cửa hàng",
+        "shop_activated": "Kích hoạt cửa hàng",
+        "shop_deactivated": "Vô hiệu hóa cửa hàng",
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "deleted": "Xóa",
+        "activated": "Kích hoạt",
+        "deactivated": "Vô hiệu hóa"
+      }
+    }
+  }
+}

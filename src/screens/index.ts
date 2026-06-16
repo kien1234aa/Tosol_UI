@@ -1,10 +1,1 @@
-export { LoginScreen } from './login';
-export { RegisterScreen } from './register';
-export { ForgotPasswordScreen } from './forgotPassword';
-export { SplashScreen } from './splash';
-export { HomeScreen } from './home';
-export { SearchScreen } from './search';
-export { CartScreen } from './cart';
-export { OrdersScreen } from './orders';
-export { ProfileScreen } from './profile';
-export { NotificationsScreen } from './notifications';
+export { SellerLoginScreen } from './login/SellerLoginScreen';

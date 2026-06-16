@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "371095020538",
+    "project_id": "tosol-dev",
+    "storage_bucket": "tosol-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371095020538:android:cf4c91f91d6a80cc98ba43",
+        "android_client_info": {
+          "package_name": "com.tosol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371095020538-2tlvvvs5nm05l2d7p2f73bim3e4duaui.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tosol",
+            "certificate_hash": "4284814ccffd15db3abde57d0f32ecb656dcd0e6"
+          }
+        },
+        {
+          "client_id": "371095020538-8st9f82on3auag2tbpj0o03bssudjqg3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0010erKP4lyyfat6YMubE1ssmlxUwPvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371095020538-8st9f82on3auag2tbpj0o03bssudjqg3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "371095020538-gp3g6ptq844ef9jepof4q2hqlnd6p4it.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tosol"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

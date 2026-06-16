@@ -1,0 +1,924 @@
+{
+  "auth": {
+    "welcomeTitle": "Welcome to\nTOSOL Fulfillment!",
+    "welcomeSubtitle": "Please sign in to continue",
+    "email": "Email",
+    "emailPlaceholder": "Email address",
+    "password": "Password",
+    "passwordPlaceholder": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign in",
+    "loginFailed": "Sign-in failed",
+    "forgotPasswordTitle": "Forgot password",
+    "forgotPasswordBody": "This feature is under development",
+    "a11yThemeToLight": "Switch to light theme",
+    "a11yThemeToDark": "Switch to dark theme"
+  },
+  "role": {
+    "admin": "Administrator",
+    "accountant": "Accountant",
+    "seller": "Seller",
+    "warehouse_manager": "Warehouse manager",
+    "unknown": "Seller",
+    "member": "Member"
+  },
+  "nav": {
+    "group": {
+      "category": "Catalog",
+      "finance": "Finance",
+      "sales": "Sales",
+      "home": "Home",
+      "goodsSeller": "Goods",
+      "warehouseMgmt": "Warehouse"
+    },
+    "drawer": {
+      "dashboard": "Dashboard",
+      "orders": "Orders",
+      "shipping": "Shipments",
+      "returns": "Returns",
+      "products": "Products",
+      "priceLists": "Price lists",
+      "suppliers": "Suppliers",
+      "customers": "Customers",
+      "myInventory": "Inventory management",
+      "myInventorySeller": "My inventory",
+      "purchase": "Purchasing",
+      "comboPack": "Combo packing",
+      "stockAlerts": "Stock alerts",
+      "locations": "Locations",
+      "layoutMap": "Warehouse map",
+      "invoices": "Invoices",
+      "settlements": "Settlements",
+      "payments": "Payments",
+      "paymentPortal": "Payment portal",
+      "gatewayAdmin": "Gateway transactions",
+      "gatewaySeller": "Gateway transactions",
+      "servicePricing": "Service pricing",
+      "shops": "Shops",
+      "bankAccounts": "Bank accounts",
+      "carriers": "Carriers",
+      "webhooks": "Webhooks",
+      "staff": "Staff",
+      "adminUsers": "Users",
+      "adminSellers": "Sellers",
+      "adminWarehouses": "Warehouses",
+      "adminCurrencies": "Currencies",
+      "activityLog": "Activity log",
+      "packing": "Packing",
+      "outbound": "Outbound",
+      "inbound": "Inbound",
+      "transfer": "Transfer",
+      "shipTosolConfig": "TOSOL configuration",
+      "shipPricing": "Shipping rates",
+      "shopFallback": "Shop",
+      "shopNamed": "Shop #{{id}}"
+    },
+    "tab": {
+      "seller": {
+        "orders": "Sales",
+        "catalog": "Catalog",
+        "dash": "Dashboard",
+        "goods": "Goods",
+        "finance": "Finance"
+      },
+      "admin": {
+        "orders": "Sales",
+        "catalog": "Catalog",
+        "dash": "Dashboard",
+        "goods": "Warehouse",
+        "finance": "Finance"
+      },
+      "warehouseManager": {
+        "shipping": "Shipments"
+      }
+    },
+    "bottomDefault": {
+      "orders": "Sales",
+      "catalog": "Catalog",
+      "dash": "Dashboard",
+      "goods": "Warehouse",
+      "finance": "Finance"
+    },
+    "drawerMenu": {
+      "dashboard": "Dashboard",
+      "sales": "Sales",
+      "category": "Catalog",
+      "goods": "Goods",
+      "finance": "Finance",
+      "settings": "Settings",
+      "allOrders": "All orders",
+      "shipments": "Shipments",
+      "returns": "Returns"
+    }
+  },
+  "header": {
+    "welcomeBack": "Welcome back,",
+    "warehouseAll": "All warehouses",
+    "userDefault": "User",
+    "warehouseDefault": "Warehouse",
+    "choose": "Select",
+    "brandA11y": "TOSOL — Settings",
+    "notificationsA11y": "Notifications",
+    "notificationsCount": "{{count}} notifications",
+    "accountA11y": "Account — {{name}}",
+    "language": "Language",
+    "appearance": "Appearance",
+    "themeDark": "Dark",
+    "themeLight": "Light",
+    "accountTitle": "Account",
+    "personalInfo": "Personal information",
+    "personalInfoTitle": "Personal information",
+    "logout": "Log out",
+    "loggingOut": "Signing out…",
+    "fullName": "Full name",
+    "role": "Role",
+    "organization": "Organization",
+    "changePassword": "Change password",
+    "notificationsTitle": "Notifications",
+    "pushTitle": "Push notifications on this device",
+    "pushSub": "Turn on to receive order and alert updates (push service coming soon).",
+    "notifPlaceholder": "A detailed notification list will appear here when the API is available.",
+    "markRead": "Mark all read (clear badge)",
+    "notifToastLabel": "Show toast when there is a notification",
+    "adminGroup": {
+      "management": "Management",
+      "warehouse": "Warehouse & purchasing",
+      "shipping": "Shipping"
+    },
+    "settings": "Settings",
+    "close": "Close",
+    "closeMenu": "Close menu"
+  },
+  "notifications": {
+    "backA11y": "Go back",
+    "empty": "No notifications yet",
+    "errorLoad": "Could not load notifications",
+    "detailTitle": "Notification",
+    "detailSentAt": "Sent {{date}}",
+    "detailSectionMessage": "Message",
+    "detailSectionData": "Attached data",
+    "detailType": "Type",
+    "detailCategory": "Category",
+    "detailSeverity": "Severity",
+    "detailInternalType": "Internal type",
+    "detailActionUrl": "Link",
+    "detailReadState": "Read",
+    "detailReadYes": "Yes",
+    "detailReadNo": "No",
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}} h ago",
+      "daysAgo": "{{count}} days ago"
+    }
+  },
+  "language": {
+    "title": "Language",
+    "vi": "Vietnamese",
+    "en": "English",
+    "ja": "Japanese"
+  },
+  "drawer": {
+    "closeMenu": "Close menu",
+    "logout": "Log out",
+    "themeA11yLight": "Switch to light mode",
+    "themeA11yDark": "Switch to dark mode",
+    "themeHintDark": "Dark — tap for light",
+    "themeHintLight": "Light — tap for dark",
+    "loadingShops": "Loading shops…",
+    "retry": "Retry"
+  },
+  "warehousePicker": {
+    "title": "Select warehouse",
+    "updating": "Updating...",
+    "allRowTitle": "{{sellerName}} — {{all}}",
+    "noFilterSubtitle": "No warehouse filter"
+  },
+  "common": {
+    "dash": "—",
+    "yes": "Yes",
+    "no": "No",
+    "retry": "Retry",
+    "back": "Back",
+    "import": "Import",
+    "done": "Done",
+    "refreshA11y": "Refresh",
+    "moreProducts": "+{{count}} more products",
+    "listToolbar": {
+      "advancedFilter": "Advanced filters",
+      "filter": "Filters",
+      "refreshA11y": "Refresh",
+      "clearFilters": "Clear filters",
+      "itemCount": "{{count}} items"
+    },
+    "listRefreshing": "Updating…",
+    "view": "View",
+    "quickActions": "Quick actions",
+    "errorTitle": "Error",
+    "notice": "Notice",
+    "missingInfo": "Missing information",
+    "saved": "Saved",
+    "genericFailure": "Could not complete the action.",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "orders": {
+    "actions": {
+      "createOrderPlus": "+ Create order",
+      "createOrderShort": "Create order"
+    },
+    "list": {
+      "scopeNamed": "Scope: {{name}}",
+      "scopeNumbered": "Scope: Shop #{{id}}",
+      "statPending": "Awaiting confirmation",
+      "statProcessing": "In progress",
+      "statDelivered": "Delivered",
+      "statHasIssue": "Has issue",
+      "clearFilters": "Clear list filters",
+      "sectionList": "List",
+      "searchPlaceholder": "Search by order #, customer…",
+      "advancedFilter": "Advanced filters",
+      "refreshA11y": "Refresh",
+      "itemCount": "{{count}} items",
+      "moreProducts": "×{{count}} more products"
+    },
+    "advFilter": {
+      "all": "All",
+      "title": "Advanced filters",
+      "subtitle": "Refine the order list by status, payment, and creation date.",
+      "activeNone": "No conditions selected. Tap the fields below to set filters.",
+      "activeSome": "{{count}} condition(s) selected — tap Apply to reload the list.",
+      "sectionMainTitle": "Status & payment",
+      "sectionMainSub": "Filter by processing stage, payment status, and issue flag.",
+      "fieldStatus": "Status",
+      "fieldPayment": "Payment",
+      "fieldIssue": "Order has issue",
+      "sectionDateTitle": "Order creation time",
+      "sectionDateSub": "Optional — only orders created in this date range.",
+      "reset": "Reset",
+      "resetA11y": "Reset filters",
+      "apply": "Apply",
+      "pickerStatus": "Status",
+      "pickerPayment": "Payment",
+      "pickerIssue": "Order has issue",
+      "closeOverlayA11y": "Close overlay",
+      "closeA11y": "Close",
+      "dateInvalidTitle": "Invalid dates",
+      "dateInvalidBody": "“From date” must be on or before “To date”.",
+      "payment": {
+        "pending": "Pending payment",
+        "partial_paid": "Partially paid",
+        "paid": "Paid",
+        "voided": "Voided",
+        "pending_refund": "Pending refund",
+        "refunded": "Refunded"
+      },
+      "apiStatus": {
+        "pending_transfer": "Pending warehouse transfer",
+        "transferring": "Transferring",
+        "transfer_failed": "Transfer failed",
+        "ready_to_ship": "Ready to ship",
+        "shipped": "Out for delivery"
+      }
+    },
+    "progressTitle": "Progress",
+    "progressStep": {
+      "created": "Order created",
+      "confirmed": "Confirmed",
+      "packing": "Packing",
+      "readyToShip": "Ready to ship",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    },
+    "quickDockTitle": "Quick actions",
+    "overviewTitle": "Order overview",
+    "overviewCustomer": "Customer",
+    "overviewPhone": "Phone",
+    "overviewOrderDate": "Order date",
+    "overviewCreator": "Created by",
+    "overviewSubtotal": "Subtotal",
+    "overviewShipping": "Shipping fee",
+    "overviewTotal": "Total",
+    "overviewCod": "COD",
+    "quickActions": {
+      "viewInvoice": "View invoice",
+      "viewPayment": "View payment",
+      "markIssue": "Flag issue",
+      "cancelPacking": "Cancel packing",
+      "cancelOrder": "Cancel order",
+      "resolveIssue": "Resolve issue",
+      "confirmOrder": "Confirm order"
+    },
+    "paymentMethod": {
+      "cod": "Cash on delivery (COD)",
+      "bankTransfer": "Bank transfer"
+    },
+    "shipPayer": {
+      "buyer": "Buyer",
+      "seller": "Seller"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "packing": "Packing",
+      "ready_to_ship": "Ready to ship",
+      "shipped": "Shipping",
+      "transferring": "Transferring",
+      "pending_transfer": "Pending transfer",
+      "transfer_failed": "Transfer failed",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "returned": "Returned",
+      "partially_returned": "Partially returned",
+      "partial_return": "Partial return",
+      "fully_returned": "Fully returned"
+    },
+    "historyMilestone": {
+      "created": "Order created",
+      "confirmed": "Confirmed",
+      "packed": "Packed",
+      "ready": "Ready to ship",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    },
+    "history": {
+      "progressMeta": "Progress {{current}}/{{total}} by order status.",
+      "progressUnknown": "Progress — by order status."
+    },
+    "screen": {
+      "breadcrumb": "Order"
+    },
+    "pill": {
+      "row": {
+        "cancelled": "Cancelled",
+        "pending": "Awaiting confirmation",
+        "confirmed": "Confirmed",
+        "packing": "Packing",
+        "shipping": "Out for delivery",
+        "ready": "Ready to ship",
+        "delivered": "Delivered",
+        "transferring": "Transferring",
+        "pending_transfer": "Pending transfer",
+        "transfer_failed": "Transfer failed",
+        "returned": "Returned",
+        "partially_returned": "Partially returned"
+      },
+      "payment": {
+        "disabled": "Disabled",
+        "pending_payment": "Pending payment",
+        "paid": "Paid",
+        "partial_payment": "Partially paid",
+        "pending_refund": "Pending refund",
+        "refunded": "Refunded"
+      }
+    },
+    "ui": {
+      "heroTotal": "Order total",
+      "orderPlaced": "Placed {{date}}",
+      "issueFlagBanner": "This order is flagged with an issue. Check the detail tabs or handle on the web if needed.",
+      "packingBanner": "This order is being packed at the warehouse. Track details on the web if needed.",
+      "markIssueTitle": "Flag issue",
+      "markIssueHint": "Briefly describe the issue with this order.",
+      "markIssuePlaceholder": "e.g. Missing item, wrong address…",
+      "send": "Submit",
+      "close": "Close",
+      "cancelPackingTitle": "Cancel packing",
+      "cancelPackingHint": "Enter a reason. The order will return to awaiting confirmation.",
+      "cancelPackingPlaceholder": "e.g. Missing stock, needs adjustment…",
+      "cancelOrderTitle": "Cancel order",
+      "cancelOrderHint": "Enter a reason. The order will be cancelled and cannot be undone from the app.",
+      "cancelOrderPlaceholder": "e.g. Customer changed mind, duplicate order…",
+      "cancelOrderButton": "Cancel order"
+    },
+    "detail": {
+      "orderDetailTitle": "Order details",
+      "orderCode": "Order #",
+      "status": "Status",
+      "payment": "Payment",
+      "paymentMethod": "Payment method",
+      "channelWarehouseTitle": "Sales channel & warehouse",
+      "shop": "Shop",
+      "seller": "Seller",
+      "packingWarehouse": "Packing warehouse",
+      "shippingWarehouse": "Shipping warehouse",
+      "shippingInfoTitle": "Shipping information",
+      "shipPayer": "Shipping payer",
+      "shippingFee": "Shipping fee",
+      "collectCod": "Collect COD",
+      "relatedOrdersTitle": "Related orders",
+      "packingOrder": "Packing order",
+      "outboundOrder": "Outbound order",
+      "productsOverviewTitle": "Products overview",
+      "totalProducts": "Products",
+      "totalQty": "Total quantity",
+      "itemsTotal": "Items total",
+      "productListTitle": "Line items",
+      "colHash": "#",
+      "colProduct": "Product",
+      "colQty": "Qty",
+      "colUnitPrice": "Unit price",
+      "noProductLines": "No line items yet.",
+      "paymentOverviewTitle": "Payment overview",
+      "totalAmount": "Total",
+      "paid": "Paid",
+      "remaining": "Remaining",
+      "paymentApiHint": "More payment actions will appear when the API supports them.",
+      "paymentHistoryTitle": "Payment history",
+      "noPaymentsTitle": "No payments",
+      "noPaymentsSub": "No payments recorded for this order.",
+      "shippingTitle": "Shipping",
+      "trackingNumber": "Tracking #",
+      "carrier": "Carrier",
+      "carrierFeeShort": "Ship fee",
+      "weight": "Weight",
+      "carrierStatus": "Carrier status",
+      "recipientTitle": "Recipient",
+      "fullName": "Full name",
+      "phoneShort": "Phone",
+      "address": "Address",
+      "deliveryProgressTitle": "Delivery progress",
+      "deliveryProgressHint": "Partner tracking details will show here when the API provides them.",
+      "currentStatusTitle": "Current status",
+      "historyTitle": "History",
+      "milestonesTitle": "Key milestones",
+      "eventCol": "Event",
+      "dateCol": "Date",
+      "activityTitle": "Activity",
+      "activityCreated": "Sales order created — {{date}}",
+      "activityLogHint": "Detailed activity (status changes, actors…) will show when the activity log API is available.",
+      "activityCount": "{{count}} entries",
+      "activityLoading": "Loading activity log…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this order will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityOrderCode": "Order {{code}}",
+      "activityItemsCount": "{{count}} products",
+      "activityTotal": "Total {{amount}}",
+      "activityAutoConfirmed": "Auto-confirmed",
+      "activityDescriptions": {
+        "sale_order_created": "Order created",
+        "sale_order_confirmed": "Order confirmed",
+        "sale_order_cancelled": "Order cancelled",
+        "sale_order_packed": "Order packed",
+        "sale_order_shipped": "Order shipped",
+        "sale_order_delivered": "Delivered",
+        "sale_order_issue_marked": "Issue flagged",
+        "sale_order_issue_resolved": "Issue resolved",
+        "sale_order_updated": "Order updated",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled"
+      }
+    },
+    "errors": {
+      "loadDetail": "Could not load order"
+    },
+    "alert": {
+      "resolveSuccess": "Issue resolved",
+      "confirmSuccess": "Order confirmed",
+      "confirmOrderTitle": "Confirm order",
+      "confirmOrderBody": "The order will move to packing. Continue?",
+      "resolveTitle": "Resolve issue",
+      "resolveBody": "Confirm the issue is handled and clear the issue flag on this order?",
+      "notImplemented": "This action is not available in the app yet.",
+      "issueNeedDescription": "Please enter an issue description.",
+      "issueSavedTitle": "Saved",
+      "issueSavedBody": "The order has been flagged with an issue.",
+      "cancelPackingNeedReason": "Please enter a reason to cancel packing.",
+      "cancelPackingSuccess": "Packing cancelled",
+      "cancelOrderNeedReason": "Please enter a reason to cancel the order.",
+      "cancelOrderSuccess": "Order cancelled",
+      "invoiceNotFound": "No invoice linked to this order was found.",
+      "invoiceOrPaymentNotFound": "No invoice or payment transaction was found for this order.",
+      "paymentNotFound": "No payment transaction exists for this order yet."
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "subtitleAdmin": "System overview for the selected period.",
+    "subtitleSeller": "Here is an overview of your activity today.",
+    "customRange": {
+      "title": "Custom date range",
+      "hint": "Enter dates as YYYY-MM-DD",
+      "from": "From date",
+      "to": "To date",
+      "invalidFrom": "Invalid from date (YYYY-MM-DD)",
+      "invalidTo": "Invalid to date (YYYY-MM-DD)",
+      "invalidRange": "Could not process the date range",
+      "backdropClose": "Close"
+    },
+    "range": {
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "custom": "Custom"
+    },
+    "errors": {
+      "loadAdmin": "Could not load admin dashboard",
+      "loadSeller": "Could not load sales dashboard"
+    },
+    "noData": "No data yet",
+    "noOrderData": "No order data yet.",
+    "admin": {
+      "totalSellers": "Total sellers",
+      "totalOrders": "Total orders",
+      "totalRevenue": "Total revenue",
+      "totalSkus": "Total SKUs",
+      "ordersByStatus": "Orders by status",
+      "systemOverview": "System overview",
+      "warehouses": "Warehouses",
+      "sellers": "Sellers",
+      "fulfillmentRate": "Fulfillment rate",
+      "avgOrderValue": "Avg. order value",
+      "activeOfTotal": "{{active}} active / {{total}} total",
+      "pctComplete": "{{pct}}% complete",
+      "allSellersHint": "All sellers",
+      "productCountHint": "{{count}} products",
+      "cancelledInPeriod": "{{count}} orders cancelled in this period"
+    },
+    "sellerTile": {
+      "awaiting": "Pending",
+      "inProgress": "In progress",
+      "readyToShip": "Ready to ship",
+      "revenue": "Total revenue"
+    },
+    "seller": {
+      "ordersByStatus": "Orders by status",
+      "salesOverview": "Sales overview",
+      "totalOrders": "Total orders",
+      "fulfillmentRate": "Fulfillment rate",
+      "inventoryValue": "Inventory value",
+      "totalSkuItems": "Total SKUs / items",
+      "cancelledInPeriod": "{{count}} orders cancelled in this period"
+    },
+    "adminQuick": {
+      "sellers": "Sellers",
+      "warehouses": "Warehouses",
+      "users": "Users",
+      "activityLog": "Activity log"
+    },
+    "footerHome": "Home",
+    "supportTitle": "Support",
+    "supportBody": "Please contact your system administrator or customer support.",
+    "supportLink": "Support",
+    "warehouseMgr": {
+      "loadError": "Could not load warehouse dashboard.",
+      "subtitle": "Here is your activity overview for today.",
+      "pendingTasks": "Pending work",
+      "todayActivity": "Today's activity",
+      "inventoryTitle": "Inventory overview",
+      "quickActions": "Quick actions",
+      "quick": {
+        "inbound": "Inbound orders",
+        "outbound": "Outbound orders"
+      },
+      "kpi": {
+        "awaitingInbound": "Awaiting inbound",
+        "awaitingPacking": "Awaiting packing",
+        "awaitingOutbound": "Awaiting outbound",
+        "completedToday": "Completed today"
+      },
+      "chart": {
+        "inbound": "Inbound",
+        "packing": "Packing",
+        "outbound": "Outbound"
+      },
+      "activity": {
+        "inboundDone": "Inbound completed",
+        "outboundDone": "Outbound completed",
+        "delivered": "Orders delivered"
+      },
+      "inv": {
+        "totalSku": "Total SKUs",
+        "available": "Available",
+        "reserved": "Reserved",
+        "damaged": "Damaged"
+      }
+    }
+  },
+  "financeInvoice": {
+    "rowStatus": {
+      "pending": "Pending payment",
+      "partial": "Partially paid",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "draft": "Draft",
+      "cancelled": "Cancelled"
+    },
+    "detail": {
+      "breadcrumb": "Invoice",
+      "loadFailed": "Could not load invoice",
+      "billingPeriod": "Period:",
+      "dueDate": "Due date:",
+      "bannerOverdue": "This invoice is overdue. Please settle it as soon as possible.",
+      "bannerPending": "This invoice is awaiting payment. Please pay before the due date.",
+      "summaryTitle": "Summary",
+      "subtotal": "Subtotal (excl. tax)",
+      "taxLine": "Tax ({{pct}}%)",
+      "grandTotal": "Total",
+      "settlementNote": "Payment is tracked in Settlements",
+      "settlementAlertTitle": "Settlement",
+      "settlementAlertBody": "Settlement reference {{ref}}.",
+      "settlementLink": "View settlement",
+      "settlementLinkWithRef": "View settlement ({{ref}})"
+    }
+  },
+  "warehouseOutbound": {
+    "status": {
+      "pending": "Pending",
+      "picking": "Picking",
+      "ready": "Ready to ship",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "statusOther": "Other",
+    "type": {
+      "sale": "Sales",
+      "transfer": "Transfer",
+      "return": "Return",
+      "disposal": "Disposal"
+    },
+    "typeFallback": "Outbound",
+    "linked": {
+      "saleOrder": "Order {{orderNumber}}",
+      "transfer": "Transfer {{orderNumber}}",
+      "source": "Source {{orderNumber}}",
+      "sourceWarehouse": "Source {{orderNumber}} · {{warehouse}}"
+    },
+    "listQty": {
+      "picked": "{{picked}}/{{total}} pcs",
+      "linesOnly": "{{count}} line(s)"
+    },
+    "detail": {
+      "breadcrumb": "Outbound",
+      "fallbackTitle": " · Details",
+      "loadFailed": "Could not load outbound order",
+      "warehouseWebOnly": "Warehouse actions (picking, ship-out, etc.) are currently done in the warehouse web console.",
+      "activityTitle": "Activity log",
+      "activityLoading": "Loading activity…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this outbound order will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityOrderCode": "Ref {{code}}",
+      "activityDescriptions": {
+        "outbound_order_created": "Outbound order created",
+        "outbound_order_updated": "Outbound order updated",
+        "outbound_order_cancelled": "Outbound order cancelled",
+        "outbound_order_picked": "Outbound order picked",
+        "outbound_order_completed": "Outbound order completed",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "cancelled": "Cancelled"
+      }
+    },
+    "banner": {
+      "pending": "This slip is pending. Picking and outbound actions are done in the warehouse web console.",
+      "picking": "Picking in progress for this slip.",
+      "ready": "Fully picked — ready to ship or dispatch.",
+      "completed": "This outbound slip is completed.",
+      "cancelled": "This slip has been cancelled."
+    },
+    "create": {
+      "modalTitle": "Create outbound slip",
+      "modalSubtitle": "Manual types: balance transfer, return to supplier, return to seller, disposal",
+      "selectType": "Outbound type",
+      "typeBalanceTransfer": "Transfer (balance)",
+      "typeDisposal": "Disposal",
+      "typeReturnSupplier": "Return to supplier",
+      "typeReturnSeller": "Return to seller",
+      "typeSale": "Sale outbound",
+      "typeTransferSale": "Transfer (sales)",
+      "warehouse": "Warehouse",
+      "destinationWarehouse": "Destination warehouse",
+      "note": "Note",
+      "addProduct": "Add products",
+      "searchPlaceholder": "Search products…",
+      "emptyLines": "No products yet. Search and add lines to the outbound slip.",
+      "cancel": "Cancel",
+      "submit": "Create outbound slip",
+      "successTitle": "Created",
+      "successBody": "The outbound slip was created.",
+      "needWarehouse": "Select a source warehouse.",
+      "needDestination": "Select a destination warehouse different from the source.",
+      "needItems": "Add at least one product with quantity greater than 0.",
+      "openCreate": "+ Create slip",
+      "qty": "Qty",
+      "sectionLabel": "Outbound orders"
+    },
+    "meta": {
+      "pickProgress": "Pick progress: {{pct}}%",
+      "requiresPacking": "Requires packing"
+    },
+    "footer": {
+      "overviewTitle": "Overview",
+      "lineItems": "Lines",
+      "linesCount": "{{count}} lines",
+      "quantity": "Quantity",
+      "pickProgress": "Picking progress",
+      "quickDockTitle": "Quick actions",
+      "actionPick": "Pick",
+      "actionShip": "Ship out",
+      "actionCancel": "Cancel slip"
+    }
+  },
+  "warehouseInbound": {
+    "status": {
+      "pending": "Pending",
+      "receiving": "Receiving",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "statusOther": "Other",
+    "type": {
+      "purchase": "Purchase",
+      "return": "Return",
+      "transfer": "Transfer",
+      "adjustment": "Adjustment"
+    },
+    "typeFallback": "Inbound",
+    "linked": {
+      "purchase": "PO {{orderNumber}}",
+      "sale": "SO {{orderNumber}}",
+      "transfer": "Transfer {{orderNumber}}"
+    },
+    "listQty": {
+      "received": "{{rec}}/{{exp}} received",
+      "linesOnly": "{{count}} line(s)",
+      "damaged": "Damaged: {{count}}"
+    },
+    "detail": {
+      "breadcrumb": "Inbound",
+      "fallbackTitle": " · Details",
+      "loadFailed": "Could not load inbound order",
+      "warehouseWebOnly": "Warehouse actions (receiving, complete, etc.) are currently done in the warehouse web console.",
+      "activityTitle": "Activity log",
+      "activityLoading": "Loading activity…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this inbound order will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityOrderCode": "Ref {{code}}",
+      "activityDescriptions": {
+        "inbound_order_created": "Inbound order created",
+        "inbound_order_updated": "Inbound order updated",
+        "inbound_order_cancelled": "Inbound order cancelled",
+        "inbound_order_received": "Inbound order received",
+        "inbound_order_completed": "Inbound order completed",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "cancelled": "Cancelled"
+      }
+    },
+    "banner": {
+      "pending": "This slip is pending. Receiving and updates are done in the warehouse web console.",
+      "receiving": "Receiving goods into stock.",
+      "completed": "This inbound slip is completed.",
+      "cancelled": "This inbound slip has been cancelled."
+    },
+    "meta": {
+      "receiveProgress": "Receive progress: {{pct}}%"
+    },
+    "footer": {
+      "overviewTitle": "Overview",
+      "inboundLines": "Inbound lines",
+      "linesCount": "{{count}} lines",
+      "quantity": "Quantity",
+      "receiveProgress": "Receiving progress",
+      "quickDockTitle": "Quick actions",
+      "actionReceive": "Receive",
+      "actionComplete": "Complete",
+      "actionCancel": "Cancel"
+    }
+  },
+  "warehousePacking": {
+    "detail": {
+      "activityTitle": "Activity log",
+      "activityLoading": "Loading activity…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this packing order will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityOrderCode": "Ref {{code}}",
+      "activityDescriptions": {
+        "packing_order_created": "Packing order created",
+        "packing_order_updated": "Packing order updated",
+        "packing_order_cancelled": "Packing order cancelled",
+        "packing_order_packed": "Packing completed",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "cancelled": "Cancelled"
+      }
+    }
+  },
+  "customers": {
+    "detail": {
+      "activityTitle": "Activity log",
+      "activityLoading": "Loading activity…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this customer will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityName": "Name {{name}}",
+      "activityDescriptions": {
+        "customer_created": "Customer created",
+        "customer_updated": "Customer updated",
+        "customer_deleted": "Customer deleted",
+        "customer_activated": "Customer activated",
+        "customer_deactivated": "Customer deactivated",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "activated": "Activated",
+        "deactivated": "Deactivated"
+      }
+    }
+  },
+  "suppliers": {
+    "detail": {
+      "activityTitle": "Activity log",
+      "activityLoading": "Loading activity…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this supplier will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityName": "Name {{name}}",
+      "activityDescriptions": {
+        "supplier_created": "Supplier created",
+        "supplier_updated": "Supplier updated",
+        "supplier_deleted": "Supplier deleted",
+        "supplier_activated": "Supplier activated",
+        "supplier_deactivated": "Supplier deactivated",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "activated": "Activated",
+        "deactivated": "Deactivated"
+      }
+    }
+  },
+  "purchaseOrders": {
+    "detail": {
+      "activityTitle": "Activity",
+      "activityLoading": "Loading activity log…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this purchase order will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityOrderCode": "Code {{code}}",
+      "activityItemsCount": "{{count}} items",
+      "activityTotal": "Total {{amount}}",
+      "activityDescriptions": {
+        "purchase_order_created": "Purchase order created",
+        "purchase_order_updated": "Purchase order updated",
+        "purchase_order_cancelled": "Purchase order cancelled",
+        "purchase_order_approved": "Purchase order approved",
+        "purchase_order_received": "Purchase order received",
+        "purchase_order_completed": "Purchase order completed",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "cancelled": "Cancelled"
+      }
+    }
+  },
+  "shops": {
+    "detail": {
+      "activityTitle": "Activity log",
+      "activityLoading": "Loading activity…",
+      "activityEmptyTitle": "No activity yet",
+      "activityEmptyHint": "Actions on this shop will appear here.",
+      "activityLoadFailed": "Could not load activity log",
+      "activityFallback": "Activity",
+      "activityShopName": "Name {{name}}",
+      "activityPlatform": "Platform {{platform}}",
+      "activityPlatformShopId": "Shop ID {{id}}",
+      "activityDescriptions": {
+        "shop_created": "Shop created",
+        "shop_updated": "Shop updated",
+        "shop_deleted": "Shop deleted",
+        "shop_activated": "Shop activated",
+        "shop_deactivated": "Shop deactivated",
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "activated": "Activated",
+        "deactivated": "Deactivated"
+      }
+    }
+  }
+}
