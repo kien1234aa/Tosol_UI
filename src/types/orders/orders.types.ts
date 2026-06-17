@@ -1,46 +1,78 @@
 /** Domain models for the orders list tab. */
 
-export type OrderStatus =
-  | 'awaitingDeposit'
-  | 'awaitingPayment'
-  | 'readyToShip'
-  | 'processing';
-
-export type OrderStatusFilter = OrderStatus | 'all';
+export type OrderStatusFilter =
+  | 'all'
+  | 'pending'
+  | 'confirmed'
+  | 'packing'
+  | 'shipping'
+  | 'delivered'
+  | 'cancelled';
 
 export interface OrderListItem {
   id: string;
+  orderNumber: string;
+  uuid: string;
   createdAt: string;
   totalCostVnd: number;
   paidVnd: number;
+  remainingVnd: number;
   packageCount: number;
-  status: OrderStatus;
+  status: string;
+  paymentStatus: string;
   productName: string;
   productQuantity: number;
+  thumbnailUrl?: string | null;
+  customerName: string;
+  shopName: string;
 }
+
+export type OrderStatus = OrderListItem['status'];
 
 export interface OrderDetailProduct {
   id: string;
   name: string;
-  variant: string;
-  priceCny: number;
+  sku: string;
+  unitPriceVnd: number;
   quantity: number;
+  lineTotalVnd: number;
+  thumbnailUrl?: string | null;
+}
+
+export interface OrderDetailShipping {
+  recipientName: string;
+  recipientPhone: string;
+  recipientAddress: string;
+  shippingPartnerName: string;
+  trackingNumber: string | null;
+  shippingFeeVnd: number;
+  collectCod: boolean;
+  codAmountVnd: number;
+  shippingPayer: string;
 }
 
 export interface OrderDetailCosts {
   goodsVnd: number;
-  estimatedFeeVnd: number;
-  depositVnd: number;
+  discountVnd: number;
+  taxVnd: number;
+  shippingFeeVnd: number;
   totalVnd: number;
   paidVnd: number;
   remainingVnd: number;
 }
 
 export interface OrderDetail extends OrderListItem {
-  supplierName: string;
+  orderDate: string;
+  paymentMethod: string;
   note: string;
-  insurance: boolean;
-  woodPacking: boolean;
+  hasIssue: boolean;
+  issueNote: string | null;
+  creatorName: string;
+  warehouseName: string;
+  customerPhone: string;
+  customerAddress: string;
+  packingOrderNumber: string | null;
   products: OrderDetailProduct[];
+  shipping: OrderDetailShipping | null;
   costs: OrderDetailCosts;
 }

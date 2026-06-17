@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
+import { getCartProductMaxQuantity } from '@/src/helpers/cart';
 import {
   removeCartGroup,
   removeCartProduct,
@@ -17,8 +18,10 @@ import {
   updateCartProductQuantity,
 } from '@/src/redux/cart';
 import type { CartGroupViewModel } from '@/src/types/cart/cart.types';
+import { useCreateOrderForm } from './useCreateOrderForm';
+import type { UseCreateOrderFormResult } from './useCreateOrderForm';
 
-export interface UseCartResult {
+export interface UseCartResult extends UseCreateOrderFormResult {
   groups: CartGroupViewModel[];
   grandTotalVnd: number;
   isAllSelected: boolean;
@@ -43,6 +46,7 @@ export function useCart(): UseCartResult {
   const grandTotalVnd = useAppSelector(selectCartGrandTotal);
   const isAllSelected = useAppSelector(selectIsAllCartSelected);
   const hasSelectedItems = useAppSelector(selectHasSelectedCartItems);
+  const createOrderForm = useCreateOrderForm();
 
   const onToggleSelectAll = useCallback(() => {
     dispatch(toggleSelectAllCart(!isAllSelected));
@@ -90,6 +94,12 @@ export function useCart(): UseCartResult {
       if (!product) {
         return;
       }
+
+      const maxQuantity = getCartProductMaxQuantity(product);
+      if (product.quantity >= maxQuantity) {
+        return;
+      }
+
       dispatch(
         updateCartProductQuantity({
           groupId,
@@ -134,12 +144,15 @@ export function useCart(): UseCartResult {
   );
 
   const onCreateOrders = useCallback(() => {
-    // Batch create-order flow is not registered yet.
-  }, []);
+    createOrderForm.openCreateOrder();
+  }, [createOrderForm]);
 
-  const onCreateGroupOrder = useCallback((_groupId: string) => {
-    // Single-shop create-order flow is not registered yet.
-  }, []);
+  const onCreateGroupOrder = useCallback(
+    (groupId: string) => {
+      createOrderForm.openCreateOrder({ groupId });
+    },
+    [createOrderForm],
+  );
 
   return {
     groups,
@@ -158,5 +171,6 @@ export function useCart(): UseCartResult {
     onRemoveGroup,
     onCreateOrders,
     onCreateGroupOrder,
+    ...createOrderForm,
   };
 }

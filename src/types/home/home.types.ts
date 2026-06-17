@@ -4,7 +4,6 @@
 export type HomeActionKey =
   | 'orderCart'
   | 'orderList'
-  | 'orderDeposit'
   | 'orderPayment'
   | 'orderReady'
   | 'packageCreate'

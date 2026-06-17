@@ -1,8 +1,76 @@
 import type {
   AppNotification,
+  NotificationApiItem,
   NotificationCategory,
   NotificationFilter,
+  NotificationType,
 } from '@/src/types/notifications/notifications.types';
+
+function mapApiCategory(category?: string | null): NotificationCategory {
+  if (category?.trim().toLowerCase() === 'system') {
+    return 'system';
+  }
+
+  return 'personal';
+}
+
+function mapApiNotificationType(
+  type: string,
+  category?: string | null,
+): NotificationType {
+  const normalized = type.trim().toLowerCase();
+  const normalizedCategory = category?.trim().toLowerCase() ?? '';
+
+  if (
+    normalized.includes('order') ||
+    normalizedCategory === 'orders'
+  ) {
+    return 'order';
+  }
+
+  if (
+    normalized.includes('payment') ||
+    normalized.includes('settlement') ||
+    normalized.includes('billing') ||
+    normalizedCategory === 'billing'
+  ) {
+    return 'payment';
+  }
+
+  if (
+    normalized.includes('delivery') ||
+    normalized.includes('shipment') ||
+    normalized.includes('shipping')
+  ) {
+    return 'delivery';
+  }
+
+  return 'system';
+}
+
+export function mapApiNotificationToAppNotification(
+  item: NotificationApiItem,
+): AppNotification {
+  return {
+    id: item.id,
+    category: mapApiCategory(item.category),
+    type: mapApiNotificationType(item.type, item.category),
+    typeLabel: item.type_label?.trim() || item.type,
+    icon: item.icon,
+    title: item.title,
+    message: item.message,
+    actionUrl: item.action_url?.trim() || null,
+    createdAt: item.created_at,
+    isRead: item.is_read,
+    severity: item.severity?.trim() || 'info',
+  };
+}
+
+export function mapApiNotificationsToAppNotifications(
+  items: NotificationApiItem[],
+): AppNotification[] {
+  return items.map(mapApiNotificationToAppNotification);
+}
 
 export function filterNotifications(
   items: AppNotification[],

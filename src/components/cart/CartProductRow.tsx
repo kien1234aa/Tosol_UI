@@ -1,11 +1,12 @@
 import React, { memo } from 'react';
-import { StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { Minus, Package, Plus, Trash2 } from 'lucide-react-native';
 import { cartQuantityLimits, cartCopy } from '@/src/configs/cart';
 import {
   computeLineSubtotalVnd,
-  formatCnyPrice,
+  formatCartUnitPrice,
   formatVndPrice,
+  getCartProductMaxQuantity,
 } from '@/src/helpers/cart';
 import { lightTokens } from '@/src/configs/theme';
 import type { CartProductItem } from '@/src/types/cart/cart.types';
@@ -15,7 +16,6 @@ import {
   CheckboxIndicator,
 } from '@/src/uikits/checkbox';
 import { CheckIcon } from '@/src/uikits/icon';
-import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
@@ -41,8 +41,9 @@ function CartProductRowComponent({
   onRemove,
 }: CartProductRowProps) {
   const lineTotalVnd = computeLineSubtotalVnd(product);
+  const maxQuantity = getCartProductMaxQuantity(product);
   const canDecrease = product.quantity > cartQuantityLimits.min;
-  const canIncrease = product.quantity < cartQuantityLimits.max;
+  const canIncrease = product.quantity < maxQuantity;
 
   return (
     <HStack className="w-full items-start gap-2">
@@ -59,7 +60,15 @@ function CartProductRowComponent({
       </Checkbox>
 
       <Center style={styles.thumbnail}>
-        <Package color={lightTokens.tertiary500} size={ICON_SIZE} />
+        {product.thumbnailUrl ? (
+          <Image
+            source={{ uri: product.thumbnailUrl }}
+            style={styles.thumbnailImage}
+            resizeMode="cover"
+          />
+        ) : (
+          <Package color={lightTokens.tertiary500} size={ICON_SIZE} />
+        )}
       </Center>
 
       <VStack className="min-w-0 flex-1" space="xs">
@@ -70,10 +79,13 @@ function CartProductRowComponent({
           {product.variant}
         </Text>
         <Text size="xs" className="text-typography-600">
-          {cartCopy.unitPriceLabel} {formatCnyPrice(product.priceCny)}
+          {cartCopy.unitPriceLabel} {formatCartUnitPrice(product)}
         </Text>
         <Text size="sm" className="font-semibold text-tertiary-600">
-          {cartCopy.lineTotalLabel} {formatVndPrice(lineTotalVnd)}
+          {cartCopy.lineTotalLabel}{' '}
+          {product.priceVnd > 0 || product.priceCny > 0
+            ? formatVndPrice(lineTotalVnd)
+            : cartCopy.priceOnRequest}
         </Text>
 
         <HStack className="items-center justify-between">
@@ -136,6 +148,11 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.tertiary50,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
+    overflow: 'hidden',
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
   },
   quantityControls: {
     gap: 6,

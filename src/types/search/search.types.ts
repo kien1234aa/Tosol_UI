@@ -11,13 +11,34 @@ export interface SearchPlatformItem {
 export interface SearchProduct {
   id: string;
   name: string;
-  /** Source price in Chinese Yuan (CNY). */
+  /** Legacy mock field; kept for product detail pricing helpers. */
   priceCny: number;
   originalPriceCny?: number;
   description: string;
   seller: string;
   rating: number;
   soldCount: number;
+  thumbnailUrl?: string | null;
+  imageUrl?: string | null;
+  priceVnd?: number;
+  sku?: string;
+  unit?: string;
+  availableStock?: number;
+  totalStock?: number;
+  reservedStock?: number;
+  warehousesCount?: number;
+  isInStock?: boolean;
+  isLowStock?: boolean;
+  isOutOfStock?: boolean;
+  sellerName?: string;
+  sellerEmail?: string;
+  sellerPhone?: string;
+  weight?: number;
+  length?: number;
+  width?: number;
+  height?: number;
+  volumetricWeight?: number;
+  barcode?: string | null;
 }
 
 export interface ProductDetailPricing {

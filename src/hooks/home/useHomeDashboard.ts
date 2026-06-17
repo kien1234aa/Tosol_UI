@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { homeCopy } from '@/src/configs/home';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { selectAuthUser } from '@/src/redux/login/authSelectors';
-import { selectHomeBadges } from '@/src/redux/home/homeSelectors';
+import { selectHomeDashboardBadges } from '@/src/redux/home/homeSelectors';
 import type { HomeBadges } from '@/src/types/home/home.types';
 
 export interface UseHomeDashboardResult {
@@ -19,7 +19,7 @@ export interface UseHomeDashboardResult {
  */
 export function useHomeDashboard(): UseHomeDashboardResult {
   const user = useAppSelector(selectAuthUser);
-  const badges = useAppSelector(selectHomeBadges);
+  const badges = useAppSelector(selectHomeDashboardBadges);
 
   const displayName = useMemo(
     () => user?.displayName || user?.username || homeCopy.fallbackName,

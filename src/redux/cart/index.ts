@@ -10,6 +10,7 @@ export {
   removeCartGroup,
   addItemToCart,
   resetCartState,
+  hydrateCartState,
   cartReducer,
 } from './cartSlice';
 export type { CartState } from './cartSlice';
@@ -19,4 +20,5 @@ export {
   selectCartGrandTotal,
   selectIsAllCartSelected,
   selectHasSelectedCartItems,
+  selectCartBadgeCount,
 } from './cartSelectors';

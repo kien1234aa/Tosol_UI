@@ -12,7 +12,17 @@ export const searchCopy = {
   emptyResults: 'Không tìm thấy sản phẩm phù hợp',
   currencySuffix: 'đ',
   platformPickerTitle: 'Chọn nền tảng',
+  warehousePickerTitle: 'Chọn kho',
+  warehousePlaceholder: 'Chọn kho',
+  allWarehousesLabel: 'Tất cả các kho',
   imageSearchLabel: 'Tìm kiếm theo hình ảnh',
+  priceOnRequest: 'Liên hệ',
+  skuLabel: 'SKU',
+  stockLabel: 'Tồn kho',
+  warehouseCountLabel: 'Kho',
+  outOfStockLabel: 'Hết hàng',
+  lowStockLabel: 'Sắp hết',
+  inStockLabel: 'Còn hàng',
 } as const;
 
 export const productDetailCopy = {
@@ -34,6 +44,17 @@ export const productDetailCopy = {
   back: 'Quay lại',
   decreaseQuantity: 'Giảm số lượng',
   increaseQuantity: 'Tăng số lượng',
+  noDescription: 'Chưa có mô tả sản phẩm',
+  stockSection: 'Tồn kho',
+  availableStockLabel: 'Khả dụng',
+  reservedStockLabel: 'Giữ chỗ',
+  totalStockLabel: 'Tổng tồn',
+  dimensionsSection: 'Kích thước & khối lượng',
+  weightLabel: 'Khối lượng',
+  dimensionsLabel: 'Kích thước',
+  unitLabel: 'Đơn vị',
+  barcodeLabel: 'Mã vạch',
+  loadError: 'Không thể tải chi tiết sản phẩm',
 } as const;
 
 /** Mock CNY → VND rate for order estimation. */

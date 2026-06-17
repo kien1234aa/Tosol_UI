@@ -5,6 +5,11 @@ export interface CartProductItem {
   name: string;
   variant: string;
   priceCny: number;
+  priceVnd: number;
+  thumbnailUrl?: string | null;
+  sku?: string;
+  maxStock?: number;
+  isOutOfStock?: boolean;
   quantity: number;
   selected: boolean;
 }
@@ -36,6 +41,16 @@ export interface AddToCartPayload {
   name: string;
   seller: string;
   priceCny: number;
+  priceVnd: number;
+  thumbnailUrl?: string | null;
+  sku?: string;
+  maxStock?: number;
+  isOutOfStock?: boolean;
   quantity: number;
   variant: string;
+}
+
+export interface AddToCartResult {
+  success: boolean;
+  message?: string;
 }

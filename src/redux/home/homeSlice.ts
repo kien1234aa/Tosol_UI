@@ -7,9 +7,7 @@ export interface HomeState {
 }
 
 const initialState: HomeState = {
-  badges: {
-    orderCart: 1,
-  },
+  badges: {},
 };
 
 const homeSlice = createSlice({

@@ -9,15 +9,17 @@ import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { searchCopy } from '@/src/configs/search';
 import { lightTokens } from '@/src/configs/theme';
-import type { SearchPlatformKey } from '@/src/types/search/search.types';
-import { SearchPlatformSelector } from './SearchPlatformSelector';
+import type { AuthWarehouse } from '@/src/types/login/auth.types';
+import { SearchWarehouseSelector } from './SearchWarehouseSelector';
 
 interface SearchHeaderProps {
   query: string;
-  selectedPlatform: SearchPlatformKey;
-  selectedPlatformLabel: string;
+  warehouses: AuthWarehouse[];
+  selectedWarehouseId: number | null;
+  selectedWarehouseLabel: string;
   onChangeQuery: (value: string) => void;
-  onSelectPlatform: (key: SearchPlatformKey) => void;
+  onSelectWarehouse: (warehouseId: number | null) => void;
+  isSwitchingWarehouse?: boolean;
   onPressImageSearch?: () => void;
 }
 
@@ -27,10 +29,12 @@ const CAMERA_BUTTON_SIZE = 40;
 
 function SearchHeaderComponent({
   query,
-  selectedPlatform,
-  selectedPlatformLabel,
+  warehouses,
+  selectedWarehouseId,
+  selectedWarehouseLabel,
   onChangeQuery,
-  onSelectPlatform,
+  onSelectWarehouse,
+  isSwitchingWarehouse = false,
   onPressImageSearch,
 }: SearchHeaderProps) {
   const handleImageSearch = useCallback(() => {
@@ -45,10 +49,12 @@ function SearchHeaderComponent({
         </Text>
 
         <HStack style={styles.searchBar}>
-          <SearchPlatformSelector
-            selectedKey={selectedPlatform}
-            selectedLabel={selectedPlatformLabel}
-            onSelect={onSelectPlatform}
+          <SearchWarehouseSelector
+            warehouses={warehouses}
+            selectedWarehouseId={selectedWarehouseId}
+            selectedLabel={selectedWarehouseLabel}
+            isLoading={isSwitchingWarehouse}
+            onSelect={onSelectWarehouse}
           />
 
           <Box style={styles.divider} />

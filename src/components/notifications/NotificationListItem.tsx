@@ -94,7 +94,7 @@ function NotificationListItemComponent({
           </HStack>
 
           <Text size="xs" className="text-typography-500">
-            {notificationTypeLabels[notification.type]}
+            {notification.typeLabel || notificationTypeLabels[notification.type]}
           </Text>
 
           <Text size="sm" className="text-typography-600" numberOfLines={3}>

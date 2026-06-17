@@ -8,6 +8,7 @@ import {
   CartGroupCard,
   CartHeader,
   CartSummaryBar,
+  CreateOrderModal,
 } from '@/src/components/cart';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -15,6 +16,7 @@ import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 
 export function CartScreen() {
+  const cart = useCart();
   const {
     groups,
     grandTotalVnd,
@@ -32,7 +34,7 @@ export function CartScreen() {
     onRemoveGroup,
     onCreateOrders,
     onCreateGroupOrder,
-  } = useCart();
+  } = cart;
 
   return (
     <Box className="flex-1 bg-background-50">
@@ -78,6 +80,62 @@ export function CartScreen() {
           )}
         </ScrollView>
       </SafeAreaView>
+
+      <CreateOrderModal
+        visible={cart.visible}
+        form={cart.form}
+        shopOptions={cart.shopOptions}
+        warehouseOptions={cart.warehouseOptions}
+        shippingPartnerOptions={cart.shippingPartnerOptions}
+        selectedShopLabel={cart.selectedShopLabel}
+        selectedWarehouseLabel={cart.selectedWarehouseLabel}
+        selectedShippingPartnerLabel={cart.selectedShippingPartnerLabel}
+        selectedShopBadge={cart.selectedShopBadge}
+        orderTotalVnd={cart.orderTotalVnd}
+        shippingFeeVnd={cart.shippingFeeVnd}
+        isLoadingShippingFee={cart.isLoadingShippingFee}
+        shippingEstimateError={cart.shippingEstimateError}
+        isLoadingShops={cart.isLoadingShops}
+        isLoadingWarehouses={cart.isLoadingWarehouses}
+        isLoadingShippingPartners={cart.isLoadingShippingPartners}
+        shippingPartnersError={cart.shippingPartnersError}
+        provinceOptions={cart.provinceOptions}
+        districtOptions={cart.districtOptions}
+        wardOptions={cart.wardOptions}
+        selectedProvinceLabel={cart.selectedProvinceLabel}
+        selectedDistrictLabel={cart.selectedDistrictLabel}
+        selectedWardLabel={cart.selectedWardLabel}
+        isLoadingProvinces={cart.isLoadingProvinces}
+        isLoadingDistricts={cart.isLoadingDistricts}
+        isLoadingWards={cart.isLoadingWards}
+        provincesError={cart.provincesError}
+        districtsError={cart.districtsError}
+        wardsError={cart.wardsError}
+        loadError={cart.loadError}
+        isSubmitting={cart.isSubmitting}
+        closeCreateOrder={cart.closeCreateOrder}
+        reloadOptions={cart.reloadOptions}
+        onSelectShop={cart.onSelectShop}
+        onSelectWarehouse={cart.onSelectWarehouse}
+        onSelectShippingPartner={cart.onSelectShippingPartner}
+        customerSearchQuery={cart.customerSearchQuery}
+        customerSearchResults={cart.customerSearchResults}
+        selectedCustomerName={cart.selectedCustomerName}
+        isSearchingCustomers={cart.isSearchingCustomers}
+        customerSearchError={cart.customerSearchError}
+        onChangeCustomerSearchQuery={cart.onChangeCustomerSearchQuery}
+        onSelectCustomer={cart.onSelectCustomer}
+        onSelectShippingMethod={cart.onSelectShippingMethod}
+        onChangeRecipientName={cart.onChangeRecipientName}
+        onChangeRecipientPhone={cart.onChangeRecipientPhone}
+        onChangeRecipientAddress={cart.onChangeRecipientAddress}
+        onSelectProvince={cart.onSelectProvince}
+        onSelectDistrict={cart.onSelectDistrict}
+        onSelectWard={cart.onSelectWard}
+        onToggleCod={cart.onToggleCod}
+        onToggleAdvanced={cart.onToggleAdvanced}
+        onSubmit={cart.onSubmit}
+      />
     </Box>
   );
 }

@@ -1,7 +1,4 @@
-import {
-  mockUserProfile,
-  personalInfoCopy,
-} from '@/src/configs/profile';
+import { emptyUserProfile, personalInfoCopy } from '@/src/configs/profile';
 import type { AuthUser } from '@/src/types/login/auth.types';
 import type {
   PersonalInfoFormValues,
@@ -14,15 +11,29 @@ const PHONE_PATTERN = /^(\+84|0)\d{8,10}$/;
 
 export function buildUserProfile(user: AuthUser | null): UserProfile {
   if (!user) {
-    return mockUserProfile;
+    return { ...emptyUserProfile };
   }
 
   return {
     fullName: user.displayName,
-    username: user.username,
+    username: user.email,
     email: user.email,
-    phone: user.seller?.phone ?? mockUserProfile.phone,
-    address: user.seller?.address ?? mockUserProfile.address,
+    phone: user.phone?.trim() || user.seller?.phone?.trim() || '',
+    address: user.seller?.address ?? '',
+  };
+}
+
+/** Ưu tiên chỉnh sửa local; fallback dữ liệu từ API khi chưa lưu. */
+export function mergeUserProfile(
+  fromAuth: UserProfile,
+  storedProfile: UserProfile,
+): UserProfile {
+  return {
+    fullName: storedProfile.fullName || fromAuth.fullName,
+    username: storedProfile.username || fromAuth.username,
+    email: storedProfile.email || fromAuth.email,
+    phone: storedProfile.phone || fromAuth.phone,
+    address: storedProfile.address || fromAuth.address,
   };
 }
 
@@ -68,4 +79,18 @@ export function isPersonalInfoValid(
   errors: PersonalInfoValidationErrors,
 ): boolean {
   return Object.keys(errors).length === 0;
+}
+
+export function formatUserRole(role: string): string {
+  return (
+    {
+      admin: 'Quản trị viên',
+      seller: 'Người bán',
+      staff: 'Nhân viên',
+    }[role] ?? role
+  );
+}
+
+export function isAdminUser(role: string | null | undefined): boolean {
+  return role === 'admin';
 }

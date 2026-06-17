@@ -8,3 +8,8 @@ export { ProfileStackHeader } from './ProfileStackHeader';
 export { PersonalInfoField } from './PersonalInfoField';
 export { PersonalInfoAvatar } from './PersonalInfoAvatar';
 export { ChangePasswordField } from './ChangePasswordField';
+export { StaffListCard } from './StaffListCard';
+export { StaffDetailSummaryCard } from './StaffDetailSummaryCard';
+export { StaffDetailInfoRow } from './StaffDetailInfoRow';
+export { StaffEditModal } from './StaffEditModal';
+export { StaffChangePasswordModal } from './StaffChangePasswordModal';

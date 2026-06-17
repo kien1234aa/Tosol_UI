@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import {
+  Image,
   Modal,
   Pressable as RNPressable,
   StyleSheet,
@@ -11,7 +12,7 @@ import {
   Trash2,
 } from 'lucide-react-native';
 import { ordersCopy } from '@/src/configs/orders';
-import { formatOrderDate, formatOrderPrice } from '@/src/helpers/orders';
+import { formatOrderDate, formatOrderPrice, canCancelSaleOrder, canEditSaleOrder } from '@/src/helpers/orders';
 import { lightTokens } from '@/src/configs/theme';
 import { buttonContentCenter } from '@/src/configs/theme/buttonLayout';
 import type { OrderListItem } from '@/src/types/orders/orders.types';
@@ -27,7 +28,7 @@ interface OrderListCardProps {
   order: OrderListItem;
   onPress: (orderId: string) => void;
   onRemove: (orderId: string) => void;
-  onAction: (orderId: string, action: 'view' | 'pay' | 'cancel') => void;
+  onAction: (orderId: string, action: 'view' | 'edit' | 'pay' | 'cancel') => void;
 }
 
 interface DetailRowProps {
@@ -84,19 +85,21 @@ function OrderListCardComponent({
   }, []);
 
   const handleAction = useCallback(
-    (action: 'view' | 'pay' | 'cancel') => {
+    (action: 'view' | 'edit' | 'pay' | 'cancel') => {
       onAction(order.id, action);
       setIsActionsOpen(false);
     },
     [onAction, order.id],
   );
 
+  const canEdit = canEditSaleOrder(order.status);
+
   return (
     <>
       <Box style={styles.card}>
         <HStack style={styles.cardHeader}>
           <Text size="sm" className="font-semibold text-typography-900">
-            {ordersCopy.idLabel} {order.id}
+            {ordersCopy.orderNumberLabel} {order.orderNumber}
           </Text>
           <OrderStatusBadge status={order.status} />
         </HStack>
@@ -108,12 +111,20 @@ function OrderListCardComponent({
           style={styles.bodyPressable}>
           <HStack style={styles.body}>
             <Box style={styles.thumbnailWrap}>
-              <Center style={styles.thumbnail}>
-                <Package
-                  color={lightTokens.tertiary500}
-                  size={THUMBNAIL_ICON_SIZE}
+              {order.thumbnailUrl ? (
+                <Image
+                  source={{ uri: order.thumbnailUrl }}
+                  style={styles.thumbnailImage}
+                  resizeMode="cover"
                 />
-              </Center>
+              ) : (
+                <Center style={styles.thumbnail}>
+                  <Package
+                    color={lightTokens.tertiary500}
+                    size={THUMBNAIL_ICON_SIZE}
+                  />
+                </Center>
+              )}
               <Center style={styles.quantityBadge}>
                 <Text size="xs" className="font-bold text-typography-0">
                   {order.productQuantity}
@@ -128,6 +139,14 @@ function OrderListCardComponent({
                 className="font-medium leading-5 text-typography-900">
                 {order.productName}
               </Text>
+              <DetailRow
+                label={ordersCopy.customerLabel}
+                value={order.customerName}
+              />
+              <DetailRow
+                label={ordersCopy.shopLabel}
+                value={order.shopName}
+              />
               <DetailRow
                 label={ordersCopy.createdAtLabel}
                 value={formatOrderDate(order.createdAt)}
@@ -150,13 +169,15 @@ function OrderListCardComponent({
         </RNPressable>
 
         <HStack style={styles.footer}>
-          <RNPressable
-            onPress={handleRemove}
-            accessibilityRole="button"
-            accessibilityLabel={ordersCopy.deleteOrder}
-            style={styles.deleteButton}>
-            <Trash2 color={lightTokens.error500} size={18} />
-          </RNPressable>
+          {canCancelSaleOrder(order.status) ? (
+            <RNPressable
+              onPress={handleRemove}
+              accessibilityRole="button"
+              accessibilityLabel={ordersCopy.cancelOrder}
+              style={styles.deleteButton}>
+              <Trash2 color={lightTokens.error500} size={18} />
+            </RNPressable>
+          ) : null}
 
           <RNPressable
             onPress={handleOpenActions}
@@ -188,6 +209,15 @@ function OrderListCardComponent({
                   {ordersCopy.viewDetail}
                 </Text>
               </Pressable>
+              {canEdit ? (
+                <Pressable
+                  onPress={() => handleAction('edit')}
+                  style={styles.actionOption}>
+                  <Text size="sm" className="text-typography-900">
+                    {ordersCopy.editOrder}
+                  </Text>
+                </Pressable>
+              ) : null}
               <Pressable
                 onPress={() => handleAction('pay')}
                 style={styles.actionOption}>
@@ -195,13 +225,15 @@ function OrderListCardComponent({
                   {ordersCopy.payOrder}
                 </Text>
               </Pressable>
-              <Pressable
-                onPress={() => handleAction('cancel')}
-                style={styles.actionOption}>
-                <Text size="sm" className="text-error-500">
-                  {ordersCopy.cancelOrder}
-                </Text>
-              </Pressable>
+              {canCancelSaleOrder(order.status) ? (
+                <Pressable
+                  onPress={() => handleAction('cancel')}
+                  style={styles.actionOption}>
+                  <Text size="sm" className="text-error-500">
+                    {ordersCopy.cancelOrder}
+                  </Text>
+                </Pressable>
+              ) : null}
             </VStack>
           </RNPressable>
         </RNPressable>
@@ -266,6 +298,14 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 10,
     backgroundColor: lightTokens.tertiary50,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: lightTokens.outline100,
+  },
+  thumbnailImage: {
+    width: 72,
+    height: 72,
+    borderRadius: 10,
+    backgroundColor: lightTokens.background100,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },

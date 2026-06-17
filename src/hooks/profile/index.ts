@@ -1,6 +1,10 @@
 export { useProfile } from './useProfile';
 export { usePersonalInfo } from './usePersonalInfo';
 export { useChangePassword } from './useChangePassword';
+export { useStaffList } from './useStaffList';
+export { useStaffDetail } from './useStaffDetail';
 export type { UseProfileResult } from './useProfile';
 export type { UsePersonalInfoResult } from './usePersonalInfo';
 export type { UseChangePasswordResult } from './useChangePassword';
+export type { UseStaffListResult } from './useStaffList';
+export type { UseStaffDetailResult } from './useStaffDetail';

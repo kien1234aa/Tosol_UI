@@ -1,39 +1,57 @@
 import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
-import { orderStatusLabels } from '@/src/configs/orders';
+import { saleOrderStatusLabels } from '@/src/configs/orders';
 import { lightTokens } from '@/src/configs/theme';
-import type { OrderStatus } from '@/src/types/orders/orders.types';
 import { Box } from '@/src/uikits/box';
 import { Text } from '@/src/uikits/text';
 
 interface OrderStatusBadgeProps {
-  status: OrderStatus;
+  status: string;
 }
 
-const STATUS_STYLES: Record<
-  OrderStatus,
-  { backgroundColor: string; color: string }
-> = {
-  awaitingDeposit: {
-    backgroundColor: lightTokens.tertiary100,
-    color: lightTokens.tertiary600,
-  },
-  awaitingPayment: {
+const STATUS_STYLES: Record<string, { backgroundColor: string; color: string }> = {
+  pending: {
     backgroundColor: '#FFF4E5',
     color: '#B45309',
   },
-  readyToShip: {
+  confirmed: {
+    backgroundColor: lightTokens.tertiary100,
+    color: lightTokens.tertiary600,
+  },
+  packing: {
+    backgroundColor: lightTokens.tertiary100,
+    color: lightTokens.tertiary600,
+  },
+  shipping: {
+    backgroundColor: '#E8F4FD',
+    color: '#0369A1',
+  },
+  ready_to_ship: {
     backgroundColor: '#E8F7EE',
     color: '#15803D',
   },
-  processing: {
-    backgroundColor: lightTokens.background100,
-    color: lightTokens.typography900,
+  ready: {
+    backgroundColor: '#E8F7EE',
+    color: '#15803D',
+  },
+  delivered: {
+    backgroundColor: '#E8F7EE',
+    color: '#15803D',
+  },
+  cancelled: {
+    backgroundColor: '#FEECEC',
+    color: lightTokens.error500,
   },
 };
 
+const DEFAULT_STATUS_STYLE = {
+  backgroundColor: lightTokens.background100,
+  color: lightTokens.typography900,
+};
+
 function OrderStatusBadgeComponent({ status }: OrderStatusBadgeProps) {
-  const palette = STATUS_STYLES[status];
+  const palette = STATUS_STYLES[status] ?? DEFAULT_STATUS_STYLE;
+  const label = saleOrderStatusLabels[status] ?? status;
 
   return (
     <Box style={[styles.badge, { backgroundColor: palette.backgroundColor }]}>
@@ -41,7 +59,7 @@ function OrderStatusBadgeComponent({ status }: OrderStatusBadgeProps) {
         size="xs"
         className="font-medium"
         style={{ color: palette.color }}>
-        {orderStatusLabels[status]}
+        {label}
       </Text>
     </Box>
   );

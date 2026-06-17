@@ -1,52 +1,63 @@
-import { useMemo } from 'react';
-import { getOrderDetailById } from '@/src/helpers/orders';
-import { useAppSelector } from '@/src/hooks/common/useAppSelector';
-import { selectOrderById } from '@/src/redux/orders';
+import { useCallback, useEffect, useState } from 'react';
+import { saleOrdersService } from '@/src/apis/orders/saleOrders.api';
+import { orderDetailCopy } from '@/src/configs/orders';
+import { mapSaleOrderDetailToOrderDetail, canCancelSaleOrder, canEditSaleOrder } from '@/src/helpers/orders/saleOrder.helpers';
 import type { OrderDetail } from '@/src/types/orders/orders.types';
 
 export interface UseOrderDetailResult {
   order: OrderDetail | undefined;
+  isLoading: boolean;
+  error: string | null;
   canPay: boolean;
   canCancel: boolean;
+  canEdit: boolean;
+  reload: () => void;
 }
 
 export function useOrderDetail(orderId: string): UseOrderDetailResult {
-  const listItem = useAppSelector(state => selectOrderById(state, orderId));
+  const [order, setOrder] = useState<OrderDetail | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const order = useMemo(() => {
-    const detail = getOrderDetailById(orderId);
-    if (!detail) {
-      return undefined;
+  const loadOrder = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await saleOrdersService.getDetail(orderId);
+      setOrder(mapSaleOrderDetailToOrderDetail(data));
+    } catch (loadError) {
+      const message =
+        loadError instanceof Error
+          ? loadError.message
+          : orderDetailCopy.loadError;
+      setError(message);
+      setOrder(undefined);
+    } finally {
+      setIsLoading(false);
     }
+  }, [orderId]);
 
-    if (!listItem) {
-      return detail;
-    }
-
-    return {
-      ...detail,
-      status: listItem.status,
-      paidVnd: listItem.paidVnd,
-      totalCostVnd: listItem.totalCostVnd,
-      costs: {
-        ...detail.costs,
-        paidVnd: listItem.paidVnd,
-        totalVnd: listItem.totalCostVnd,
-        remainingVnd: Math.max(listItem.totalCostVnd - listItem.paidVnd, 0),
-      },
-    };
-  }, [listItem, orderId]);
+  useEffect(() => {
+    void loadOrder();
+  }, [loadOrder]);
 
   const canPay =
-    order?.status === 'awaitingDeposit' || order?.status === 'awaitingPayment';
-  const canCancel =
-    order?.status === 'awaitingDeposit' ||
-    order?.status === 'awaitingPayment' ||
-    order?.status === 'processing';
+    order != null &&
+    order.remainingVnd > 0 &&
+    (order.paymentStatus === 'pending' ||
+      order.paymentStatus === 'partial_paid');
+
+  const canCancel = order != null && canCancelSaleOrder(order.status);
+  const canEdit = order != null && canEditSaleOrder(order.status);
 
   return {
     order,
-    canPay: Boolean(canPay && order && order.costs.remainingVnd > 0),
-    canCancel: Boolean(canCancel),
+    isLoading,
+    error,
+    canPay,
+    canCancel,
+    canEdit,
+    reload: loadOrder,
   };
 }

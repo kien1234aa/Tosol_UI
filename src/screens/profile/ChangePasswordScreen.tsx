@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { changePasswordCopy } from '@/src/configs/profile';
@@ -13,6 +13,8 @@ import {
   ProfileStackHeader,
 } from '@/src/components/profile';
 import { useChangePassword } from '@/src/hooks/profile';
+import { useAppSelector } from '@/src/hooks/common/useAppSelector';
+import { selectIsAdminUser } from '@/src/redux/login';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { ProfileStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
@@ -23,6 +25,7 @@ import { VStack } from '@/src/uikits/vstack';
 type ChangePasswordScreenProps = ProfileStackScreenProps<'ChangePassword'>;
 
 export function ChangePasswordScreen({ navigation }: ChangePasswordScreenProps) {
+  const isAdmin = useAppSelector(selectIsAdminUser);
   const {
     currentPassword,
     newPassword,
@@ -44,6 +47,12 @@ export function ChangePasswordScreen({ navigation }: ChangePasswordScreenProps) 
 
   const handleBack = useStackGoBack(navigation, 'ProfileMain');
 
+  useEffect(() => {
+    if (!isAdmin) {
+      navigation.goBack();
+    }
+  }, [isAdmin, navigation]);
+
   const handleSubmit = useCallback(async () => {
     const didSubmit = await onSubmit();
     if (!didSubmit) {
@@ -57,6 +66,10 @@ export function ChangePasswordScreen({ navigation }: ChangePasswordScreenProps) 
       },
     ]);
   }, [navigation, onSubmit]);
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <Box className="flex-1 bg-background-50">

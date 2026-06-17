@@ -1,8 +1,9 @@
 import React, { memo, useCallback } from 'react';
-import { Linking, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Phone } from 'lucide-react-native';
 import { profileCopy, profileSupportLinks } from '@/src/configs/profile';
 import { lightTokens } from '@/src/configs/theme';
+import { openPhoneCall, openUrlIfSupported } from '@/src/helpers/linking';
 import { Center } from '@/src/uikits/center';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
@@ -22,11 +23,11 @@ function ZaloIcon() {
 
 function ProfileSupportCardComponent() {
   const handleOpenZalo = useCallback(() => {
-    Linking.openURL(`https://zalo.me/${profileSupportLinks.zaloPhone}`);
+    void openUrlIfSupported('http://zalo.me/3634251204634989664?src=qr');
   }, []);
 
   const handleCallSupport = useCallback(() => {
-    Linking.openURL(`tel:${profileSupportLinks.zaloPhone}`);
+    void openPhoneCall(profileSupportLinks.zaloPhone);
   }, []);
 
   return (

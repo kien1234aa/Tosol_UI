@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { cartQuantityLimits, mockCartGroups } from '@/src/configs/cart';
+import { cartQuantityLimits } from '@/src/configs/cart';
 import { createCartGroupId } from '@/src/helpers/cart';
+import { getAddToCartMaxQuantity } from '@/src/helpers/search/cart.helpers';
 import type { AddToCartPayload, CartGroup } from '@/src/types/cart/cart.types';
 
 export interface CartState {
@@ -8,8 +9,24 @@ export interface CartState {
 }
 
 const initialState: CartState = {
-  groups: mockCartGroups,
+  groups: [],
 };
+
+function removeEmptyCartGroups(state: CartState): void {
+  state.groups = state.groups.filter(group => group.products.length > 0);
+}
+
+function clampProductQuantity(
+  quantity: number,
+  maxStock?: number,
+): number {
+  const maxQuantity =
+    maxStock != null && maxStock > 0
+      ? Math.min(cartQuantityLimits.max, maxStock)
+      : cartQuantityLimits.max;
+
+  return Math.min(maxQuantity, Math.max(cartQuantityLimits.min, quantity));
+}
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -83,9 +100,10 @@ const cartSlice = createSlice({
       if (!product) {
         return;
       }
-      product.quantity = Math.min(
-        cartQuantityLimits.max,
-        Math.max(cartQuantityLimits.min, action.payload.quantity),
+
+      product.quantity = clampProductQuantity(
+        action.payload.quantity,
+        product.maxStock,
       );
     },
     removeCartProduct(
@@ -96,16 +114,29 @@ const cartSlice = createSlice({
       if (!group) {
         return;
       }
+
       group.products = group.products.filter(
         product => product.id !== action.payload.productId,
       );
+      removeEmptyCartGroups(state);
     },
     removeCartGroup(state, action: PayloadAction<string>) {
       state.groups = state.groups.filter(group => group.id !== action.payload);
     },
     addItemToCart(state, action: PayloadAction<AddToCartPayload>) {
-      const { productId, name, seller, priceCny, quantity, variant } =
-        action.payload;
+      const {
+        productId,
+        name,
+        seller,
+        priceCny,
+        priceVnd,
+        thumbnailUrl,
+        sku,
+        maxStock,
+        isOutOfStock,
+        quantity,
+        variant,
+      } = action.payload;
 
       let group = state.groups.find(item => item.supplierName === seller);
 
@@ -124,15 +155,21 @@ const cartSlice = createSlice({
       }
 
       const existingProduct = group.products.find(item => item.id === productId);
+      const maxQuantity = getAddToCartMaxQuantity(action.payload);
 
       if (existingProduct) {
-        existingProduct.quantity = Math.min(
-          cartQuantityLimits.max,
+        existingProduct.quantity = clampProductQuantity(
           existingProduct.quantity + quantity,
+          maxQuantity,
         );
         existingProduct.priceCny = priceCny;
+        existingProduct.priceVnd = priceVnd;
         existingProduct.name = name;
         existingProduct.variant = variant;
+        existingProduct.thumbnailUrl = thumbnailUrl;
+        existingProduct.sku = sku;
+        existingProduct.maxStock = maxStock;
+        existingProduct.isOutOfStock = isOutOfStock;
         existingProduct.selected = true;
       } else {
         group.products.push({
@@ -140,7 +177,12 @@ const cartSlice = createSlice({
           name,
           variant,
           priceCny,
-          quantity,
+          priceVnd,
+          thumbnailUrl,
+          sku,
+          maxStock,
+          isOutOfStock,
+          quantity: clampProductQuantity(quantity, maxQuantity),
           selected: true,
         });
       }
@@ -149,6 +191,9 @@ const cartSlice = createSlice({
     },
     resetCartState() {
       return initialState;
+    },
+    hydrateCartState(state, action: PayloadAction<CartState>) {
+      state.groups = action.payload.groups;
     },
   },
 });
@@ -165,5 +210,6 @@ export const {
   removeCartGroup,
   addItemToCart,
   resetCartState,
+  hydrateCartState,
 } = cartSlice.actions;
 export const cartReducer = cartSlice.reducer;

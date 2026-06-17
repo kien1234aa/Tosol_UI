@@ -1,17 +1,19 @@
-import React, { memo } from 'react';
-import { StyleSheet } from 'react-native';
-import { Package, Star, Store } from 'lucide-react-native';
-import { productDetailCopy } from '@/src/configs/search';
+import React, { memo, useMemo } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
+import { Package, Store } from 'lucide-react-native';
+import { productDetailCopy, searchCopy } from '@/src/configs/search';
 import {
-  formatCnyPrice,
-  formatExchangeRate,
-  formatProductPrice,
-  formatSoldCount,
+  formatCatalogPrice,
+  formatProductDimensions,
+  formatProductUnit,
+  formatStockQuantity,
+  getProductHeroImageUrl,
+  getProductStockStatusLabel,
 } from '@/src/helpers/search';
 import { lightTokens } from '@/src/configs/theme';
 import {
   buttonFlex,
-  buttonFooterAction,
+  buttonContentCenter,
   buttonLabelStyle,
 } from '@/src/configs/theme/buttonLayout';
 import type {
@@ -45,7 +47,6 @@ function ProductDetailHeaderComponent({ onPressBack }: ProductDetailHeaderProps)
 interface ProductDetailContentProps {
   product: SearchProduct;
   quantity: number;
-  pricing: ProductDetailPricing;
   canDecreaseQuantity: boolean;
   canIncreaseQuantity: boolean;
   onDecreaseQuantity: () => void;
@@ -53,149 +54,207 @@ interface ProductDetailContentProps {
 }
 
 const HERO_ICON_SIZE = 56;
-const STAR_ICON_SIZE = 16;
+
+function InfoRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <HStack className="items-start justify-between gap-3">
+      <Text size="sm" className="text-typography-500">
+        {label}
+      </Text>
+      <Text
+        size="sm"
+        className="flex-1 text-right font-medium text-typography-900">
+        {value}
+      </Text>
+    </HStack>
+  );
+}
 
 function ProductDetailContentComponent({
   product,
   quantity,
-  pricing,
   canDecreaseQuantity,
   canIncreaseQuantity,
   onDecreaseQuantity,
   onIncreaseQuantity,
 }: ProductDetailContentProps) {
-  const showOriginalPrice =
-    pricing.originalUnitPriceCny != null &&
-    pricing.originalUnitPriceCny > pricing.unitPriceCny;
+  const heroImageUrl = useMemo(
+    () => getProductHeroImageUrl(product),
+    [product],
+  );
+  const stockStatusLabel = useMemo(
+    () => getProductStockStatusLabel(product),
+    [product],
+  );
+  const dimensions = useMemo(
+    () => formatProductDimensions(product),
+    [product],
+  );
+
+  const stockBadgeStyle = useMemo(() => {
+    if (product.isOutOfStock) {
+      return styles.stockBadgeDanger;
+    }
+
+    if (product.isLowStock) {
+      return styles.stockBadgeWarning;
+    }
+
+    return styles.stockBadgeSuccess;
+  }, [product.isLowStock, product.isOutOfStock]);
 
   return (
     <VStack className="w-full" space="lg">
-      <Center style={styles.hero}>
-        <Package color={lightTokens.tertiary500} size={HERO_ICON_SIZE} />
-      </Center>
+      <Box style={styles.hero}>
+        {heroImageUrl ? (
+          <Image
+            source={{ uri: heroImageUrl }}
+            style={styles.heroImage}
+            resizeMode="cover"
+          />
+        ) : (
+          <Center style={styles.heroFallback}>
+            <Package color={lightTokens.tertiary500} size={HERO_ICON_SIZE} />
+          </Center>
+        )}
+
+        {stockStatusLabel ? (
+          <View style={[styles.stockBadge, stockBadgeStyle]}>
+            <Text size="xs" className="font-semibold text-typography-0">
+              {stockStatusLabel}
+            </Text>
+          </View>
+        ) : null}
+      </Box>
 
       <VStack space="sm">
         <Text size="xl" className="font-bold leading-7 text-typography-900">
           {product.name}
         </Text>
 
-        <HStack className="items-end gap-2">
-          <Text size="2xl" className="font-bold text-tertiary-600">
-            {formatCnyPrice(pricing.unitPriceCny)}
-          </Text>
-          <Text size="sm" className="pb-1 text-typography-500">
-            {productDetailCopy.approxLabel}{' '}
-            {formatProductPrice(pricing.unitPriceVnd)}
-          </Text>
-          {showOriginalPrice ? (
-            <Text
-              size="sm"
-              className="pb-1 text-typography-500"
-              style={styles.originalPrice}>
-              {formatCnyPrice(pricing.originalUnitPriceCny!)}
-            </Text>
-          ) : null}
-          {pricing.discountPercent != null ? (
-            <Box style={styles.discountBadge}>
-              <Text size="xs" className="font-semibold text-typography-0">
-                -{pricing.discountPercent}%
-              </Text>
-            </Box>
-          ) : null}
-        </HStack>
+        <Text size="2xl" className="font-bold text-tertiary-600">
+          {formatCatalogPrice(product.priceVnd)}
+        </Text>
 
-        <HStack className="items-center gap-4">
-          <HStack className="items-center gap-1">
-            <Star
-              color={lightTokens.tertiary500}
-              size={STAR_ICON_SIZE}
-              fill={lightTokens.tertiary500}
-            />
-            <Text size="sm" className="font-medium text-typography-900">
-              {product.rating.toFixed(1)}
-            </Text>
-            <Text size="sm" className="text-typography-500">
-              {productDetailCopy.ratingLabel}
-            </Text>
-          </HStack>
+        {product.sku ? (
           <Text size="sm" className="text-typography-500">
-            {formatSoldCount(product.soldCount)} {productDetailCopy.soldLabel}
+            {searchCopy.skuLabel}: {product.sku}
           </Text>
-        </HStack>
+        ) : null}
       </VStack>
 
       <Box style={styles.sectionCard}>
-        <VStack space="md">
-          <HStack className="items-center justify-between">
-            <Text size="sm" className="font-semibold text-typography-900">
-              {productDetailCopy.quantitySection}
-            </Text>
-            <ProductQuantitySelector
-              quantity={quantity}
-              canDecrease={canDecreaseQuantity}
-              canIncrease={canIncreaseQuantity}
-              onDecrease={onDecreaseQuantity}
-              onIncrease={onIncreaseQuantity}
+        <VStack space="sm">
+          <Text size="sm" className="font-semibold text-typography-900">
+            {productDetailCopy.stockSection}
+          </Text>
+          <InfoRow
+            label={productDetailCopy.availableStockLabel}
+            value={formatStockQuantity(product.availableStock ?? 0)}
+          />
+          <InfoRow
+            label={productDetailCopy.reservedStockLabel}
+            value={formatStockQuantity(product.reservedStock ?? 0)}
+          />
+          <InfoRow
+            label={productDetailCopy.totalStockLabel}
+            value={formatStockQuantity(product.totalStock ?? 0)}
+          />
+          {(product.warehousesCount ?? 0) > 0 ? (
+            <InfoRow
+              label={searchCopy.warehouseCountLabel}
+              value={String(product.warehousesCount)}
             />
-          </HStack>
-
-          <Box style={styles.innerDivider} />
-
-          <VStack space="sm">
-            <Text size="sm" className="font-semibold text-typography-900">
-              {productDetailCopy.exchangeSection}
-            </Text>
-            <Text size="xs" className="text-typography-500">
-              {productDetailCopy.exchangeRateLabel}:{' '}
-              {formatExchangeRate(pricing.exchangeRate)}
-            </Text>
-
-            <HStack className="items-center justify-between">
-              <Text size="sm" className="text-typography-600">
-                {productDetailCopy.unitPriceLabel}
-              </Text>
-              <VStack className="items-end" space="xs">
-                <Text size="sm" className="font-medium text-typography-900">
-                  {formatCnyPrice(pricing.unitPriceCny)}
-                </Text>
-                <Text size="xs" className="text-typography-500">
-                  {productDetailCopy.approxLabel}{' '}
-                  {formatProductPrice(pricing.unitPriceVnd)}
-                </Text>
-              </VStack>
-            </HStack>
-
-            <HStack className="items-center justify-between">
-              <Text size="sm" className="font-semibold text-typography-900">
-                {productDetailCopy.totalLabel} ({quantity})
-              </Text>
-              <VStack className="items-end" space="xs">
-                <Text size="md" className="font-bold text-tertiary-600">
-                  {formatCnyPrice(pricing.totalPriceCny)}
-                </Text>
-                <Text size="sm" className="font-semibold text-typography-900">
-                  {productDetailCopy.approxLabel}{' '}
-                  {formatProductPrice(pricing.totalPriceVnd)}
-                </Text>
-              </VStack>
-            </HStack>
-          </VStack>
+          ) : null}
         </VStack>
       </Box>
 
       <Box style={styles.sectionCard}>
-        <HStack className="items-center gap-2">
-          <Store color={lightTokens.tertiary600} size={18} />
+        <HStack className="items-center justify-between">
           <VStack space="xs">
-            <Text size="xs" className="text-typography-500">
-              {productDetailCopy.sellerSection}
-            </Text>
             <Text size="sm" className="font-semibold text-typography-900">
-              {product.seller}
+              {productDetailCopy.quantitySection}
+            </Text>
+            <Text size="xs" className="text-typography-500">
+              {productDetailCopy.unitPriceLabel}:{' '}
+              {formatCatalogPrice(product.priceVnd)}
             </Text>
           </VStack>
+          <ProductQuantitySelector
+            quantity={quantity}
+            canDecrease={canDecreaseQuantity}
+            canIncrease={canIncreaseQuantity}
+            onDecrease={onDecreaseQuantity}
+            onIncrease={onIncreaseQuantity}
+          />
         </HStack>
       </Box>
+
+      {(product.weight ?? 0) > 0 || dimensions ? (
+        <Box style={styles.sectionCard}>
+          <VStack space="sm">
+            <Text size="sm" className="font-semibold text-typography-900">
+              {productDetailCopy.dimensionsSection}
+            </Text>
+            {(product.weight ?? 0) > 0 ? (
+              <InfoRow
+                label={productDetailCopy.weightLabel}
+                value={`${formatStockQuantity(product.weight ?? 0)} g`}
+              />
+            ) : null}
+            {dimensions ? (
+              <InfoRow
+                label={productDetailCopy.dimensionsLabel}
+                value={dimensions}
+              />
+            ) : null}
+            {product.unit ? (
+              <InfoRow
+                label={productDetailCopy.unitLabel}
+                value={formatProductUnit(product.unit)}
+              />
+            ) : null}
+            {product.barcode ? (
+              <InfoRow
+                label={productDetailCopy.barcodeLabel}
+                value={product.barcode}
+              />
+            ) : null}
+          </VStack>
+        </Box>
+      ) : null}
+
+      {product.sellerName ? (
+        <Box style={styles.sectionCard}>
+          <HStack className="items-start gap-2">
+            <Store color={lightTokens.tertiary600} size={18} />
+            <VStack className="flex-1" space="xs">
+              <Text size="xs" className="text-typography-500">
+                {productDetailCopy.sellerSection}
+              </Text>
+              <Text size="sm" className="font-semibold text-typography-900">
+                {product.sellerName}
+              </Text>
+              {product.sellerPhone ? (
+                <Text size="sm" className="text-typography-600">
+                  {product.sellerPhone}
+                </Text>
+              ) : null}
+              {product.sellerEmail ? (
+                <Text size="sm" className="text-typography-500">
+                  {product.sellerEmail}
+                </Text>
+              ) : null}
+            </VStack>
+          </HStack>
+        </Box>
+      ) : null}
 
       <VStack space="sm">
         <Text size="lg" className="font-bold text-typography-900">
@@ -203,7 +262,7 @@ function ProductDetailContentComponent({
         </Text>
         <Box style={styles.sectionCard}>
           <Text size="sm" className="leading-6 text-typography-700">
-            {product.description}
+            {product.description || productDetailCopy.noDescription}
           </Text>
         </Box>
       </VStack>
@@ -213,40 +272,43 @@ function ProductDetailContentComponent({
 
 interface ProductDetailActionsProps {
   pricing: ProductDetailPricing;
+  disabled?: boolean;
   onPressAddToCart?: () => void;
   onPressBuyNow?: () => void;
 }
 
 function ProductDetailActionsComponent({
   pricing,
+  disabled = false,
   onPressAddToCart,
   onPressBuyNow,
 }: ProductDetailActionsProps) {
   return (
-    <VStack space="sm">
+    <VStack style={styles.actionsContainer}>
       <HStack className="items-center justify-between">
-        <Text size="sm" className="text-typography-500">
+        <Text size="xs" className="text-typography-500">
           {productDetailCopy.totalLabel}
         </Text>
-        <VStack className="items-end" space="xs">
-          <Text size="sm" className="font-bold text-tertiary-600">
-            {formatCnyPrice(pricing.totalPriceCny)}
-          </Text>
-          <Text size="xs" className="font-semibold text-typography-900">
-            {productDetailCopy.approxLabel}{' '}
-            {formatProductPrice(pricing.totalPriceVnd)}
-          </Text>
-        </VStack>
+        <Text size="sm" className="font-bold text-tertiary-600">
+          {formatCatalogPrice(pricing.totalPriceVnd)}
+        </Text>
       </HStack>
 
-      <HStack className="w-full" space="md">
+      <HStack style={styles.actionsRow}>
         <Pressable
           onPress={onPressAddToCart}
+          disabled={disabled}
           accessibilityRole="button"
           accessibilityLabel={productDetailCopy.addToCart}
-          style={[buttonFooterAction, buttonFlex, styles.outlineButton]}>
+          accessibilityState={{ disabled }}
+          style={[
+            buttonFlex,
+            styles.actionButton,
+            styles.outlineButton,
+            disabled && styles.disabledButton,
+          ]}>
           <Text
-            size="sm"
+            size="xs"
             className="font-semibold text-tertiary-600"
             style={buttonLabelStyle}>
             {productDetailCopy.addToCart}
@@ -255,11 +317,18 @@ function ProductDetailActionsComponent({
 
         <Pressable
           onPress={onPressBuyNow}
+          disabled={disabled}
           accessibilityRole="button"
           accessibilityLabel={productDetailCopy.buyNow}
-          style={[buttonFooterAction, buttonFlex, styles.primaryButton]}>
+          accessibilityState={{ disabled }}
+          style={[
+            buttonFlex,
+            styles.actionButton,
+            styles.primaryButton,
+            disabled && styles.disabledButton,
+          ]}>
           <Text
-            size="sm"
+            size="xs"
             className="font-semibold text-typography-0"
             style={buttonLabelStyle}>
             {productDetailCopy.buyNow}
@@ -274,16 +343,36 @@ const styles = StyleSheet.create({
   hero: {
     width: '100%',
     aspectRatio: 1,
+    maxHeight: 320,
     borderRadius: 16,
     backgroundColor: lightTokens.tertiary50,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
+    overflow: 'hidden',
   },
-  discountBadge: {
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginBottom: 4,
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  heroFallback: {
+    width: '100%',
+    height: '100%',
+  },
+  stockBadge: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  stockBadgeSuccess: {
+    backgroundColor: lightTokens.tertiary600,
+  },
+  stockBadgeWarning: {
+    backgroundColor: 'rgb(217, 119, 6)',
+  },
+  stockBadgeDanger: {
     backgroundColor: lightTokens.error500,
   },
   sectionCard: {
@@ -294,9 +383,17 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
-  innerDivider: {
-    height: 1,
-    backgroundColor: lightTokens.outline100,
+  actionsContainer: {
+    gap: 8,
+  },
+  actionsRow: {
+    width: '100%',
+    gap: 10,
+  },
+  actionButton: {
+    ...buttonContentCenter,
+    height: 40,
+    borderRadius: 10,
   },
   outlineButton: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -306,8 +403,8 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: lightTokens.tertiary500,
   },
-  originalPrice: {
-    textDecorationLine: 'line-through',
+  disabledButton: {
+    opacity: 0.5,
   },
 });
 

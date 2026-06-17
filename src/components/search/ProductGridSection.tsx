@@ -1,80 +1,119 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { memo, useCallback } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  type ListRenderItem,
+} from 'react-native';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
-import { HStack } from '@/src/uikits/hstack';
 import { Text } from '@/src/uikits/text';
-import { VStack } from '@/src/uikits/vstack';
+import { mainLayout } from '@/src/configs/main';
 import { searchCopy } from '@/src/configs/search';
+import { lightTokens } from '@/src/configs/theme';
 import type { SearchProduct } from '@/src/types/search/search.types';
+import { ListLoadingGate } from '@/src/shared/components/ui/ListLoadingGate';
+import { ProductGridSkeleton } from '@/src/shared/components/ui/skeleton';
 import { ProductCard } from './ProductCard';
 
 const GRID_GAP = 12;
 
-function pairRows<T>(items: T[]): T[][] {
-  const rows: T[][] = [];
-  for (let index = 0; index < items.length; index += 2) {
-    rows.push(items.slice(index, index + 2));
-  }
-  return rows;
-}
-
 interface ProductGridSectionProps {
   products: SearchProduct[];
+  isLoading?: boolean;
+  isLoadingMore?: boolean;
+  error?: string | null;
   onPressProduct?: (product: SearchProduct) => void;
+  onEndReached?: () => void;
 }
 
 function ProductGridSectionComponent({
   products,
+  isLoading = false,
+  isLoadingMore = false,
+  error = null,
   onPressProduct,
+  onEndReached,
 }: ProductGridSectionProps) {
-  const rows = useMemo(() => pairRows(products), [products]);
-
-  const handlePress = useCallback(
-    (product: SearchProduct) => () => onPressProduct?.(product),
+  const renderItem = useCallback<ListRenderItem<SearchProduct>>(
+    ({ item }) => (
+      <Box style={styles.cell}>
+        <ProductCard product={item} onPress={onPressProduct} />
+      </Box>
+    ),
     [onPressProduct],
   );
 
-  return (
-    <VStack className="w-full" space="md">
-      <Text size="lg" className="font-bold text-typography-900">
+  const keyExtractor = useCallback((item: SearchProduct) => item.id, []);
+
+  const ListHeaderComponent = useCallback(
+    () => (
+      <Text size="lg" className="mb-3 font-bold text-typography-900">
         {searchCopy.productsSection}
       </Text>
+    ),
+    [],
+  );
 
-      {products.length === 0 ? (
-        <Center className="py-8">
-          <Text size="sm" className="text-center text-typography-500">
-            {searchCopy.emptyResults}
-          </Text>
-        </Center>
-      ) : (
-        <VStack className="w-full" style={styles.grid}>
-          {rows.map((row, rowIndex) => (
-            <HStack key={`product-row-${rowIndex}`} style={styles.row}>
-              {row.map(product => (
-                <Box key={product.id} style={styles.cell}>
-                  <ProductCard
-                    product={product}
-                    onPress={handlePress(product)}
-                  />
-                </Box>
-              ))}
-              {row.length === 1 ? <Box style={styles.cell} /> : null}
-            </HStack>
-          ))}
-        </VStack>
-      )}
-    </VStack>
+  const ListEmptyComponent = useCallback(() => {
+    return (
+      <Center className="py-8">
+        <Text size="sm" className="text-center text-typography-500">
+          {error ?? searchCopy.emptyResults}
+        </Text>
+      </Center>
+    );
+  }, [error]);
+
+  const ListFooterComponent = useCallback(() => {
+    if (!isLoadingMore) {
+      return null;
+    }
+
+    return (
+      <Center className="py-4">
+        <ActivityIndicator color={lightTokens.tertiary600} />
+      </Center>
+    );
+  }, [isLoadingMore]);
+
+  return (
+    <ListLoadingGate
+      loading={isLoading}
+      refreshing={isLoading && products.length > 0}
+      itemCount={products.length}
+      options={{ canShowSkeleton: !error }}
+      skeleton={<ProductGridSkeleton rowCount={4} />}>
+      <FlatList
+        data={products}
+        style={styles.list}
+        numColumns={2}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        columnWrapperStyle={products.length > 0 ? styles.row : undefined}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={ListEmptyComponent}
+        ListFooterComponent={ListFooterComponent}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.35}
+      />
+    </ListLoadingGate>
   );
 }
 
 const styles = StyleSheet.create({
-  grid: {
-    gap: GRID_GAP,
+  list: {
+    flex: 1,
+  },
+  content: {
+    paddingBottom: mainLayout.tabContentBottomPaddingLoose,
   },
   row: {
     gap: GRID_GAP,
-    width: '100%',
+    marginBottom: GRID_GAP,
   },
   cell: {
     flex: 1,

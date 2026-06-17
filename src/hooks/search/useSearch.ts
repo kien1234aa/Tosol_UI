@@ -1,40 +1,83 @@
-import { useCallback, useMemo } from 'react';
-import { searchPlatforms } from '@/src/configs/search';
+import { useCallback, useEffect } from 'react';
+import { Alert } from 'react-native';
+import { isSameWarehouseSelection } from '@/src/configs/warehouse';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import {
+  selectAuthWarehouses,
+  selectCurrentWarehouseId,
+  selectIsSwitchingWarehouse,
+  selectSelectedWarehouseLabel,
+  switchWarehouseThunk,
+} from '@/src/redux/login';
+import {
+  fetchProductsThunk,
   selectFilteredSearchProducts,
-  selectSearchPlatform,
+  selectHasMoreSearchProducts,
+  selectIsLoadingMoreSearchProducts,
+  selectIsLoadingSearchProducts,
+  selectSearchCurrentPage,
+  selectSearchProductsError,
   selectSearchQuery,
-  setSearchPlatform,
   setSearchQuery,
 } from '@/src/redux/search';
-import type {
-  SearchPlatformKey,
-  SearchProduct,
-} from '@/src/types/search/search.types';
+import type { AuthWarehouse } from '@/src/types/login/auth.types';
+import type { SearchProduct } from '@/src/types/search/search.types';
 
 export interface UseSearchResult {
   query: string;
-  selectedPlatform: SearchPlatformKey;
-  selectedPlatformLabel: string;
+  warehouses: AuthWarehouse[];
+  selectedWarehouseId: number | null;
+  selectedWarehouseLabel: string;
+  isSwitchingWarehouse: boolean;
   products: SearchProduct[];
+  isLoadingProducts: boolean;
+  isLoadingMoreProducts: boolean;
+  hasMoreProducts: boolean;
+  productsError: string | null;
   setQuery: (value: string) => void;
-  onSelectPlatform: (key: SearchPlatformKey) => void;
+  onSelectWarehouse: (warehouseId: number | null) => void;
+  loadMoreProducts: () => void;
+  reloadProducts: () => void;
 }
 
 export function useSearch(): UseSearchResult {
   const dispatch = useAppDispatch();
   const query = useAppSelector(selectSearchQuery);
-  const selectedPlatform = useAppSelector(selectSearchPlatform);
+  const warehouses = useAppSelector(selectAuthWarehouses);
+  const selectedWarehouseId = useAppSelector(selectCurrentWarehouseId);
+  const selectedWarehouseLabel = useAppSelector(selectSelectedWarehouseLabel);
+  const isSwitchingWarehouse = useAppSelector(selectIsSwitchingWarehouse);
   const products = useAppSelector(selectFilteredSearchProducts);
+  const isLoadingProducts = useAppSelector(selectIsLoadingSearchProducts);
+  const isLoadingMoreProducts = useAppSelector(selectIsLoadingMoreSearchProducts);
+  const hasMoreProducts = useAppSelector(selectHasMoreSearchProducts);
+  const productsError = useAppSelector(selectSearchProductsError);
+  const currentPage = useAppSelector(selectSearchCurrentPage);
 
-  const selectedPlatformLabel = useMemo(
-    () =>
-      searchPlatforms.find(platform => platform.key === selectedPlatform)
-        ?.label ?? searchPlatforms[0].label,
-    [selectedPlatform],
-  );
+  const reloadProducts = useCallback(() => {
+    void dispatch(fetchProductsThunk({ page: 1, append: false }));
+  }, [dispatch]);
+
+  const loadMoreProducts = useCallback(() => {
+    if (!hasMoreProducts || isLoadingProducts || isLoadingMoreProducts) {
+      return;
+    }
+
+    void dispatch(
+      fetchProductsThunk({ page: currentPage + 1, append: true }),
+    );
+  }, [
+    currentPage,
+    dispatch,
+    hasMoreProducts,
+    isLoadingMoreProducts,
+    isLoadingProducts,
+  ]);
+
+  useEffect(() => {
+    reloadProducts();
+  }, [reloadProducts, selectedWarehouseId]);
 
   const setQuery = useCallback(
     (value: string) => {
@@ -43,19 +86,43 @@ export function useSearch(): UseSearchResult {
     [dispatch],
   );
 
-  const onSelectPlatform = useCallback(
-    (key: SearchPlatformKey) => {
-      dispatch(setSearchPlatform(key));
+  const onSelectWarehouse = useCallback(
+    (warehouseId: number | null) => {
+      if (
+        isSameWarehouseSelection(warehouseId, selectedWarehouseId) ||
+        isSwitchingWarehouse
+      ) {
+        return;
+      }
+
+      void dispatch(switchWarehouseThunk(warehouseId))
+        .unwrap()
+        .catch(message => {
+          Alert.alert('Không thể chuyển kho', String(message));
+        });
     },
-    [dispatch],
+    [
+      dispatch,
+      isSwitchingWarehouse,
+      reloadProducts,
+      selectedWarehouseId,
+    ],
   );
 
   return {
     query,
-    selectedPlatform,
-    selectedPlatformLabel,
+    warehouses,
+    selectedWarehouseId,
+    selectedWarehouseLabel,
+    isSwitchingWarehouse,
     products,
+    isLoadingProducts,
+    isLoadingMoreProducts,
+    hasMoreProducts,
+    productsError,
     setQuery,
-    onSelectPlatform,
+    onSelectWarehouse,
+    loadMoreProducts,
+    reloadProducts,
   };
 }

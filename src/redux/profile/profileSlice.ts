@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { mockUserProfile } from '@/src/configs/profile';
+import { emptyUserProfile } from '@/src/configs/profile';
 import type { UserProfile } from '@/src/types/profile/profile.types';
 
 export interface ProfileState {
@@ -7,7 +7,7 @@ export interface ProfileState {
 }
 
 const initialState: ProfileState = {
-  userProfile: { ...mockUserProfile },
+  userProfile: { ...emptyUserProfile },
 };
 
 const profileSlice = createSlice({

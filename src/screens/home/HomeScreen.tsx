@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Box } from '@/src/uikits/box';
@@ -14,7 +15,9 @@ import {
 import { mainLayout } from '@/src/configs/main';
 import { animationConfig } from '@/src/configs/theme';
 import { useHomeDashboard } from '@/src/hooks/home';
+import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
+import { fetchOrderDashboardCountsThunk } from '@/src/redux/orders';
 import { selectUnreadNotificationCount } from '@/src/redux/notifications';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
 import type {
@@ -31,9 +34,16 @@ import {
 type HomeScreenProps = HomeStackScreenProps<'HomeMain'>;
 
 export function HomeScreen({ navigation }: HomeScreenProps) {
+  const dispatch = useAppDispatch();
   const { displayName, badges } = useHomeDashboard();
   const unreadNotificationCount = useAppSelector(selectUnreadNotificationCount);
   const { stagger, screenEntry } = animationConfig;
+
+  useFocusEffect(
+    useCallback(() => {
+      void dispatch(fetchOrderDashboardCountsThunk());
+    }, [dispatch]),
+  );
 
   const handleOrderAction = useCallback(
     (key: HomeActionKey) => {
@@ -41,15 +51,22 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
         navigation.navigate('Cart');
         return;
       }
-      if (key === 'orderDeposit') {
-        navigation.navigate('Orders', { screen: 'AwaitingDeposit' });
+      if (key === 'orderList') {
+        navigation.navigate('Orders', { screen: 'OrdersMain' });
+        return;
+      }
+      if (key === 'orderPayment') {
+        navigation.navigate('Orders', { screen: 'OrdersMain' });
         return;
       }
       if (key === 'orderReady') {
-        navigation.navigate('Orders', { screen: 'DeliveredOrders' });
+        navigation.navigate('Orders', {
+          screen: 'OrdersMain',
+          params: { status: 'ready_to_ship' },
+        });
         return;
       }
-      navigation.navigate('Orders');
+      navigation.navigate('Orders', { screen: 'OrdersMain' });
     },
     [navigation],
   );

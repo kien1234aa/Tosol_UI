@@ -120,8 +120,7 @@ export function MainTabBar(props: BottomTabBarProps) {
 export const mainTabBarStyle = StyleSheet.create({
   tabBar: {
     height: tabBarLayout.barHeight,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: tabBarColors.borderTop,
+    borderTopWidth: 0,
     overflow: 'visible',
   },
 });

@@ -1,7 +1,12 @@
 import React, { useEffect } from 'react';
 import { Dimensions, Image, StatusBar, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { darkTokens, animationConfig } from '@/src/configs/theme';
+import { animationConfig, lightTokens } from '@/src/configs/theme';
+import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
+import { restoreSessionThunk, fetchCurrentUserThunk } from '@/src/redux/login';
+import { fetchNotificationsThunk } from '@/src/redux/notifications';
+import { fetchOrderDashboardCountsThunk } from '@/src/redux/orders';
+import { syncFcmTokenWithBackend } from '@/src/push';
 import type { RootStackScreenProps } from '@/src/navigation/types';
 
 const logo = require('@/assets/images/logo.png');
@@ -12,22 +17,55 @@ const LOGO_SIZE = 64;
 
 type SplashScreenProps = RootStackScreenProps<'Splash'>;
 
+function wait(ms: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
 export function SplashScreen({ navigation }: SplashScreenProps) {
   const insets = useSafeAreaInsets();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('Login');
-    }, animationConfig.splashDuration);
+    let cancelled = false;
 
-    return () => clearTimeout(timer);
-  }, [navigation]);
+    const bootstrap = async () => {
+      const [restoreResult] = await Promise.all([
+        dispatch(restoreSessionThunk()),
+        wait(animationConfig.splashDuration),
+      ]);
+
+      if (cancelled) {
+        return;
+      }
+
+      if (restoreSessionThunk.fulfilled.match(restoreResult)) {
+        await Promise.all([
+          dispatch(fetchCurrentUserThunk()),
+          dispatch(fetchNotificationsThunk({ page: 1, append: false })),
+          dispatch(fetchOrderDashboardCountsThunk()),
+        ]);
+        void syncFcmTokenWithBackend();
+        navigation.replace('Main');
+        return;
+      }
+
+      navigation.replace('Login');
+    };
+
+    void bootstrap();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dispatch, navigation]);
 
   return (
     <View style={styles.container}>
       <StatusBar
-        barStyle="light-content"
-        backgroundColor={darkTokens.background0}
+        barStyle="dark-content"
+        backgroundColor={lightTokens.background50}
       />
 
       <View
@@ -57,7 +95,7 @@ export function SplashScreen({ navigation }: SplashScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: darkTokens.background0,
+    backgroundColor: lightTokens.background50,
   },
   content: {
     flex: 1,
@@ -79,9 +117,9 @@ const styles = StyleSheet.create({
     borderRadius: (LOGO_SIZE + 24) / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: darkTokens.backgroundMuted,
-    borderWidth: 1,
-    borderColor: darkTokens.outline200,
+    backgroundColor: lightTokens.background0,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: lightTokens.outline100,
   },
   logo: {
     width: LOGO_SIZE,

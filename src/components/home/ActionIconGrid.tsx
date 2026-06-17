@@ -2,7 +2,6 @@ import React, { memo, useCallback } from 'react';
 import type { DimensionValue } from 'react-native';
 import {
   ClipboardList,
-  Clock,
   CreditCard,
   FilePlus,
   ShoppingCart,
@@ -24,7 +23,6 @@ import { ActionIconButton } from './ActionIconButton';
 const HOME_ACTION_ICONS: Record<HomeActionKey, LucideIcon> = {
   orderCart: ShoppingCart,
   orderList: ClipboardList,
-  orderDeposit: Clock,
   orderPayment: CreditCard,
   orderReady: Truck,
   packageCreate: FilePlus,

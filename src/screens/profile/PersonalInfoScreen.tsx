@@ -1,11 +1,10 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { personalInfoCopy } from '@/src/configs/profile';
 import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
 import {
-  buttonFooterAction,
   buttonLabelStyle,
   buttonPrimaryCta,
 } from '@/src/configs/theme/buttonLayout';
@@ -15,6 +14,8 @@ import {
   ProfileStackHeader,
 } from '@/src/components/profile';
 import { usePersonalInfo } from '@/src/hooks/profile';
+import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
+import { fetchCurrentUserThunk } from '@/src/redux/login';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { ProfileStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
@@ -25,7 +26,12 @@ import { VStack } from '@/src/uikits/vstack';
 type PersonalInfoScreenProps = ProfileStackScreenProps<'PersonalInfo'>;
 
 export function PersonalInfoScreen({ navigation }: PersonalInfoScreenProps) {
+  const dispatch = useAppDispatch();
   const { values, errors, onChangeField, onSave } = usePersonalInfo();
+
+  useEffect(() => {
+    void dispatch(fetchCurrentUserThunk());
+  }, [dispatch]);
 
   const handleBack = useStackGoBack(navigation, 'ProfileMain');
 

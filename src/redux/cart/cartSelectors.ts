@@ -3,6 +3,7 @@ import {
   areAllItemsSelected,
   computeGrandGoodsTotal,
   computeGroupCosts,
+  countCartProducts,
   hasAnySelectedItem,
 } from '@/src/helpers/cart';
 import type { RootState } from '@/src/redux/rootReducer';
@@ -35,4 +36,8 @@ export const selectIsAllCartSelected = createSelector(selectCartGroups, groups =
 export const selectHasSelectedCartItems = createSelector(
   selectCartGroups,
   groups => hasAnySelectedItem(groups),
+);
+
+export const selectCartBadgeCount = createSelector(selectCartGroups, groups =>
+  countCartProducts(groups),
 );

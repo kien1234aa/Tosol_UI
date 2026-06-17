@@ -1,13 +1,21 @@
 import React, { memo } from 'react';
-import { StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { Package } from 'lucide-react-native';
-import { orderDetailCopy, ordersCopy } from '@/src/configs/orders';
+import {
+  orderDetailCopy,
+  ordersCopy,
+  saleOrderPaymentMethodLabels,
+  saleOrderPaymentStatusLabels,
+  saleOrderShippingPayerLabels,
+} from '@/src/configs/orders';
 import { mainLayout } from '@/src/configs/main';
 import {
-  formatCnyPrice,
-  convertCnyToVnd,
-} from '@/src/helpers/search';
-import { formatOrderDate, formatOrderPrice } from '@/src/helpers/orders';
+  formatOrderDate,
+  formatOrderLabel,
+  formatOrderPrice,
+  formatYesNo,
+  shouldShowCostRow,
+} from '@/src/helpers/orders';
 import { lightTokens } from '@/src/configs/theme';
 import {
   buttonFlex,
@@ -17,6 +25,7 @@ import {
 import type {
   OrderDetail,
   OrderDetailProduct,
+  OrderDetailShipping as OrderDetailShippingInfo,
 } from '@/src/types/orders/orders.types';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -55,21 +64,37 @@ function DetailRow({
   valueColor,
 }: DetailRowProps) {
   return (
-    <HStack className="w-full items-center justify-between">
-      <Text size="sm" className="text-typography-600">
+    <HStack className="w-full items-start justify-between gap-3">
+      <Text size="sm" className="shrink-0 text-typography-600">
         {label}
       </Text>
       <Text
         size="sm"
         className={
           emphasize
-            ? 'font-bold text-tertiary-600'
-            : 'font-medium text-typography-900'
+            ? 'flex-1 text-right font-bold text-tertiary-600'
+            : 'flex-1 text-right font-medium text-typography-900'
         }
         style={valueColor ? { color: valueColor } : undefined}>
         {value}
       </Text>
     </HStack>
+  );
+}
+
+interface PaymentStatusBadgeProps {
+  status: string;
+}
+
+function PaymentStatusBadge({ status }: PaymentStatusBadgeProps) {
+  const label = formatOrderLabel(saleOrderPaymentStatusLabels, status);
+
+  return (
+    <Box style={styles.paymentBadge}>
+      <Text size="xs" className="font-medium text-typography-700">
+        {label}
+      </Text>
+    </Box>
   );
 }
 
@@ -84,28 +109,61 @@ function OrderDetailSummaryComponent({ order }: OrderDetailSummaryProps) {
         <HStack className="w-full items-start justify-between">
           <VStack space="xs" className="flex-1 pr-3">
             <Text size="xs" className="text-typography-500">
-              {ordersCopy.idLabel}
+              {ordersCopy.orderNumberLabel}
             </Text>
             <Text size="lg" className="font-bold text-typography-900">
-              {order.id}
+              {order.orderNumber}
             </Text>
           </VStack>
-          <OrderStatusBadge status={order.status} />
+          <VStack space="xs" className="items-end">
+            <OrderStatusBadge status={order.status} />
+            <PaymentStatusBadge status={order.paymentStatus} />
+          </VStack>
         </HStack>
 
         <Box style={styles.divider} />
 
         <DetailRow
+          label={orderDetailCopy.orderDateLabel}
+          value={formatOrderDate(order.orderDate)}
+        />
+        <DetailRow
           label={ordersCopy.createdAtLabel}
           value={formatOrderDate(order.createdAt)}
         />
         <DetailRow
-          label={orderDetailCopy.supplierLabel}
-          value={order.supplierName}
+          label={orderDetailCopy.paymentMethodLabel}
+          value={formatOrderLabel(
+            saleOrderPaymentMethodLabels,
+            order.paymentMethod,
+          )}
+        />
+        <DetailRow label={orderDetailCopy.shopLabel} value={order.shopName} />
+        <DetailRow
+          label={orderDetailCopy.customerLabel}
+          value={order.customerName}
         />
         <DetailRow
-          label={ordersCopy.packageCountLabel}
-          value={String(order.packageCount)}
+          label={orderDetailCopy.customerPhoneLabel}
+          value={order.customerPhone}
+        />
+        <DetailRow
+          label={orderDetailCopy.customerAddressLabel}
+          value={order.customerAddress}
+        />
+        <DetailRow
+          label={orderDetailCopy.warehouseLabel}
+          value={order.warehouseName}
+        />
+        {order.packingOrderNumber ? (
+          <DetailRow
+            label={orderDetailCopy.packingOrderLabel}
+            value={order.packingOrderNumber}
+          />
+        ) : null}
+        <DetailRow
+          label={orderDetailCopy.creatorLabel}
+          value={order.creatorName}
         />
       </VStack>
     </Box>
@@ -121,13 +179,19 @@ const PRODUCT_ICON_SIZE = 24;
 function OrderDetailProductRowComponent({
   product,
 }: OrderDetailProductRowProps) {
-  const lineTotalVnd = convertCnyToVnd(product.priceCny * product.quantity);
-
   return (
     <HStack className="w-full items-start gap-3">
-      <Center style={styles.productThumbnail}>
-        <Package color={lightTokens.tertiary500} size={PRODUCT_ICON_SIZE} />
-      </Center>
+      {product.thumbnailUrl ? (
+        <Image
+          source={{ uri: product.thumbnailUrl }}
+          style={styles.productImage}
+          resizeMode="cover"
+        />
+      ) : (
+        <Center style={styles.productThumbnail}>
+          <Package color={lightTokens.tertiary500} size={PRODUCT_ICON_SIZE} />
+        </Center>
+      )}
 
       <VStack className="min-w-0 flex-1" space="xs">
         <Text
@@ -136,16 +200,16 @@ function OrderDetailProductRowComponent({
           numberOfLines={2}>
           {product.name}
         </Text>
-        <Text size="xs" className="text-typography-500" numberOfLines={2}>
-          {product.variant}
+        <Text size="xs" className="text-typography-500">
+          SKU: {product.sku}
         </Text>
         <HStack className="w-full items-center justify-between">
           <Text size="xs" className="text-typography-500">
             {orderDetailCopy.unitPriceLabel}{' '}
-            {formatCnyPrice(product.priceCny)} × {product.quantity}
+            {formatOrderPrice(product.unitPriceVnd)} × {product.quantity}
           </Text>
           <Text size="sm" className="font-semibold text-typography-900">
-            {formatOrderPrice(lineTotalVnd)}
+            {formatOrderPrice(product.lineTotalVnd)}
           </Text>
         </HStack>
       </VStack>
@@ -158,6 +222,10 @@ interface OrderDetailProductsProps {
 }
 
 function OrderDetailProductsComponent({ products }: OrderDetailProductsProps) {
+  if (products.length === 0) {
+    return null;
+  }
+
   return (
     <Box style={styles.sectionCard}>
       <VStack space="md">
@@ -175,30 +243,53 @@ function OrderDetailProductsComponent({ products }: OrderDetailProductsProps) {
   );
 }
 
-interface OrderDetailOptionsProps {
-  insurance: boolean;
-  woodPacking: boolean;
+interface OrderDetailShippingProps {
+  shipping: OrderDetailShippingInfo;
 }
 
-function OrderDetailOptionsComponent({
-  insurance,
-  woodPacking,
-}: OrderDetailOptionsProps) {
+function OrderDetailShippingComponent({ shipping }: OrderDetailShippingProps) {
   return (
     <Box style={styles.sectionCard}>
       <VStack space="md">
         <Text size="sm" className="font-semibold text-typography-900">
-          {orderDetailCopy.optionsTitle}
+          {orderDetailCopy.shippingTitle}
         </Text>
         <DetailRow
-          label={orderDetailCopy.insurance}
-          value={insurance ? orderDetailCopy.enabled : orderDetailCopy.disabled}
+          label={orderDetailCopy.recipientLabel}
+          value={`${shipping.recipientName} · ${shipping.recipientPhone}`}
         />
         <DetailRow
-          label={orderDetailCopy.woodPacking}
+          label={orderDetailCopy.customerAddressLabel}
+          value={shipping.recipientAddress}
+        />
+        <DetailRow
+          label={orderDetailCopy.shippingPartnerLabel}
+          value={shipping.shippingPartnerName}
+        />
+        {shipping.trackingNumber ? (
+          <DetailRow
+            label={orderDetailCopy.trackingNumberLabel}
+            value={shipping.trackingNumber}
+          />
+        ) : null}
+        <DetailRow
+          label={orderDetailCopy.shippingPayerLabel}
+          value={formatOrderLabel(
+            saleOrderShippingPayerLabels,
+            shipping.shippingPayer,
+          )}
+        />
+        <DetailRow
+          label={orderDetailCopy.codLabel}
           value={
-            woodPacking ? orderDetailCopy.enabled : orderDetailCopy.disabled
+            shipping.collectCod
+              ? `${formatYesNo(true)} · ${formatOrderPrice(shipping.codAmountVnd)}`
+              : formatYesNo(false)
           }
+        />
+        <DetailRow
+          label={orderDetailCopy.shippingFee}
+          value={formatOrderPrice(shipping.shippingFeeVnd)}
         />
       </VStack>
     </Box>
@@ -228,6 +319,29 @@ function OrderDetailNoteComponent({ note }: OrderDetailNoteProps) {
   );
 }
 
+interface OrderDetailIssueProps {
+  issueNote: string;
+}
+
+function OrderDetailIssueComponent({ issueNote }: OrderDetailIssueProps) {
+  if (!issueNote.trim()) {
+    return null;
+  }
+
+  return (
+    <Box style={[styles.sectionCard, styles.issueCard]}>
+      <VStack space="sm">
+        <Text size="sm" className="font-semibold text-error-600">
+          {orderDetailCopy.issueTitle}
+        </Text>
+        <Text size="sm" className="text-typography-600">
+          {issueNote}
+        </Text>
+      </VStack>
+    </Box>
+  );
+}
+
 interface OrderDetailCostBreakdownProps {
   order: OrderDetail;
 }
@@ -247,13 +361,21 @@ function OrderDetailCostBreakdownComponent({
           label={orderDetailCopy.goodsAmount}
           value={formatOrderPrice(costs.goodsVnd)}
         />
+        {shouldShowCostRow(costs.discountVnd) ? (
+          <DetailRow
+            label={orderDetailCopy.discountAmount}
+            value={formatOrderPrice(costs.discountVnd)}
+          />
+        ) : null}
+        {shouldShowCostRow(costs.taxVnd) ? (
+          <DetailRow
+            label={orderDetailCopy.taxAmount}
+            value={formatOrderPrice(costs.taxVnd)}
+          />
+        ) : null}
         <DetailRow
-          label={orderDetailCopy.estimatedFee}
-          value={formatOrderPrice(costs.estimatedFeeVnd)}
-        />
-        <DetailRow
-          label={orderDetailCopy.deposit}
-          value={formatOrderPrice(costs.depositVnd)}
+          label={orderDetailCopy.shippingFee}
+          value={formatOrderPrice(costs.shippingFeeVnd)}
         />
         <Box style={styles.divider} />
         <DetailRow
@@ -278,19 +400,23 @@ function OrderDetailCostBreakdownComponent({
 interface OrderDetailActionsProps {
   canPay: boolean;
   canCancel: boolean;
+  canEdit: boolean;
   remainingVnd: number;
   onPressPay: () => void;
   onPressCancel: () => void;
+  onPressEdit: () => void;
 }
 
 function OrderDetailActionsComponent({
   canPay,
   canCancel,
+  canEdit,
   remainingVnd,
   onPressPay,
   onPressCancel,
+  onPressEdit,
 }: OrderDetailActionsProps) {
-  if (!canPay && !canCancel) {
+  if (!canPay && !canCancel && !canEdit) {
     return null;
   }
 
@@ -308,6 +434,21 @@ function OrderDetailActionsComponent({
       ) : null}
 
       <HStack className="w-full" space="md">
+        {canEdit ? (
+          <Pressable
+            onPress={onPressEdit}
+            accessibilityRole="button"
+            accessibilityLabel={orderDetailCopy.editOrder}
+            style={[buttonFooterAction, buttonFlex, styles.editButton]}>
+            <Text
+              size="sm"
+              className="font-semibold text-tertiary-600"
+              style={buttonLabelStyle}>
+              {orderDetailCopy.editOrder}
+            </Text>
+          </Pressable>
+        ) : null}
+
         {canCancel ? (
           <Pressable
             onPress={onPressCancel}
@@ -351,6 +492,16 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
+  issueCard: {
+    borderColor: lightTokens.error500,
+    backgroundColor: '#FEF2F2',
+  },
+  paymentBadge: {
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: lightTokens.background100,
+  },
   divider: {
     height: 1,
     backgroundColor: lightTokens.outline100,
@@ -358,8 +509,16 @@ const styles = StyleSheet.create({
   productThumbnail: {
     width: 64,
     height: 64,
-    borderRadius: 10,
+    borderRadius: 12,
     backgroundColor: lightTokens.tertiary50,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: lightTokens.outline100,
+  },
+  productImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 12,
+    backgroundColor: lightTokens.background100,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
@@ -376,6 +535,11 @@ const styles = StyleSheet.create({
     borderColor: lightTokens.error500,
     backgroundColor: lightTokens.background0,
   },
+  editButton: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: lightTokens.tertiary500,
+    backgroundColor: lightTokens.background0,
+  },
   primaryButton: {
     backgroundColor: lightTokens.tertiary500,
   },
@@ -384,7 +548,8 @@ const styles = StyleSheet.create({
 export const OrderDetailHeader = memo(OrderDetailHeaderComponent);
 export const OrderDetailSummary = memo(OrderDetailSummaryComponent);
 export const OrderDetailProducts = memo(OrderDetailProductsComponent);
-export const OrderDetailOptions = memo(OrderDetailOptionsComponent);
+export const OrderDetailShipping = memo(OrderDetailShippingComponent);
 export const OrderDetailNote = memo(OrderDetailNoteComponent);
+export const OrderDetailIssue = memo(OrderDetailIssueComponent);
 export const OrderDetailCostBreakdown = memo(OrderDetailCostBreakdownComponent);
 export const OrderDetailActions = memo(OrderDetailActionsComponent);

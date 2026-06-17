@@ -34,9 +34,8 @@ export type SearchStackParamList = {
 
 /** Nested stack inside the Orders tab. */
 export type OrdersStackParamList = {
-  OrdersMain: undefined;
+  OrdersMain: { status?: string } | undefined;
   OrderDetail: { orderId: string };
-  AwaitingDeposit: undefined;
   DeliveredOrders: undefined;
 };
 
@@ -45,6 +44,8 @@ export type ProfileStackParamList = {
   ProfileMain: undefined;
   PersonalInfo: undefined;
   ChangePassword: undefined;
+  StaffList: undefined;
+  StaffDetail: { staffUuid: string };
 };
 
 /** Central route registry for the root stack navigator. */
@@ -53,7 +54,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;
-  Main: undefined;
+  Main: NavigatorScreenParams<MainTabParamList> | undefined;
   Notifications: undefined;
 };
 

@@ -16,7 +16,6 @@ export const homeCopy = {
 export const orderActions: HomeActionItem[] = [
   { key: 'orderCart', label: 'Giỏ hàng' },
   { key: 'orderList', label: 'Danh sách đơn' },
-  { key: 'orderDeposit', label: 'Đơn chờ cọc' },
   { key: 'orderPayment', label: 'Chờ thanh toán' },
   { key: 'orderReady', label: 'Sẵn sàng giao' },
 ];
@@ -40,6 +39,6 @@ export const quickActions: QuickActionItem[] = [
 
 /** Number of columns each icon grid renders across. */
 export const homeGridColumns = {
-  orders: 5,
+  orders: 4,
   packages: 4,
 } as const;

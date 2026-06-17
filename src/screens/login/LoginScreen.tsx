@@ -7,8 +7,11 @@ import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { authCopy } from '@/src/configs';
 import { useLoginForm, useResponsiveLayout } from '@/src/hooks';
+import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { animationConfig } from '@/src/configs/theme';
 import type { RootStackScreenProps } from '@/src/navigation/types';
+import { fetchNotificationsThunk } from '@/src/redux/notifications';
+import { syncFcmTokenWithBackend } from '@/src/push';
 import {
   AuthFooterLinks,
   LoginHeroImage,
@@ -21,18 +24,21 @@ import { selectIsAuthenticated } from '@/src/redux/login/authSelectors';
 type LoginScreenProps = RootStackScreenProps<'Login'>;
 
 export function LoginScreen({ navigation }: LoginScreenProps) {
+  const dispatch = useAppDispatch();
   const form = useLoginForm();
   const { contentMaxWidth, horizontalPadding } = useResponsiveLayout();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   useEffect(() => {
     if (isAuthenticated) {
+      void dispatch(fetchNotificationsThunk({ page: 1, append: false }));
+      void syncFcmTokenWithBackend();
       navigation.reset({
         index: 0,
         routes: [{ name: 'Main' }],
       });
     }
-  }, [isAuthenticated, navigation]);
+  }, [dispatch, isAuthenticated, navigation]);
 
   const handleForgotPassword = useCallback(() => {
     navigation.navigate('ForgotPassword');

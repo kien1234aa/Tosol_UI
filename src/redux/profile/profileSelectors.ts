@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { buildUserProfile } from '@/src/helpers/profile';
+import { buildUserProfile, mergeUserProfile } from '@/src/helpers/profile';
 import type { RootState } from '@/src/redux/rootReducer';
 
 const selectProfileState = (state: RootState) => state.profile;
@@ -12,9 +12,12 @@ export const selectStoredUserProfile = createSelector(
 
 export const selectUserProfile = createSelector(
   [selectStoredUserProfile, selectAuthUser],
-  (storedProfile, authUser) => ({
-    ...buildUserProfile(authUser),
-    ...storedProfile,
-    username: authUser?.username || storedProfile.username,
-  }),
+  (storedProfile, authUser) => {
+    const fromAuth = buildUserProfile(authUser);
+
+    return {
+      ...mergeUserProfile(fromAuth, storedProfile),
+      username: authUser?.username || storedProfile.username || fromAuth.username,
+    };
+  },
 );

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Box } from '@/src/uikits/box';
@@ -21,11 +21,17 @@ type SearchScreenProps = SearchStackScreenProps<'SearchMain'>;
 export function SearchScreen({ navigation }: SearchScreenProps) {
   const {
     query,
-    selectedPlatform,
-    selectedPlatformLabel,
+    warehouses,
+    selectedWarehouseId,
+    selectedWarehouseLabel,
+    isSwitchingWarehouse,
     products,
+    isLoadingProducts,
+    isLoadingMoreProducts,
+    productsError,
     setQuery,
-    onSelectPlatform,
+    onSelectWarehouse,
+    loadMoreProducts,
   } = useSearch();
   const { stagger, screenEntry } = animationConfig;
 
@@ -51,27 +57,28 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
             style={styles.header}>
             <SearchHeader
               query={query}
-              selectedPlatform={selectedPlatform}
-              selectedPlatformLabel={selectedPlatformLabel}
+              warehouses={warehouses}
+              selectedWarehouseId={selectedWarehouseId}
+              selectedWarehouseLabel={selectedWarehouseLabel}
+              isSwitchingWarehouse={isSwitchingWarehouse}
               onChangeQuery={setQuery}
-              onSelectPlatform={onSelectPlatform}
+              onSelectWarehouse={onSelectWarehouse}
               onPressImageSearch={handleImageSearch}
             />
           </Animated.View>
 
-          <ScrollView
-            style={styles.scroll}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.content}
-            keyboardShouldPersistTaps="handled">
-            <Animated.View
-              entering={FadeInDown.duration(screenEntry).delay(stagger)}>
-              <ProductGridSection
-                products={products}
-                onPressProduct={handleProductPress}
-              />
-            </Animated.View>
-          </ScrollView>
+          <Animated.View
+            entering={FadeInDown.duration(screenEntry).delay(stagger)}
+            style={styles.list}>
+            <ProductGridSection
+              products={products}
+              isLoading={isLoadingProducts}
+              isLoadingMore={isLoadingMoreProducts}
+              error={productsError}
+              onPressProduct={handleProductPress}
+              onEndReached={loadMoreProducts}
+            />
+          </Animated.View>
         </VStack>
 
         <SupportFab onPress={noop} />
@@ -89,12 +96,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: lightTokens.outline100,
   },
-  scroll: {
+  list: {
     flex: 1,
-  },
-  content: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: mainLayout.tabContentBottomPaddingLoose,
   },
 });

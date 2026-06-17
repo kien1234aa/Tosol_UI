@@ -13,6 +13,9 @@ import { VStack } from '@/src/uikits/vstack';
 
 interface ProfileHeaderProps {
   displayName: string;
+  email?: string;
+  roleLabel?: string;
+  sellerName?: string;
   balanceVnd: number;
   unreadCount?: number;
   onPressNotifications?: () => void;
@@ -24,10 +27,15 @@ const USER_ICON_SIZE = 26;
 
 function ProfileHeaderComponent({
   displayName,
+  email,
+  roleLabel,
+  sellerName,
   balanceVnd,
   unreadCount = 0,
   onPressNotifications,
 }: ProfileHeaderProps) {
+  const subtitle = email || sellerName;
+
   return (
     <Box style={styles.container}>
       <HStack className="w-full items-center justify-between">
@@ -46,6 +54,18 @@ function ProfileHeaderComponent({
               numberOfLines={1}>
               {displayName}
             </Text>
+            {subtitle ? (
+              <Text size="xs" className="text-typography-500" numberOfLines={1}>
+                {subtitle}
+              </Text>
+            ) : null}
+            {roleLabel ? (
+              <Box style={styles.roleBadge}>
+                <Text size="2xs" className="font-medium text-tertiary-600">
+                  {roleLabel}
+                </Text>
+              </Box>
+            ) : null}
           </VStack>
         </HStack>
 
@@ -117,6 +137,13 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.error500,
     borderWidth: 1.5,
     borderColor: lightTokens.background0,
+  },
+  roleBadge: {
+    alignSelf: 'flex-start',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    backgroundColor: lightTokens.tertiary100,
   },
 });
 

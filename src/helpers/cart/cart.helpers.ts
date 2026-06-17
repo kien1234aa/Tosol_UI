@@ -1,3 +1,4 @@
+import { cartCopy, cartQuantityLimits } from '@/src/configs/cart';
 import { exchangeConfig } from '@/src/configs/search';
 import type {
   CartGroup,
@@ -25,7 +26,27 @@ export function formatVndPrice(price: number): string {
 }
 
 export function computeLineSubtotalVnd(product: CartProductItem): number {
-  return convertCnyToVnd(product.priceCny * product.quantity);
+  return getCartUnitPriceVnd(product) * product.quantity;
+}
+
+export function getCartUnitPriceVnd(product: CartProductItem): number {
+  if (product.priceVnd > 0) {
+    return product.priceVnd;
+  }
+
+  return convertCnyToVnd(product.priceCny);
+}
+
+export function formatCartUnitPrice(product: CartProductItem): string {
+  if (product.priceVnd > 0) {
+    return formatVndPrice(product.priceVnd);
+  }
+
+  if (product.priceCny > 0) {
+    return formatCnyPrice(product.priceCny);
+  }
+
+  return cartCopy.priceOnRequest;
 }
 
 export function computeGroupCosts(group: CartGroup): CartGroupCosts {
@@ -69,6 +90,24 @@ export function hasAnySelectedItem(groups: CartGroup[]): boolean {
     group =>
       group.selected && group.products.some(product => product.selected),
   );
+}
+
+/** Tổng số lượng sản phẩm trong giỏ (cộng quantity từng dòng). */
+export function countCartProducts(groups: CartGroup[]): number {
+  return groups.reduce(
+    (total, group) =>
+      total +
+      group.products.reduce((sum, product) => sum + product.quantity, 0),
+    0,
+  );
+}
+
+export function getCartProductMaxQuantity(product: CartProductItem): number {
+  if (product.maxStock != null && product.maxStock > 0) {
+    return Math.min(cartQuantityLimits.max, product.maxStock);
+  }
+
+  return cartQuantityLimits.max;
 }
 
 export function buildDefaultVariant(description: string): string {

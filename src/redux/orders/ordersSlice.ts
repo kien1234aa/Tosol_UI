@@ -1,33 +1,103 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { mockOrderListItems } from '@/src/configs/orders';
-import type { OrderListItem, OrderStatusFilter } from '@/src/types/orders/orders.types';
+import { EMPTY_ORDER_ADVANCED_FILTERS } from '@/src/configs/orders/orderFilters.constants';
+import {
+  EMPTY_ORDER_HOME_BADGE_COUNTS,
+  type OrderHomeBadgeCounts,
+} from '@/src/helpers/home/orderBadge.helpers';
+import type { OrderListItem } from '@/src/types/orders/orders.types';
+import type { OrderAdvancedFilters } from '@/src/types/orders/orderFilters.types';
+import { fetchOrdersThunk, fetchOrderDashboardCountsThunk } from './ordersThunks';
+
+export type OrdersListStatus = 'idle' | 'loading' | 'loadingMore' | 'success' | 'error';
+export type OrderDashboardBadgeStatus = 'idle' | 'loading' | 'success' | 'error';
 
 export interface OrdersState {
-  statusFilter: OrderStatusFilter;
+  listFilters: OrderAdvancedFilters;
+  listSearch: string;
   items: OrderListItem[];
+  listStatus: OrdersListStatus;
+  listError: string | null;
+  currentPage: number;
+  lastPage: number;
+  total: number;
+  dashboardBadgeCounts: OrderHomeBadgeCounts;
+  dashboardBadgeStatus: OrderDashboardBadgeStatus;
 }
 
 const initialState: OrdersState = {
-  statusFilter: 'all',
-  items: mockOrderListItems,
+  listFilters: EMPTY_ORDER_ADVANCED_FILTERS,
+  listSearch: '',
+  items: [],
+  listStatus: 'idle',
+  listError: null,
+  currentPage: 0,
+  lastPage: 0,
+  total: 0,
+  dashboardBadgeCounts: { ...EMPTY_ORDER_HOME_BADGE_COUNTS },
+  dashboardBadgeStatus: 'idle',
 };
+
+function resetListPagination(state: OrdersState): void {
+  state.items = [];
+  state.currentPage = 0;
+  state.lastPage = 0;
+  state.total = 0;
+  state.listError = null;
+  state.listStatus = 'idle';
+}
 
 const ordersSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    setOrderStatusFilter(state, action: PayloadAction<OrderStatusFilter>) {
-      state.statusFilter = action.payload;
+    setOrderListFilters(state, action: PayloadAction<OrderAdvancedFilters>) {
+      state.listFilters = action.payload;
+      resetListPagination(state);
     },
-    removeOrderItem(state, action: PayloadAction<string>) {
-      state.items = state.items.filter(item => item.id !== action.payload);
+    setOrderListSearch(state, action: PayloadAction<string>) {
+      state.listSearch = action.payload.trim();
+      resetListPagination(state);
     },
     resetOrdersState() {
       return initialState;
     },
   },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchOrdersThunk.pending, (state, action) => {
+        state.listError = null;
+        state.listStatus = action.meta.arg.append ? 'loadingMore' : 'loading';
+      })
+      .addCase(fetchOrdersThunk.fulfilled, (state, action) => {
+        state.listStatus = 'success';
+        state.currentPage = action.payload.currentPage;
+        state.lastPage = action.payload.lastPage;
+        state.total = action.payload.total;
+
+        if (action.payload.append) {
+          state.items = [...state.items, ...action.payload.orders];
+        } else {
+          state.items = action.payload.orders;
+        }
+      })
+      .addCase(fetchOrdersThunk.rejected, (state, action) => {
+        state.listStatus = 'error';
+        state.listError =
+          action.payload ?? 'Không thể tải danh sách đơn hàng';
+      })
+      .addCase(fetchOrderDashboardCountsThunk.pending, state => {
+        state.dashboardBadgeStatus = 'loading';
+      })
+      .addCase(fetchOrderDashboardCountsThunk.fulfilled, (state, action) => {
+        state.dashboardBadgeStatus = 'success';
+        state.dashboardBadgeCounts = action.payload;
+      })
+      .addCase(fetchOrderDashboardCountsThunk.rejected, state => {
+        state.dashboardBadgeStatus = 'error';
+      });
+  },
 });
 
-export const { setOrderStatusFilter, removeOrderItem, resetOrdersState } =
+export const { setOrderListFilters, setOrderListSearch, resetOrdersState } =
   ordersSlice.actions;
 export const ordersReducer = ordersSlice.reducer;

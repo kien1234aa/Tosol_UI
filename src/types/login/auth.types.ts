@@ -43,6 +43,7 @@ export interface AuthUser {
   username: string;
   displayName: string;
   email: string;
+  phone: string | null;
   role: string;
   isTosolUser: boolean;
   isSellerUser: boolean;
@@ -65,19 +66,29 @@ export type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'error';
 
 /** Raw API response shapes (snake_case). */
 
-export interface LoginApiUser {
+/** Raw API user record (login payload and GET /users/{uuid}). */
+export interface UserApiItem {
   id: number;
   uuid: string;
+  seller_id?: number;
   name: string;
   email: string;
+  phone: string | null;
   role: string;
   is_tosol_user: boolean;
   is_seller_user: boolean;
   is_active: boolean;
+  email_verified_at?: string | null;
   last_login_at: string | null;
   created_at: string;
+  updated_at?: string;
   seller: AuthSeller | null;
   warehouses: AuthWarehouse[];
+  current_warehouse_id?: number | null;
+  has_multiple_warehouses?: boolean;
+}
+
+export interface LoginApiUser extends UserApiItem {
   current_warehouse_id: number | null;
   has_multiple_warehouses: boolean;
 }

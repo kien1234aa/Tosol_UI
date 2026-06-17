@@ -22,6 +22,11 @@ export const cartCopy = {
   removeProduct: 'Xoá sản phẩm',
   emptyCart: 'Giỏ hàng trống',
   defaultVariant: 'Mặc định',
+  defaultSupplier: 'Tosol',
+  outOfStockError: 'Sản phẩm đã hết hàng',
+  exceedsStock: 'Chỉ còn {max} sản phẩm trong kho',
+  exceedsStockInCart: 'Bạn đã có sản phẩm này trong giỏ. Tối đa {max} sản phẩm',
+  priceOnRequest: 'Liên hệ',
 } as const;
 
 export const cartQuantityLimits = {

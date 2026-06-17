@@ -1,12 +1,8 @@
-import { mockOrderDetails } from '@/src/configs/orders';
-import type {
-  OrderDetail,
-  OrderListItem,
-  OrderStatusFilter,
-} from '@/src/types/orders/orders.types';
+import type { OrderDetail } from '@/src/types/orders/orders.types';
 
 export function formatOrderDate(isoDate: string): string {
-  const [year, month, day] = isoDate.split('-');
+  const datePart = isoDate.slice(0, 10);
+  const [year, month, day] = datePart.split('-');
   if (!year || !month || !day) {
     return isoDate;
   }
@@ -17,16 +13,19 @@ export function formatOrderPrice(price: number): string {
   return `${price.toLocaleString('vi-VN')}đ`;
 }
 
-export function filterOrdersByStatus(
-  orders: OrderListItem[],
-  statusFilter: OrderStatusFilter,
-): OrderListItem[] {
-  if (statusFilter === 'all') {
-    return orders;
-  }
-  return orders.filter(order => order.status === statusFilter);
+export function formatOrderLabel(
+  labels: Record<string, string>,
+  value: string,
+): string {
+  return labels[value] ?? value;
 }
 
-export function getOrderDetailById(orderId: string): OrderDetail | undefined {
-  return mockOrderDetails[orderId];
+export function formatYesNo(value: boolean): string {
+  return value ? 'Có' : 'Không';
 }
+
+export function shouldShowCostRow(amountVnd: number): boolean {
+  return amountVnd > 0;
+}
+
+export type { OrderDetail };

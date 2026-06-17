@@ -1,11 +1,18 @@
-import { useCallback, useMemo, useState } from 'react';
-import { exchangeConfig, productDetailLimits } from '@/src/configs/search';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { productDetailLimits } from '@/src/configs/search';
 import {
   buildProductDetailPricing,
   getProductById,
 } from '@/src/helpers/search';
+import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
-import { selectSearchProducts } from '@/src/redux/search';
+import {
+  fetchProductDetailThunk,
+  selectIsLoadingProductDetail,
+  selectProductDetail,
+  selectProductDetailError,
+  selectSearchProducts,
+} from '@/src/redux/search';
 import type {
   ProductDetailPricing,
   SearchProduct,
@@ -15,31 +22,58 @@ export interface UseProductDetailResult {
   product: SearchProduct | undefined;
   quantity: number;
   pricing: ProductDetailPricing | undefined;
+  isLoading: boolean;
+  error: string | null;
   canDecreaseQuantity: boolean;
   canIncreaseQuantity: boolean;
   onDecreaseQuantity: () => void;
   onIncreaseQuantity: () => void;
+  reload: () => void;
 }
 
 export function useProductDetail(productId: string): UseProductDetailResult {
-  const products = useAppSelector(selectSearchProducts);
+  const dispatch = useAppDispatch();
+  const listProducts = useAppSelector(selectSearchProducts);
+  const productDetail = useAppSelector(selectProductDetail);
+  const isLoading = useAppSelector(selectIsLoadingProductDetail);
+  const error = useAppSelector(selectProductDetailError);
   const [quantity, setQuantity] = useState(productDetailLimits.minQuantity);
 
-  const product = useMemo(
-    () => getProductById(products, productId),
-    [products, productId],
-  );
+  const reload = useCallback(() => {
+    void dispatch(fetchProductDetailThunk(productId));
+  }, [dispatch, productId]);
+
+  useEffect(() => {
+    setQuantity(productDetailLimits.minQuantity);
+    reload();
+  }, [productId, reload]);
+
+  const product = useMemo(() => {
+    if (productDetail?.id === productId) {
+      return productDetail;
+    }
+
+    return getProductById(listProducts, productId);
+  }, [listProducts, productDetail, productId]);
+
+  const maxQuantity = useMemo(() => {
+    if (product?.availableStock != null && product.availableStock > 0) {
+      return Math.min(
+        productDetailLimits.maxQuantity,
+        Math.floor(product.availableStock),
+      );
+    }
+
+    return productDetailLimits.maxQuantity;
+  }, [product?.availableStock]);
 
   const pricing = useMemo(
-    () =>
-      product
-        ? buildProductDetailPricing(product, quantity, exchangeConfig.cnyToVnd)
-        : undefined,
+    () => (product ? buildProductDetailPricing(product, quantity) : undefined),
     [product, quantity],
   );
 
   const canDecreaseQuantity = quantity > productDetailLimits.minQuantity;
-  const canIncreaseQuantity = quantity < productDetailLimits.maxQuantity;
+  const canIncreaseQuantity = quantity < maxQuantity;
 
   const onDecreaseQuantity = useCallback(() => {
     setQuantity(current =>
@@ -48,18 +82,19 @@ export function useProductDetail(productId: string): UseProductDetailResult {
   }, []);
 
   const onIncreaseQuantity = useCallback(() => {
-    setQuantity(current =>
-      Math.min(productDetailLimits.maxQuantity, current + 1),
-    );
-  }, []);
+    setQuantity(current => Math.min(maxQuantity, current + 1));
+  }, [maxQuantity]);
 
   return {
     product,
     quantity,
     pricing,
+    isLoading,
+    error,
     canDecreaseQuantity,
     canIncreaseQuantity,
     onDecreaseQuantity,
     onIncreaseQuantity,
+    reload,
   };
 }

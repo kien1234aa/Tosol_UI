@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>371095020538-ef91lqoi341t530i1g0bqjb3kok2iqm8.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.371095020538-ef91lqoi341t530i1g0bqjb3kok2iqm8</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>371095020538-2tlvvvs5nm05l2d7p2f73bim3e4duaui.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCoyfmSWa4Fgg1VntZzzX7tshntHxZ3TAM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>371095020538</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.tosoldev</string>
+	<key>PROJECT_ID</key>
+	<string>tosol-dev</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tosol-dev.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:371095020538:ios:0cf9761a41cd574998ba43</string>
+</dict>
+</plist>

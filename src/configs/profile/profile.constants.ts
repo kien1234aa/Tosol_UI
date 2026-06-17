@@ -10,7 +10,7 @@ export const profileCopy = {
   createDeliveryRequest: 'Tạo yêu cầu giao hàng',
   deliveryRequestList: 'Danh sách yêu cầu giao hàng',
   supportSection: 'Nhân viên chăm sóc',
-  supportStaffName: 'Phong Đà Logistics',
+  supportStaffName: 'Tomoni VN',
   supportPhone: '0844.713.555',
   hotline: 'Hotline hỗ trợ: 0844.713.555 - 0823.943.777',
   logout: 'Đăng xuất',
@@ -19,6 +19,88 @@ export const profileCopy = {
   openZalo: 'Mở Zalo',
   callSupport: 'Gọi điện',
   featureComingSoon: 'Tính năng đang được phát triển',
+  staffSection: 'Nhân viên',
+  staffList: 'Danh sách nhân viên',
+} as const;
+
+export const staffCopy = {
+  screenTitle: 'Danh sách nhân viên',
+  totalLabel: 'Tổng nhân viên',
+  empty: 'Chưa có nhân viên',
+  loadError: 'Không thể tải danh sách nhân viên',
+  retry: 'Thử lại',
+  noPhone: 'Chưa có số điện thoại',
+  active: 'Đang hoạt động',
+  inactive: 'Ngưng hoạt động',
+} as const;
+
+export const staffDetailCopy = {
+  screenTitle: 'Chi tiết nhân viên',
+  accountSection: 'Thông tin tài khoản',
+  sellerSection: 'Nhà bán',
+  actionsSection: 'Thao tác quản trị',
+  emailLabel: 'Email',
+  phoneLabel: 'Số điện thoại',
+  roleLabel: 'Vai trò',
+  statusLabel: 'Trạng thái',
+  emailVerifiedLabel: 'Xác thực email',
+  emailVerified: 'Đã xác thực',
+  emailUnverified: 'Chưa xác thực',
+  lastLoginLabel: 'Đăng nhập gần nhất',
+  createdAtLabel: 'Ngày tạo',
+  updatedAtLabel: 'Cập nhật lần cuối',
+  sellerNameLabel: 'Tên nhà bán',
+  sellerPhoneLabel: 'SĐT nhà bán',
+  warehouseCountLabel: 'Số kho được gán',
+  neverLoggedIn: 'Chưa đăng nhập',
+  noSeller: '—',
+  editInfo: 'Sửa thông tin',
+  changePassword: 'Đổi mật khẩu',
+  deactivate: 'Vô hiệu hoá',
+  activate: 'Kích hoạt lại',
+  deleteAccount: 'Xoá tài khoản',
+  loadError: 'Không thể tải thông tin nhân viên',
+  retry: 'Thử lại',
+  editModalTitle: 'Sửa thông tin nhân viên',
+  editSave: 'Lưu thay đổi',
+  editDismiss: 'Huỷ',
+  editSuccess: 'Đã cập nhật thông tin nhân viên',
+  fullNameLabel: 'Họ và tên',
+  nameRequired: 'Vui lòng nhập họ và tên',
+  emailRequired: 'Vui lòng nhập email',
+  emailInvalid: 'Email không hợp lệ',
+  roleStaff: 'Nhân viên',
+  roleAdmin: 'Quản trị viên',
+  changePasswordTitle: 'Đổi mật khẩu',
+  changePasswordHint:
+    'Người dùng sẽ cần đăng nhập lại bằng mật khẩu mới ở lần tiếp theo.',
+  adminCurrentPasswordLabel: 'Mật khẩu hiện tại của bạn',
+  newPasswordLabel: 'Mật khẩu mới',
+  confirmPasswordLabel: 'Xác nhận mật khẩu mới',
+  changePasswordSubmit: 'Cập nhật mật khẩu',
+  changePasswordSuccess: 'Đã đổi mật khẩu thành công',
+  currentPasswordRequired: 'Vui lòng nhập mật khẩu hiện tại',
+  newPasswordRequired: 'Vui lòng nhập mật khẩu mới',
+  newPasswordTooShort: 'Mật khẩu mới phải có ít nhất 8 ký tự',
+  confirmPasswordRequired: 'Vui lòng xác nhận mật khẩu mới',
+  confirmPasswordMismatch: 'Mật khẩu xác nhận không khớp',
+  deactivateConfirmTitle: 'Vô hiệu hoá người dùng',
+  deactivateConfirmMessage:
+    'Người dùng sẽ không thể đăng nhập cho đến khi được kích hoạt lại.',
+  activateConfirmTitle: 'Kích hoạt người dùng',
+  activateConfirmMessage: 'Người dùng sẽ có thể đăng nhập lại.',
+  deactivateSuccess: 'Đã vô hiệu hoá người dùng',
+  activateSuccess: 'Đã kích hoạt người dùng',
+  deleteConfirmTitle: 'Xoá tài khoản',
+  deleteConfirmMessage:
+    'Hành động này không thể hoàn tác. Bạn có chắc muốn xoá tài khoản này?',
+  deleteSuccess: 'Đã xoá tài khoản',
+  confirm: 'Xác nhận',
+  cancel: 'Huỷ',
+} as const;
+
+export const staffPasswordRules = {
+  minLength: 8,
 } as const;
 
 export const personalInfoCopy = {
@@ -70,13 +152,13 @@ export const changePasswordRules = {
   mockWrongPassword: 'wrong',
 } as const;
 
-/** Default mock profile merged with the authenticated user on load. */
-export const mockUserProfile = {
-  fullName: 'Phong Đà',
-  username: 'PD 1991',
-  email: 'pd1991@phongdalogistics.vn',
-  phone: '0901234567',
-  address: '123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP.HCM',
+/** Default empty profile before user data is loaded. */
+export const emptyUserProfile = {
+  fullName: '',
+  username: '',
+  email: '',
+  phone: '',
+  address: '',
 } as const;
 
 /** Mock wallet balance shown in the profile header. */

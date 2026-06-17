@@ -1,57 +1,107 @@
-import { useCallback, useMemo, useState } from 'react';
-import { orderStatusLabels, ordersCopy } from '@/src/configs/orders';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { countActiveOrderFilters } from '@/src/configs/orders/orderFilters.constants';
+import { ordersCopy } from '@/src/configs/orders';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import {
-  removeOrderItem,
+  fetchOrdersThunk,
   selectFilteredOrderItems,
-  selectOrderStatusFilter,
-  setOrderStatusFilter,
+  selectHasMoreOrders,
+  selectIsLoadingMoreOrders,
+  selectIsLoadingOrders,
+  selectOrderListFilters,
+  selectOrderListSearch,
+  selectOrdersCurrentPage,
+  selectOrdersListError,
+  setOrderListFilters,
+  setOrderListSearch,
 } from '@/src/redux/orders';
-import type {
-  OrderListItem,
-  OrderStatusFilter,
-} from '@/src/types/orders/orders.types';
+import type { OrderListItem } from '@/src/types/orders/orders.types';
+import type { OrderAdvancedFilters } from '@/src/types/orders/orderFilters.types';
 
-export interface OrderFilterOption {
-  key: OrderStatusFilter;
-  label: string;
-}
+const SEARCH_DEBOUNCE_MS = 450;
 
 export interface UseOrdersListResult {
   orders: OrderListItem[];
-  statusFilter: OrderStatusFilter;
+  listFilters: OrderAdvancedFilters;
+  searchQuery: string;
+  activeFilterCount: number;
   isFilterOpen: boolean;
-  filterOptions: OrderFilterOption[];
   emptyMessage: string;
+  isLoading: boolean;
+  isLoadingMore: boolean;
+  hasMore: boolean;
+  loadError: string | null;
   onOpenFilter: () => void;
   onCloseFilter: () => void;
-  onSelectFilter: (filter: OrderStatusFilter) => void;
+  onApplyFilters: (filters: OrderAdvancedFilters) => void;
+  onSearchChange: (value: string) => void;
   onRemoveOrder: (orderId: string) => void;
-  onOrderAction: (orderId: string, action: 'view' | 'pay' | 'cancel') => void;
+  onOrderAction: (orderId: string, action: 'view' | 'edit' | 'pay' | 'cancel') => void;
+  reloadOrders: () => void;
+  loadMoreOrders: () => void;
 }
 
 export function useOrdersList(): UseOrdersListResult {
   const dispatch = useAppDispatch();
   const orders = useAppSelector(selectFilteredOrderItems);
-  const statusFilter = useAppSelector(selectOrderStatusFilter);
+  const listFilters = useAppSelector(selectOrderListFilters);
+  const listSearch = useAppSelector(selectOrderListSearch);
+  const isLoading = useAppSelector(selectIsLoadingOrders);
+  const isLoadingMore = useAppSelector(selectIsLoadingMoreOrders);
+  const hasMore = useAppSelector(selectHasMoreOrders);
+  const loadError = useAppSelector(selectOrdersListError);
+  const currentPage = useAppSelector(selectOrdersCurrentPage);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(() => listSearch);
+  const listSearchRef = useRef(listSearch);
+  listSearchRef.current = listSearch;
 
-  const filterOptions = useMemo<OrderFilterOption[]>(
-    () => [
-      { key: 'all', label: ordersCopy.filterAll },
-      ...Object.entries(orderStatusLabels).map(([key, label]) => ({
-        key: key as OrderStatusFilter,
-        label,
-      })),
-    ],
-    [],
+  const activeFilterCount = useMemo(
+    () => countActiveOrderFilters(listFilters),
+    [listFilters],
   );
 
-  const emptyMessage =
-    statusFilter === 'all'
+  const hasSearch = Boolean(listSearch.trim());
+
+  const emptyMessage = hasSearch
+    ? ordersCopy.emptySearchResults
+    : activeFilterCount === 0
       ? ordersCopy.emptyOrders
       : ordersCopy.emptyFilteredOrders;
+
+  const reloadOrders = useCallback(() => {
+    void dispatch(fetchOrdersThunk({ page: 1, append: false }));
+  }, [dispatch]);
+
+  const loadMoreOrders = useCallback(() => {
+    if (!hasMore || isLoading || isLoadingMore) {
+      return;
+    }
+
+    void dispatch(
+      fetchOrdersThunk({
+        page: currentPage + 1,
+        append: true,
+      }),
+    );
+  }, [currentPage, dispatch, hasMore, isLoading, isLoadingMore]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const next = searchQuery.trim();
+      if (next === listSearchRef.current) {
+        return;
+      }
+      dispatch(setOrderListSearch(next));
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [dispatch, searchQuery]);
+
+  useEffect(() => {
+    reloadOrders();
+  }, [listFilters, listSearch, reloadOrders]);
 
   const onOpenFilter = useCallback(() => {
     setIsFilterOpen(true);
@@ -61,23 +111,23 @@ export function useOrdersList(): UseOrdersListResult {
     setIsFilterOpen(false);
   }, []);
 
-  const onSelectFilter = useCallback(
-    (filter: OrderStatusFilter) => {
-      dispatch(setOrderStatusFilter(filter));
-      setIsFilterOpen(false);
+  const onApplyFilters = useCallback(
+    (filters: OrderAdvancedFilters) => {
+      dispatch(setOrderListFilters(filters));
     },
     [dispatch],
   );
 
-  const onRemoveOrder = useCallback(
-    (orderId: string) => {
-      dispatch(removeOrderItem(orderId));
-    },
-    [dispatch],
-  );
+  const onSearchChange = useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
+
+  const onRemoveOrder = useCallback((_orderId: string) => {
+    // Delete order API is not wired yet.
+  }, []);
 
   const onOrderAction = useCallback(
-    (_orderId: string, _action: 'view' | 'pay' | 'cancel') => {
+    (_orderId: string, _action: 'view' | 'edit' | 'pay' | 'cancel') => {
       // Order action routes are not registered yet.
     },
     [],
@@ -85,14 +135,22 @@ export function useOrdersList(): UseOrdersListResult {
 
   return {
     orders,
-    statusFilter,
+    listFilters,
+    searchQuery,
+    activeFilterCount,
     isFilterOpen,
-    filterOptions,
     emptyMessage,
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    loadError,
     onOpenFilter,
     onCloseFilter,
-    onSelectFilter,
+    onApplyFilters,
+    onSearchChange,
     onRemoveOrder,
     onOrderAction,
+    reloadOrders,
+    loadMoreOrders,
   };
 }

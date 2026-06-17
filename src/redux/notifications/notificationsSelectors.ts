@@ -13,6 +13,41 @@ export const selectNotificationItems = createSelector(
   state => state.items,
 );
 
+export const selectNotificationsListStatus = createSelector(
+  selectNotificationsState,
+  state => state.listStatus,
+);
+
+export const selectNotificationsListError = createSelector(
+  selectNotificationsState,
+  state => state.listError,
+);
+
+export const selectNotificationsCurrentPage = createSelector(
+  selectNotificationsState,
+  state => state.currentPage,
+);
+
+export const selectNotificationsLastPage = createSelector(
+  selectNotificationsState,
+  state => state.lastPage,
+);
+
+export const selectHasMoreNotifications = createSelector(
+  [selectNotificationsCurrentPage, selectNotificationsLastPage],
+  (currentPage, lastPage) => currentPage > 0 && currentPage < lastPage,
+);
+
+export const selectIsLoadingNotifications = createSelector(
+  selectNotificationsListStatus,
+  status => status === 'loading',
+);
+
+export const selectIsLoadingMoreNotifications = createSelector(
+  selectNotificationsListStatus,
+  status => status === 'loadingMore',
+);
+
 export const selectUnreadNotificationCount = createSelector(
   selectNotificationItems,
   items => countUnreadNotifications(items),

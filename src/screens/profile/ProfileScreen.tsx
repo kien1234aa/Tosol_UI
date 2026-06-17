@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { profileCopy } from '@/src/configs/profile';
 import { mainLayout } from '@/src/configs/main';
@@ -15,7 +15,9 @@ import { useProfile } from '@/src/hooks/profile';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { selectUnreadNotificationCount } from '@/src/redux/notifications';
 import { useAppDispatch } from '@/src/hooks';
-import { logout } from '@/src/redux/login/authSlice';
+import { fetchCurrentUserThunk, logout, selectIsAdminUser } from '@/src/redux/login';
+import { resetNotificationsState } from '@/src/redux/notifications';
+import { resetProfileState } from '@/src/redux/profile';
 import type { ProfileStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -27,8 +29,24 @@ type ProfileScreenProps = ProfileStackScreenProps<'ProfileMain'>;
 export function ProfileScreen({ navigation }: ProfileScreenProps) {
   const rootNavigation = navigation.getParent()?.getParent();
   const dispatch = useAppDispatch();
-  const { displayName, balanceVnd } = useProfile();
+  const { displayName, email, roleLabel, sellerName, balanceVnd, reload } =
+    useProfile();
+  const isAdmin = useAppSelector(selectIsAdminUser);
   const unreadNotificationCount = useAppSelector(selectUnreadNotificationCount);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    void dispatch(fetchCurrentUserThunk());
+  }, [dispatch]);
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await reload();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [reload]);
 
   const showComingSoon = useCallback(() => {
     Alert.alert(profileCopy.featureComingSoon);
@@ -42,12 +60,18 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
     navigation.navigate('ChangePassword');
   }, [navigation]);
 
+  const handleStaffList = useCallback(() => {
+    navigation.navigate('StaffList');
+  }, [navigation]);
+
   const handleNotifications = useCallback(() => {
     navigation.navigate('Notifications');
   }, [navigation]);
 
   const handleLogout = useCallback(() => {
     dispatch(logout());
+    dispatch(resetProfileState());
+    dispatch(resetNotificationsState());
     rootNavigation?.reset({
       index: 0,
       routes: [{ name: 'Login' }],
@@ -59,6 +83,9 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
         <ProfileHeader
           displayName={displayName}
+          email={email}
+          roleLabel={roleLabel}
+          sellerName={sellerName}
           balanceVnd={balanceVnd}
           unreadCount={unreadNotificationCount}
           onPressNotifications={handleNotifications}
@@ -66,25 +93,44 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}>
+          contentContainerStyle={styles.content}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+            />
+          }>
           <VStack className="w-full" space="md">
             <ProfileSectionCard title={profileCopy.accountSection}>
               <ProfileMenuRow
                 label={profileCopy.personalInfo}
                 onPress={handlePersonalInfo}
               />
-              <ProfileDivider />
-              <ProfileMenuRow
-                label={profileCopy.changePassword}
-                onPress={handleChangePassword}
-              />
-              <ProfileDivider />
-              <ProfileMenuRow
-                label={profileCopy.deleteAccount}
-                onPress={showComingSoon}
-                danger
-              />
+              {isAdmin ? (
+                <>
+                  <ProfileDivider />
+                  <ProfileMenuRow
+                    label={profileCopy.changePassword}
+                    onPress={handleChangePassword}
+                  />
+                  <ProfileDivider />
+                  <ProfileMenuRow
+                    label={profileCopy.deleteAccount}
+                    onPress={showComingSoon}
+                    danger
+                  />
+                </>
+              ) : null}
             </ProfileSectionCard>
+
+            {isAdmin ? (
+              <ProfileSectionCard title={profileCopy.staffSection}>
+                <ProfileMenuRow
+                  label={profileCopy.staffList}
+                  onPress={handleStaffList}
+                />
+              </ProfileSectionCard>
+            ) : null}
 
             <ProfileSectionCard title={profileCopy.deliverySection}>
               <ProfileMenuRow

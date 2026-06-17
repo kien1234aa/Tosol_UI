@@ -72,6 +72,23 @@ export function buildProductDetailPricing(
   quantity: number,
   exchangeRate: number = exchangeConfig.cnyToVnd,
 ): ProductDetailPricing {
+  if (product.priceVnd != null) {
+    const unitPriceVnd = product.priceVnd;
+    const totalPriceVnd = unitPriceVnd * quantity;
+
+    return {
+      unitPriceCny: unitPriceVnd > 0 ? unitPriceVnd / exchangeRate : 0,
+      unitPriceVnd,
+      totalPriceCny: totalPriceVnd > 0 ? totalPriceVnd / exchangeRate : 0,
+      totalPriceVnd,
+      exchangeRate,
+      discountPercent: getDiscountPercent(
+        product.priceCny,
+        product.originalPriceCny,
+      ),
+    };
+  }
+
   const unitPriceCny = product.priceCny;
   const totalPriceCny = unitPriceCny * quantity;
   const unitPriceVnd = convertCnyToVnd(unitPriceCny, exchangeRate);
