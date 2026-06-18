@@ -52,6 +52,10 @@ type CreateOrderModalProps = Pick<
   | 'shopOptions'
   | 'warehouseOptions'
   | 'shippingPartnerOptions'
+  | 'suggestedShopOptions'
+  | 'suggestedWarehouseOptions'
+  | 'suggestedShippingPartnerOptions'
+  | 'recentCustomers'
   | 'customerSearchQuery'
   | 'customerSearchResults'
   | 'selectedCustomerName'
@@ -90,6 +94,7 @@ type CreateOrderModalProps = Pick<
   | 'onSelectShippingPartner'
   | 'onChangeCustomerSearchQuery'
   | 'onSelectCustomer'
+  | 'onPressCreateCustomer'
   | 'onSelectShippingMethod'
   | 'onChangeRecipientName'
   | 'onChangeRecipientPhone'
@@ -108,6 +113,10 @@ function CreateOrderModalComponent({
   shopOptions,
   warehouseOptions,
   shippingPartnerOptions,
+  suggestedShopOptions,
+  suggestedWarehouseOptions,
+  suggestedShippingPartnerOptions,
+  recentCustomers,
   customerSearchQuery,
   customerSearchResults,
   selectedCustomerName,
@@ -146,6 +155,7 @@ function CreateOrderModalComponent({
   onSelectShippingPartner,
   onChangeCustomerSearchQuery,
   onSelectCustomer,
+  onPressCreateCustomer,
   onSelectShippingMethod,
   onChangeRecipientName,
   onChangeRecipientPhone,
@@ -229,6 +239,7 @@ function CreateOrderModalComponent({
                   leadingIcon={
                     <Store color={lightTokens.tertiary600} size={18} />
                   }
+                  suggestedOptions={suggestedShopOptions}
                   onSelect={onSelectShop}
                 />
 
@@ -245,6 +256,7 @@ function CreateOrderModalComponent({
                   leadingIcon={
                     <Package color={lightTokens.tertiary600} size={18} />
                   }
+                  suggestedOptions={suggestedWarehouseOptions}
                   onSelect={onSelectWarehouse}
                 />
 
@@ -254,8 +266,10 @@ function CreateOrderModalComponent({
                   results={customerSearchResults}
                   isSearching={isSearchingCustomers}
                   searchError={customerSearchError}
+                  recentCustomers={recentCustomers}
                   onChangeQuery={onChangeCustomerSearchQuery}
                   onSelectCustomer={onSelectCustomer}
+                  onPressCreateCustomer={onPressCreateCustomer}
                 />
               </VStack>
             </Box>
@@ -298,6 +312,7 @@ function CreateOrderModalComponent({
                     leadingIcon={
                       <Building2 color={lightTokens.tertiary600} size={18} />
                     }
+                    suggestedOptions={suggestedShippingPartnerOptions}
                     onSelect={onSelectShippingPartner}
                   />
                   {shippingPartnersError && !isSellerShippingPartner ? (

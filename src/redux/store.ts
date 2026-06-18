@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authPersistenceMiddleware } from './authPersistenceMiddleware';
 import { cartPersistenceMiddleware } from './cartPersistenceMiddleware';
+import { preferencesPersistenceMiddleware } from './preferencesPersistenceMiddleware';
 import { rootReducer, type RootState } from './rootReducer';
 
 export const store = configureStore({
@@ -8,7 +9,11 @@ export const store = configureStore({
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: true,
-    }).concat(authPersistenceMiddleware, cartPersistenceMiddleware),
+    }).concat(
+      authPersistenceMiddleware,
+      cartPersistenceMiddleware,
+      preferencesPersistenceMiddleware,
+    ),
 });
 
 export type AppStore = typeof store;

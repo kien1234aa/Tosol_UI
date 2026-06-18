@@ -9,6 +9,7 @@ import { ordersReducer } from './orders/ordersSlice';
 import { consignmentReducer } from './consignment/consignmentSlice';
 import { profileReducer } from './profile/profileSlice';
 import { notificationsReducer } from './notifications/notificationsSlice';
+import { preferencesReducer } from './preferences/preferencesSlice';
 
 /**
  * Root reducer composes every feature slice. New features register their
@@ -25,6 +26,7 @@ export const rootReducer = combineReducers({
   consignment: consignmentReducer,
   profile: profileReducer,
   notifications: notificationsReducer,
+  preferences: preferencesReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

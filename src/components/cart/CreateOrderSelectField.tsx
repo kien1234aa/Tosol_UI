@@ -9,9 +9,11 @@ import {
 } from 'react-native';
 import { ChevronDown } from 'lucide-react-native';
 import { createOrderCopy } from '@/src/configs/cart/createOrder.constants';
+import { preferencesCopy } from '@/src/configs/preferences/preferences.constants';
 import { lightTokens } from '@/src/configs/theme';
 import type { CreateOrderSelectOption } from '@/src/types/orders/createOrder.types';
 import { FormControl } from '@/src/uikits/form-control';
+import { Box } from '@/src/uikits/box';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
@@ -34,6 +36,7 @@ interface CreateOrderSelectFieldProps {
   formatOptionLabel?: (option: CreateOrderSelectOption) => string;
   leadingIcon?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  suggestedOptions?: CreateOrderSelectOption[];
   onSelect: (id: number) => void;
 }
 
@@ -50,6 +53,7 @@ function CreateOrderSelectFieldComponent({
   formatOptionLabel,
   leadingIcon,
   style,
+  suggestedOptions = [],
   onSelect,
 }: CreateOrderSelectFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,6 +79,38 @@ function CreateOrderSelectFieldComponent({
 
   const displayValue = selectedId != null ? value : placeholder;
   const isPlaceholder = selectedId == null;
+
+  const suggestedIds = new Set(suggestedOptions.map(option => option.id));
+  const remainingOptions = options.filter(option => !suggestedIds.has(option.id));
+
+  const renderOption = (option: CreateOrderSelectOption) => {
+    const isSelected = option.id === selectedId;
+    const optionLabel = formatOptionLabel
+      ? formatOptionLabel(option)
+      : option.label;
+
+    return (
+      <Pressable
+        key={option.id}
+        onPress={() => handleSelect(option.id)}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isSelected }}
+        className={`rounded-xl px-3 py-3 ${isSelected ? 'bg-tertiary-50' : ''}`}>
+        <Text
+          size="sm"
+          className={
+            isSelected ? 'font-semibold text-tertiary-700' : 'text-typography-900'
+          }>
+          {optionLabel}
+        </Text>
+        {option.subtitle && !formatOptionLabel ? (
+          <Text size="xs" className="mt-0.5 text-typography-500">
+            {option.subtitle}
+          </Text>
+        ) : null}
+      </Pressable>
+    );
+  };
 
   return (
     <>
@@ -137,38 +173,20 @@ function CreateOrderSelectFieldComponent({
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled">
                 <VStack space="xs">
-                  {options.map(option => {
-                    const isSelected = option.id === selectedId;
-                    const optionLabel = formatOptionLabel
-                      ? formatOptionLabel(option)
-                      : option.label;
-
-                    return (
-                      <Pressable
-                        key={option.id}
-                        onPress={() => handleSelect(option.id)}
-                        accessibilityRole="button"
-                        accessibilityState={{ selected: isSelected }}
-                        className={`rounded-xl px-3 py-3 ${
-                          isSelected ? 'bg-tertiary-50' : ''
-                        }`}>
-                        <Text
-                          size="sm"
-                          className={
-                            isSelected
-                              ? 'font-semibold text-tertiary-700'
-                              : 'text-typography-900'
-                          }>
-                          {optionLabel}
-                        </Text>
-                        {option.subtitle && !formatOptionLabel ? (
-                          <Text size="xs" className="mt-0.5 text-typography-500">
-                            {option.subtitle}
-                          </Text>
-                        ) : null}
-                      </Pressable>
-                    );
-                  })}
+                  {suggestedOptions.length > 0 ? (
+                    <>
+                      <Text
+                        size="xs"
+                        className="px-1 font-semibold uppercase tracking-wide text-typography-500">
+                        {preferencesCopy.recentSection}
+                      </Text>
+                      {suggestedOptions.map(renderOption)}
+                      {remainingOptions.length > 0 ? (
+                        <Box className="my-1 h-px bg-outline-100" />
+                      ) : null}
+                    </>
+                  ) : null}
+                  {remainingOptions.map(renderOption)}
                 </VStack>
               </ScrollView>
             )}

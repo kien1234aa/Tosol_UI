@@ -99,6 +99,7 @@ export const createOrderCopy = {
   searchWarehouseRequired: 'Vui lòng chọn kho ở màn hình tìm kiếm',
   itemsRequired: 'Vui lòng chọn ít nhất một sản phẩm',
   locationRequired: 'Vui lòng chọn đủ Tỉnh / Quận / Phường',
+  customerRequired: 'Vui lòng chọn khách hàng',
   submitError: 'Không thể tạo đơn hàng',
   submitSuccessTitle: 'Tạo đơn thành công',
   submitSuccessPrefix: 'Đơn ',
@@ -245,6 +246,6 @@ export function mapShippingPartnerToSelectOption(
     label: partnerName,
     subtitle:
       description && description !== partnerName ? description : undefined,
-    estimatePartnerId: partner.shipping_partner_config_id,
+    estimatePartnerId: partner.id,
   };
 }

@@ -29,7 +29,10 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
     isLoadingProducts,
     isLoadingMoreProducts,
     productsError,
+    recentQueries,
+    suggestedWarehouseIds,
     setQuery,
+    onSelectRecentQuery,
     onSelectWarehouse,
     loadMoreProducts,
   } = useSearch();
@@ -61,7 +64,10 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
               selectedWarehouseId={selectedWarehouseId}
               selectedWarehouseLabel={selectedWarehouseLabel}
               isSwitchingWarehouse={isSwitchingWarehouse}
+              suggestedWarehouseIds={suggestedWarehouseIds}
+              recentQueries={recentQueries}
               onChangeQuery={setQuery}
+              onSelectRecentQuery={onSelectRecentQuery}
               onSelectWarehouse={onSelectWarehouse}
               onPressImageSearch={handleImageSearch}
             />

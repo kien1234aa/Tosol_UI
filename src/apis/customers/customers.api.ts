@@ -1,13 +1,15 @@
-import { getJsonPaginated } from '@/src/apis/http';
+import { getJsonPaginated, postJson } from '@/src/apis/http';
 import {
   apiEndpoints,
   customerSearchMinLength,
   customersPageSize,
 } from '@/src/configs/api';
+import type { CreateCustomerPayload } from '@/src/types/customers/customer.types';
 import type { CustomerApiItem } from '@/src/types/orders/createOrder.types';
 
 export interface ICustomersService {
   search(query: string, perPage?: number): Promise<CustomerApiItem[]>;
+  create(payload: CreateCustomerPayload): Promise<CustomerApiItem>;
 }
 
 class HttpCustomersService implements ICustomersService {
@@ -30,6 +32,10 @@ class HttpCustomersService implements ICustomersService {
     );
 
     return data;
+  }
+
+  async create(payload: CreateCustomerPayload): Promise<CustomerApiItem> {
+    return postJson<CustomerApiItem>(apiEndpoints.customers, payload);
   }
 }
 

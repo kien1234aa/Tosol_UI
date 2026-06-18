@@ -25,6 +25,7 @@ import {
   flushPendingFcmNotificationOpen,
   ForegroundPushBannerHost,
   setNavigationRef,
+  syncFcmTokenWithBackend,
 } from '@/src/push';
 
 function App() {
@@ -35,6 +36,26 @@ function App() {
     ensureFcmTokenRefreshListener();
     ensureFcmNotificationOpenedAppListener();
     ensureFcmColdStartNotification();
+
+    let lastAuthToken = store.getState().auth.token;
+
+    const syncIfAuthenticated = (authToken: string | null) => {
+      if (authToken) {
+        void syncFcmTokenWithBackend();
+      }
+    };
+
+    syncIfAuthenticated(lastAuthToken);
+
+    return store.subscribe(() => {
+      const authToken = store.getState().auth.token;
+      if (authToken === lastAuthToken) {
+        return;
+      }
+
+      lastAuthToken = authToken;
+      syncIfAuthenticated(authToken);
+    });
   }, []);
 
   return (

@@ -8,6 +8,7 @@ import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { searchCopy } from '@/src/configs/search';
+import { preferencesCopy } from '@/src/configs/preferences/preferences.constants';
 import { lightTokens } from '@/src/configs/theme';
 import type { AuthWarehouse } from '@/src/types/login/auth.types';
 import { SearchWarehouseSelector } from './SearchWarehouseSelector';
@@ -21,6 +22,9 @@ interface SearchHeaderProps {
   onSelectWarehouse: (warehouseId: number | null) => void;
   isSwitchingWarehouse?: boolean;
   onPressImageSearch?: () => void;
+  suggestedWarehouseIds?: number[];
+  recentQueries?: string[];
+  onSelectRecentQuery?: (query: string) => void;
 }
 
 const SEARCH_BAR_HEIGHT = 48;
@@ -36,6 +40,9 @@ function SearchHeaderComponent({
   onSelectWarehouse,
   isSwitchingWarehouse = false,
   onPressImageSearch,
+  suggestedWarehouseIds = [],
+  recentQueries = [],
+  onSelectRecentQuery,
 }: SearchHeaderProps) {
   const handleImageSearch = useCallback(() => {
     onPressImageSearch?.();
@@ -54,6 +61,7 @@ function SearchHeaderComponent({
             selectedWarehouseId={selectedWarehouseId}
             selectedLabel={selectedWarehouseLabel}
             isLoading={isSwitchingWarehouse}
+            suggestedWarehouseIds={suggestedWarehouseIds}
             onSelect={onSelectWarehouse}
           />
 
@@ -80,6 +88,27 @@ function SearchHeaderComponent({
             </Center>
           </Pressable>
         </HStack>
+
+        {!query.trim() && recentQueries.length > 0 ? (
+          <VStack space="xs">
+            <Text size="xs" className="font-semibold text-typography-500">
+              {preferencesCopy.recentSearches}
+            </Text>
+            <HStack className="flex-wrap gap-2">
+              {recentQueries.map(item => (
+                <Pressable
+                  key={item}
+                  onPress={() => onSelectRecentQuery?.(item)}
+                  accessibilityRole="button"
+                  className="rounded-full border border-outline-200 bg-background-0 px-3 py-1.5">
+                  <Text size="xs" className="text-typography-700">
+                    {item}
+                  </Text>
+                </Pressable>
+              ))}
+            </HStack>
+          </VStack>
+        ) : null}
       </VStack>
     </Box>
   );

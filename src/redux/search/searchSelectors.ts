@@ -1,5 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { filterSearchProducts } from '@/src/helpers/search';
+import {
+  filterSearchProducts,
+  sortSearchProductsByStockPriority,
+} from '@/src/helpers/search';
+import { computePreferenceScore } from '@/src/helpers/preferences/preferences.helpers';
+import { selectProductPreferences } from '@/src/redux/preferences';
 import type { RootState } from '@/src/redux/rootReducer';
 
 const selectSearchState = (state: RootState) => state.search;
@@ -76,6 +81,17 @@ export const selectIsLoadingProductDetail = createSelector(
 );
 
 export const selectFilteredSearchProducts = createSelector(
-  [selectSearchProducts, selectSearchQuery],
-  (products, query) => filterSearchProducts(products, query),
+  [selectSearchProducts, selectSearchQuery, selectProductPreferences],
+  (products, query, productPreferences) => {
+    const filtered = filterSearchProducts(products, query);
+    const now = Date.now();
+    const preferenceScores = new Map(
+      productPreferences.map(entry => [
+        entry.id,
+        computePreferenceScore(entry, now),
+      ]),
+    );
+
+    return sortSearchProductsByStockPriority(filtered, preferenceScores);
+  },
 );

@@ -2,9 +2,11 @@ import React, { memo, useCallback, useState } from 'react';
 import { Modal, Pressable as RNPressable, StyleSheet } from 'react-native';
 import { ChevronDown } from 'lucide-react-native';
 import { searchCopy } from '@/src/configs/search';
+import { preferencesCopy } from '@/src/configs/preferences/preferences.constants';
 import { ALL_WAREHOUSES_ID, isAllWarehouses } from '@/src/configs/warehouse';
 import { lightTokens } from '@/src/configs/theme';
 import type { AuthWarehouse } from '@/src/types/login/auth.types';
+import { Box } from '@/src/uikits/box';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
@@ -15,6 +17,7 @@ interface SearchWarehouseSelectorProps {
   selectedWarehouseId: number | null;
   selectedLabel: string;
   isLoading?: boolean;
+  suggestedWarehouseIds?: number[];
   onSelect: (warehouseId: number | null) => void;
 }
 
@@ -25,6 +28,7 @@ function SearchWarehouseSelectorComponent({
   selectedWarehouseId,
   selectedLabel,
   isLoading = false,
+  suggestedWarehouseIds = [],
   onSelect,
 }: SearchWarehouseSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +58,42 @@ function SearchWarehouseSelectorComponent({
   );
 
   const isAllSelected = isAllWarehouses(selectedWarehouseId);
+
+  const suggestedWarehouses = suggestedWarehouseIds
+    .map(id => warehouses.find(warehouse => warehouse.id === id))
+    .filter((warehouse): warehouse is AuthWarehouse => warehouse != null);
+  const suggestedIdSet = new Set(suggestedWarehouseIds);
+  const remainingWarehouses = warehouses.filter(
+    warehouse => !suggestedIdSet.has(warehouse.id),
+  );
+
+  const renderWarehouseOption = (warehouse: AuthWarehouse) => {
+    const isSelected = warehouse.id === selectedWarehouseId;
+
+    return (
+      <Pressable
+        key={warehouse.id}
+        onPress={() => handleSelect(warehouse.id)}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isSelected }}
+        style={[styles.option, isSelected && styles.optionSelected]}>
+        <Text
+          size="sm"
+          className={
+            isSelected
+              ? 'font-semibold text-tertiary-700'
+              : 'text-typography-900'
+          }>
+          {warehouse.name}
+        </Text>
+        {warehouse.code ? (
+          <Text size="xs" className="mt-0.5 text-typography-500">
+            {warehouse.code}
+          </Text>
+        ) : null}
+      </Pressable>
+    );
+  };
 
   return (
     <>
@@ -104,36 +144,21 @@ function SearchWarehouseSelectorComponent({
                 </Text>
               </Pressable>
 
-              {warehouses.map(warehouse => {
-                const isSelected = warehouse.id === selectedWarehouseId;
+              {suggestedWarehouses.length > 0 ? (
+                <>
+                  <Text
+                    size="xs"
+                    className="px-1 pt-1 font-semibold uppercase tracking-wide text-typography-500">
+                    {preferencesCopy.recentSection}
+                  </Text>
+                  {suggestedWarehouses.map(renderWarehouseOption)}
+                  {remainingWarehouses.length > 0 ? (
+                    <Box className="my-1 h-px bg-outline-100" />
+                  ) : null}
+                </>
+              ) : null}
 
-                return (
-                  <Pressable
-                    key={warehouse.id}
-                    onPress={() => handleSelect(warehouse.id)}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isSelected }}
-                    style={[
-                      styles.option,
-                      isSelected && styles.optionSelected,
-                    ]}>
-                    <Text
-                      size="sm"
-                      className={
-                        isSelected
-                          ? 'font-semibold text-tertiary-700'
-                          : 'text-typography-900'
-                      }>
-                      {warehouse.name}
-                    </Text>
-                    {warehouse.code ? (
-                      <Text size="xs" className="mt-0.5 text-typography-500">
-                        {warehouse.code}
-                      </Text>
-                    ) : null}
-                  </Pressable>
-                );
-              })}
+              {remainingWarehouses.map(renderWarehouseOption)}
             </VStack>
           </RNPressable>
         </RNPressable>

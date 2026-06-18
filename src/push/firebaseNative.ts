@@ -4,50 +4,48 @@ type FirebaseAppModule = typeof import('@react-native-firebase/app');
 type FirebaseMessagingModule =
   typeof import('@react-native-firebase/messaging');
 
-let appModule: FirebaseAppModule | null | undefined;
-let messagingModule: FirebaseMessagingModule | null | undefined;
+let cachedAppModule: FirebaseAppModule | null = null;
+let cachedMessagingModule: FirebaseMessagingModule | null = null;
 
 function loadAppModule(): FirebaseAppModule | null {
-  if (appModule !== undefined) {
-    return appModule;
+  if (cachedAppModule != null) {
+    return cachedAppModule;
   }
 
   try {
-    appModule = require('@react-native-firebase/app') as FirebaseAppModule;
-    appModule.getApp();
-    return appModule;
+    const mod = require('@react-native-firebase/app') as FirebaseAppModule;
+    mod.getApp();
+    cachedAppModule = mod;
+    return mod;
   } catch (error) {
     if (__DEV__) {
-      console.warn(
-        '[Firebase] Native module chưa sẵn sàng (pod install / GoogleService-Info.plist).',
-        Platform.OS,
-        error,
-      );
+      const setupHint =
+        Platform.OS === 'android'
+          ? 'Android: google-services.json + applicationId khớp package_name, rebuild app (yarn android).'
+          : 'iOS: pod install + GoogleService-Info.plist khớp bundle id.';
+      console.warn('[Firebase] Native module chưa sẵn sàng.', setupHint, error);
     }
-    appModule = null;
     return null;
   }
 }
 
 function loadMessagingModule(): FirebaseMessagingModule | null {
-  if (messagingModule !== undefined) {
-    return messagingModule;
+  if (cachedMessagingModule != null) {
+    return cachedMessagingModule;
   }
 
   if (loadAppModule() == null) {
-    messagingModule = null;
     return null;
   }
 
   try {
-    messagingModule =
+    cachedMessagingModule =
       require('@react-native-firebase/messaging') as FirebaseMessagingModule;
-    return messagingModule;
+    return cachedMessagingModule;
   } catch (error) {
     if (__DEV__) {
       console.warn('[Firebase] Messaging module unavailable', error);
     }
-    messagingModule = null;
     return null;
   }
 }

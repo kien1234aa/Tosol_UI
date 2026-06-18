@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
+import { preferenceKeys } from '@/src/configs/preferences/preferences.constants';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { addItemToCart, selectCartGroups } from '@/src/redux/cart';
+import { recordPreference } from '@/src/redux/preferences';
 import {
   buildAddToCartPayload,
   validateAddToCart,
@@ -27,6 +29,14 @@ export function useAddToCart(): UseAddToCartResult {
       }
 
       dispatch(addItemToCart(payload));
+      dispatch(
+        recordPreference({
+          key: preferenceKeys.product,
+          id: product.id,
+          label: product.name,
+          subtitle: product.seller,
+        }),
+      );
       return { success: true };
     },
     [dispatch, groups],

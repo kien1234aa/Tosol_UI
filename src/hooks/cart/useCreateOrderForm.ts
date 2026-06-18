@@ -10,6 +10,7 @@ import { warehouseShippingPartnersService } from '@/src/apis/warehouses/warehous
 import { customerSearchMinLength } from '@/src/configs/api';
 import {
   createOrderCopy,
+  createOrderShippingMethods,
   defaultCreateOrderFormState,
   findSelectOptionLabel,
   findShopOptionLabel,
@@ -19,15 +20,31 @@ import {
   mapShopToSelectOption,
   mapWarehouseToSelectOption,
 } from '@/src/configs/cart/createOrder.constants';
+import {
+  buildShopContextKey,
+  buildShippingMethodContextKey,
+  buildWarehouseContextKey,
+  preferenceKeys,
+} from '@/src/configs/preferences/preferences.constants';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
-import { computeGroupCosts, formatVndPrice } from '@/src/helpers/cart';
+import { formatVndPrice } from '@/src/helpers/cart';
+import {
+  buildCreateOrderPreferenceRecords,
+  findSelectOptionById,
+} from '@/src/helpers/preferences/createOrderPreferences.helpers';
+import {
+  customerSearchResultToPreferenceMeta,
+  getTopPreferenceId,
+  pickSuggestedSelectOptions,
+} from '@/src/helpers/preferences/preferences.helpers';
 import {
   buildCreateOrderItems,
   buildCreateOrderPayload,
   buildEstimateCartItems,
+  buildShippingRateEstimatePayload,
+  computeCreateOrderGoodsTotalVnd,
   findBestExpressSellerPartner,
-  getEstimatePartnerId,
   getOrderedCartProductKeys,
   getWarehouseCodeFromRecords,
   isCreateOrderLocationComplete,
@@ -36,6 +53,14 @@ import {
   resolveCustomerRecipientAddress,
 } from '@/src/helpers/cart/createOrder.helpers';
 import { removeCartProduct, selectCartGroups } from '@/src/redux/cart';
+import {
+  recordPreference,
+  recordPreferencesBatch,
+  selectRecentCustomerSuggestions,
+  selectPackagingWarehousePreferences,
+  selectShippingPartnerPreferences,
+  selectShopPreferences,
+} from '@/src/redux/preferences';
 import {
   selectAuthSeller,
   selectAuthUser,
@@ -53,6 +78,10 @@ import type {
 } from '@/src/types/orders/createOrder.types';
 
 import { useBestExpressLocations } from './useBestExpressLocations';
+import {
+  useCreateCustomerForm,
+  type UseCreateCustomerFormResult,
+} from './useCreateCustomerForm';
 
 const customerSearchDebounceMs = 350;
 const shippingEstimateDebounceMs = 550;
@@ -64,6 +93,10 @@ export interface UseCreateOrderFormResult {
   shopOptions: CreateOrderSelectOption[];
   warehouseOptions: CreateOrderSelectOption[];
   shippingPartnerOptions: CreateOrderSelectOption[];
+  suggestedShopOptions: CreateOrderSelectOption[];
+  suggestedWarehouseOptions: CreateOrderSelectOption[];
+  suggestedShippingPartnerOptions: CreateOrderSelectOption[];
+  recentCustomers: CustomerSearchResult[];
   customerSearchQuery: string;
   customerSearchResults: CustomerSearchResult[];
   selectedCustomerName: string | null;
@@ -113,18 +146,15 @@ export interface UseCreateOrderFormResult {
   onToggleCod: (value: boolean) => void;
   onToggleAdvanced: () => void;
   onSubmit: () => void;
+  createCustomer: UseCreateCustomerFormResult;
+  onPressCreateCustomer: () => void;
 }
 
 function computeOrderTotalVnd(
   groups: CartGroup[],
   context: CreateOrderModalContext | null,
 ): number {
-  if (context?.groupId) {
-    const group = groups.find(item => item.id === context.groupId);
-    return group ? computeGroupCosts(group).goodsVnd : 0;
-  }
-
-  return groups.reduce((sum, group) => sum + computeGroupCosts(group).goodsVnd, 0);
+  return computeCreateOrderGoodsTotalVnd(groups, context);
 }
 
 export function useCreateOrderForm(): UseCreateOrderFormResult {
@@ -133,6 +163,8 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
   const seller = useAppSelector(selectAuthSeller);
   const currentWarehouseId = useAppSelector(selectCurrentWarehouseId);
   const groups = useAppSelector(selectCartGroups);
+  const shopPreferences = useAppSelector(selectShopPreferences);
+  const recentCustomers = useAppSelector(selectRecentCustomerSuggestions);
 
   const [visible, setVisible] = useState(false);
   const [context, setContext] = useState<CreateOrderModalContext | null>(null);
@@ -171,8 +203,57 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const selectedCustomerRef = useRef<CustomerSearchResult | null>(null);
+  const onCustomerCreatedRef = useRef<(customer: CustomerSearchResult) => void>(
+    () => {},
+  );
+
+  const createCustomer = useCreateCustomerForm(
+    form.shopId,
+    useCallback((customer: CustomerSearchResult) => {
+      onCustomerCreatedRef.current(customer);
+    }, []),
+  );
 
   const locations = useBestExpressLocations(visible, form.shopId);
+
+  const selectPackagingWarehousePrefs = useMemo(
+    () => selectPackagingWarehousePreferences(form.shopId),
+    [form.shopId],
+  );
+  const selectShippingPartnerPrefs = useMemo(
+    () =>
+      selectShippingPartnerPreferences(
+        form.shippingMethod,
+        form.packagingWarehouseId,
+      ),
+    [form.shippingMethod, form.packagingWarehouseId],
+  );
+
+  const packagingWarehousePreferences = useAppSelector(
+    selectPackagingWarehousePrefs,
+  );
+  const shippingPartnerPreferences = useAppSelector(selectShippingPartnerPrefs);
+
+  const suggestedShopOptions = useMemo(
+    () => pickSuggestedSelectOptions(shopOptions, shopPreferences),
+    [shopOptions, shopPreferences],
+  );
+
+  const suggestedWarehouseOptions = useMemo(
+    () =>
+      pickSuggestedSelectOptions(warehouseOptions, packagingWarehousePreferences),
+    [packagingWarehousePreferences, warehouseOptions],
+  );
+
+  const suggestedShippingPartnerOptions = useMemo(
+    () =>
+      pickSuggestedSelectOptions(
+        shippingPartnerOptions,
+        shippingPartnerPreferences,
+      ),
+    [shippingPartnerOptions, shippingPartnerPreferences],
+  );
 
   const activeWarehouseId = useMemo(
     () => resolveCreateOrderWarehouseId(currentWarehouseId, form.packagingWarehouseId),
@@ -193,6 +274,7 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     setSelectedCustomerName(null);
     setIsSearchingCustomers(false);
     setCustomerSearchError(null);
+    selectedCustomerRef.current = null;
   }, []);
 
   const loadOptions = useCallback(async () => {
@@ -219,15 +301,29 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
       setForm(current => {
         const next = { ...current };
         if (next.shopId == null && shops.length > 0) {
-          next.shopId = shops[0].id;
+          const preferredShopId = getTopPreferenceId(
+            shopPreferences,
+            shops.map(item => item.id),
+          );
+          next.shopId = preferredShopId
+            ? Number(preferredShopId)
+            : shops[0].id;
         }
         if (next.packagingWarehouseId == null) {
-          const preferredWarehouseId = resolveCreateOrderWarehouseId(
-            currentWarehouseId,
-            warehouses[0]?.id ?? null,
+          const preferredWarehouseId = getTopPreferenceId(
+            packagingWarehousePreferences,
+            warehouses.map(item => item.id),
           );
-          if (preferredWarehouseId != null) {
-            next.packagingWarehouseId = preferredWarehouseId;
+          const fallbackWarehouseId =
+            preferredWarehouseId != null
+              ? Number(preferredWarehouseId)
+              : (warehouses[0]?.id ?? null);
+          const resolvedWarehouseId = resolveCreateOrderWarehouseId(
+            currentWarehouseId,
+            fallbackWarehouseId,
+          );
+          if (resolvedWarehouseId != null) {
+            next.packagingWarehouseId = resolvedWarehouseId;
           }
         }
         if (!next.recipientName && user?.displayName) {
@@ -243,7 +339,13 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
       setIsLoadingShops(false);
       setIsLoadingWarehouses(false);
     }
-  }, [currentWarehouseId, seller?.code, user?.displayName]);
+  }, [
+    currentWarehouseId,
+    packagingWarehousePreferences,
+    seller?.code,
+    shopPreferences,
+    user?.displayName,
+  ]);
 
   useEffect(() => {
     if (visible) {
@@ -420,9 +522,16 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
             return current;
           }
 
+          const preferredPartnerId = getTopPreferenceId(
+            shippingPartnerPreferences,
+            options.map(item => item.id),
+          );
+
           return {
             ...current,
-            warehousePartnerId: options[0].id,
+            warehousePartnerId: preferredPartnerId
+              ? Number(preferredPartnerId)
+              : options[0].id,
           };
         });
       })
@@ -452,6 +561,7 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     form.packagingWarehouseId,
     form.shippingMethod,
     resetShippingPartners,
+    shippingPartnerPreferences,
     visible,
     warehouseOptions,
     warehouseRecords,
@@ -535,10 +645,7 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     }
 
     const estimateItems = buildEstimateCartItems(groups, context);
-    const shippingPartnerSellerId = getEstimatePartnerId(
-      shippingPartnerOptions,
-      form.warehousePartnerId,
-    );
+    const goodsTotalVnd = computeCreateOrderGoodsTotalVnd(groups, context);
 
     const toProvince = locations.selectedProvinceLabel;
     const toDistrict = locations.selectedDistrictLabel;
@@ -552,12 +659,24 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
       toDistrict !== createOrderCopy.selectDistrict &&
       toWard !== createOrderCopy.selectWard;
 
-    if (
-      activeWarehouseId == null ||
-      !hasLocation ||
-      estimateItems.length === 0 ||
-      shippingPartnerSellerId == null
-    ) {
+    const estimatePayload =
+      activeWarehouseId != null &&
+      hasLocation &&
+      estimateItems.length > 0 &&
+      form.warehousePartnerId != null
+        ? buildShippingRateEstimatePayload({
+            form,
+            toProvince,
+            toDistrict,
+            toWard,
+            items: estimateItems,
+            activeWarehouseId,
+            shippingPartnerOptions,
+            goodsTotalVnd,
+          })
+        : null;
+
+    if (estimatePayload == null) {
       shippingEstimateRequestId.current += 1;
       setShippingFeeVnd(0);
       setShippingEstimateError(null);
@@ -577,14 +696,7 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
       setShippingEstimateError(null);
 
       void shippingRatesService
-        .estimateCost({
-          to_province: toProvince,
-          to_district: toDistrict,
-          to_ward: toWard,
-          items: estimateItems,
-          shipping_partner_seller_id: shippingPartnerSellerId,
-          warehouse_id: activeWarehouseId,
-        })
+        .estimateCost(estimatePayload)
         .then(result => {
           if (shippingEstimateRequestId.current !== requestId) {
             return;
@@ -618,6 +730,7 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     activeWarehouseId,
     context,
     form.districtId,
+    form.isCodEnabled,
     form.provinceId,
     form.shippingMethod,
     form.wardId,
@@ -630,21 +743,86 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     visible,
   ]);
 
-  const onSelectShop = useCallback((shopId: number) => {
-    setForm(current => ({ ...current, shopId }));
-  }, []);
+  const onSelectShop = useCallback(
+    (shopId: number) => {
+      setForm(current => ({ ...current, shopId }));
+      const option = findSelectOptionById(shopOptions, shopId);
+      if (option) {
+        dispatch(
+          recordPreference({
+            key: preferenceKeys.shop,
+            id: shopId,
+            label: option.label,
+          }),
+        );
+      }
+    },
+    [dispatch, shopOptions],
+  );
 
-  const onSelectWarehouse = useCallback((warehouseId: number) => {
-    setForm(current => ({
-      ...current,
-      packagingWarehouseId: warehouseId,
-      warehousePartnerId: null,
-    }));
-  }, []);
+  const onSelectWarehouse = useCallback(
+    (warehouseId: number) => {
+      setForm(current => {
+        const option = findSelectOptionById(warehouseOptions, warehouseId);
+        if (option) {
+          dispatch(
+            recordPreference({
+              key: preferenceKeys.packagingWarehouse,
+              id: warehouseId,
+              label: option.label,
+              subtitle: option.subtitle,
+            }),
+          );
 
-  const onSelectShippingPartner = useCallback((partnerId: number) => {
-    setForm(current => ({ ...current, warehousePartnerId: partnerId }));
-  }, []);
+          if (current.shopId != null) {
+            dispatch(
+              recordPreference({
+                key: preferenceKeys.packagingWarehouse,
+                id: warehouseId,
+                label: option.label,
+                subtitle: option.subtitle,
+                contextKey: buildShopContextKey(current.shopId),
+              }),
+            );
+          }
+        }
+
+        return {
+          ...current,
+          packagingWarehouseId: warehouseId,
+          warehousePartnerId: null,
+        };
+      });
+    },
+    [dispatch, warehouseOptions],
+  );
+
+  const onSelectShippingPartner = useCallback(
+    (partnerId: number) => {
+      setForm(current => ({ ...current, warehousePartnerId: partnerId }));
+      const option = findSelectOptionById(shippingPartnerOptions, partnerId);
+      if (option) {
+        dispatch(
+          recordPreference({
+            key: preferenceKeys.shippingPartner,
+            id: partnerId,
+            label: option.label,
+            subtitle: option.subtitle,
+            contextKey:
+              form.packagingWarehouseId != null
+                ? buildWarehouseContextKey(form.packagingWarehouseId)
+                : buildShippingMethodContextKey(form.shippingMethod),
+          }),
+        );
+      }
+    },
+    [
+      dispatch,
+      form.packagingWarehouseId,
+      form.shippingMethod,
+      shippingPartnerOptions,
+    ],
+  );
 
   const onChangeCustomerSearchQuery = useCallback((value: string) => {
     setCustomerSearchQuery(value);
@@ -663,6 +841,17 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
       setCustomerSearchResults([]);
       setCustomerSearchError(null);
       setIsSearchingCustomers(false);
+      selectedCustomerRef.current = customer;
+
+      dispatch(
+        recordPreference({
+          key: preferenceKeys.customer,
+          id: customer.id,
+          label: customer.name,
+          subtitle: customer.phone,
+          meta: customerSearchResultToPreferenceMeta(customer),
+        }),
+      );
 
       const recipientAddress = resolveCustomerRecipientAddress(customer);
       let skipLocationSync = false;
@@ -692,17 +881,34 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
         }));
       });
     },
-    [locations],
+    [dispatch, locations],
   );
 
-  const onSelectShippingMethod = useCallback((method: CreateOrderShippingMethod) => {
-    setForm(current => ({
-      ...current,
-      shippingMethod: method,
-      warehousePartnerId:
-        method === 'customer_pickup' ? null : current.warehousePartnerId,
-    }));
-  }, []);
+  onCustomerCreatedRef.current = onSelectCustomer;
+
+  const onSelectShippingMethod = useCallback(
+    (method: CreateOrderShippingMethod) => {
+      setForm(current => ({
+        ...current,
+        shippingMethod: method,
+        warehousePartnerId:
+          method === 'customer_pickup' ? null : current.warehousePartnerId,
+      }));
+
+      const label =
+        createOrderShippingMethods.find(item => item.value === method)?.label ??
+        method;
+
+      dispatch(
+        recordPreference({
+          key: preferenceKeys.shippingMethod,
+          id: method,
+          label,
+        }),
+      );
+    },
+    [dispatch],
+  );
 
   const onChangeRecipientName = useCallback((value: string) => {
     setForm(current => ({ ...current, recipientName: value }));
@@ -862,6 +1068,22 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
         });
 
         const totalVnd = Math.round(Number(created.total) || orderTotalVnd);
+
+        dispatch(
+          recordPreferencesBatch(
+            buildCreateOrderPreferenceRecords({
+              form,
+              shopLabel: selectedShopLabel,
+              warehouseLabel: selectedWarehouseLabel,
+              shippingPartnerLabel: selectedShippingPartnerLabel,
+              customer: selectedCustomerRef.current,
+              provinceLabel: locations.selectedProvinceLabel,
+              districtLabel: locations.selectedDistrictLabel,
+              wardLabel: locations.selectedWardLabel,
+            }),
+          ),
+        );
+
         Alert.alert(
           createOrderCopy.submitSuccessTitle,
           `${createOrderCopy.submitSuccessPrefix}${created.order_number}\n${createOrderCopy.submitSuccessTotalLabel}${formatVndPrice(totalVnd)}`,
@@ -892,6 +1114,9 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     shippingFeeVnd,
     shippingPartnerOptions,
     shopRecords,
+    selectedShopLabel,
+    selectedWarehouseLabel,
+    selectedShippingPartnerLabel,
     warehouseRecords,
   ]);
 
@@ -902,6 +1127,10 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     shopOptions,
     warehouseOptions,
     shippingPartnerOptions,
+    suggestedShopOptions,
+    suggestedWarehouseOptions,
+    suggestedShippingPartnerOptions,
+    recentCustomers,
     customerSearchQuery,
     customerSearchResults,
     selectedCustomerName,
@@ -951,5 +1180,7 @@ export function useCreateOrderForm(): UseCreateOrderFormResult {
     onToggleCod,
     onToggleAdvanced,
     onSubmit,
+    createCustomer,
+    onPressCreateCustomer: createCustomer.openCreateCustomer,
   };
 }

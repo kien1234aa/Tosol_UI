@@ -21,13 +21,14 @@ const BOTTOM_BAR_CONTAINER_STYLE = {
   overflow: 'visible' as const,
 };
 
-const HIDDEN_LIBRARY_BUBBLE_STYLE = {
+const HIDDEN_LIBRARY_FAB_STYLE = {
   backgroundColor: 'transparent',
   shadowOpacity: 0,
   elevation: 0,
   borderWidth: 0,
 };
 
+/** BottomFabBar + bong bóng icon trượt theo tab đang focus. */
 function WaveTabBarComponent(props: BottomTabBarProps) {
   const { state, descriptors } = props;
   const insets = useSafeAreaInsets();
@@ -52,11 +53,7 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
     transform: [{ translateX: translateX.value }],
   }));
 
-  const focusedButtonStyle = useMemo(() => HIDDEN_LIBRARY_BUBBLE_STYLE, []);
-
-  const onLayout = (event: LayoutChangeEvent) => {
-    setWidth(event.nativeEvent.layout.width);
-  };
+  const focusedButtonStyle = useMemo(() => HIDDEN_LIBRARY_FAB_STYLE, []);
 
   const activeIcon = activeOptions.tabBarIcon?.({
     focused: true,
@@ -67,7 +64,7 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
   return (
     <View
       style={[styles.wrapper, { minHeight: tabBarLayout.barHeight + insets.bottom }]}
-      onLayout={onLayout}>
+      onLayout={event => setWidth(event.nativeEvent.layout.width)}>
       <BottomFabBar
         mode="default"
         isRtl={false}
@@ -78,7 +75,16 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
       />
 
       {width > 0 ? (
-        <Animated.View pointerEvents="none" style={[styles.floatingBubble, bubbleStyle]}>
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.floatingBubble,
+            {
+              backgroundColor: tabBarColors.bubbleBackground,
+              borderColor: tabBarColors.bubbleBorder,
+            },
+            bubbleStyle,
+          ]}>
           {activeIcon}
         </Animated.View>
       ) : null}
@@ -97,9 +103,7 @@ const styles = StyleSheet.create({
     width: BUBBLE_SIZE,
     height: BUBBLE_SIZE,
     borderRadius: BUBBLE_SIZE / 2,
-    backgroundColor: tabBarColors.bubbleBackground,
     borderWidth: 2,
-    borderColor: tabBarColors.bubbleBorder,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 100,
@@ -112,15 +116,3 @@ const styles = StyleSheet.create({
 });
 
 export const WaveTabBar = memo(WaveTabBarComponent);
-
-export function MainTabBar(props: BottomTabBarProps) {
-  return <WaveTabBar {...props} />;
-}
-
-export const mainTabBarStyle = StyleSheet.create({
-  tabBar: {
-    height: tabBarLayout.barHeight,
-    borderTopWidth: 0,
-    overflow: 'visible',
-  },
-});

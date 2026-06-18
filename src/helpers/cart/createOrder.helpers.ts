@@ -16,6 +16,7 @@ import type {
 import type {
   SellerShippingPartnerApiItem,
   ShippingRateEstimateItem,
+  ShippingRateEstimatePayload,
 } from '@/src/types/orders/shippingEstimate.types';
 
 function getTargetCartGroups(
@@ -215,6 +216,63 @@ export function buildEstimateCartItems(
     product_id: item.product_id,
     quantity: item.quantity,
   }));
+}
+
+export function computeCreateOrderGoodsTotalVnd(
+  groups: CartGroup[],
+  context: CreateOrderModalContext | null,
+): number {
+  return buildCreateOrderItems(groups, context).reduce(
+    (sum, item) => sum + item.unit_price * item.quantity,
+    0,
+  );
+}
+
+export function buildShippingRateEstimatePayload(input: {
+  form: CreateOrderFormState;
+  toProvince: string;
+  toDistrict: string;
+  toWard: string;
+  items: ShippingRateEstimateItem[];
+  activeWarehouseId: number;
+  shippingPartnerOptions: CreateOrderSelectOption[];
+  goodsTotalVnd: number;
+}): ShippingRateEstimatePayload | null {
+  const partnerId = getEstimatePartnerId(
+    input.shippingPartnerOptions,
+    input.form.warehousePartnerId,
+  );
+
+  if (partnerId == null) {
+    return null;
+  }
+
+  const base = {
+    to_province: input.toProvince,
+    to_district: input.toDistrict,
+    to_ward: input.toWard,
+    items: input.items,
+  };
+
+  if (input.form.shippingMethod === 'warehouse_partner') {
+    return {
+      ...base,
+      shipping_partner_warehouse_id: partnerId,
+      cod_amount: input.form.isCodEnabled
+        ? Math.max(0, input.goodsTotalVnd)
+        : 0,
+    };
+  }
+
+  if (input.form.shippingMethod === 'seller_partner') {
+    return {
+      ...base,
+      shipping_partner_seller_id: partnerId,
+      warehouse_id: input.activeWarehouseId,
+    };
+  }
+
+  return null;
 }
 
 export function findBestExpressSellerPartner(

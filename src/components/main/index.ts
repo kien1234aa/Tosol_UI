@@ -1,6 +1,6 @@
 export { TabScreenShell } from './TabScreenShell';
 export { HomeTabLogo } from './HomeTabLogo';
-export { WaveTabBar, MainTabBar, mainTabBarStyle } from './WaveTabBar';
+export { WaveTabBar } from './WaveTabBar';
 export {
   StackHeader,
   STACK_HEADER_SLOT_WIDTH,

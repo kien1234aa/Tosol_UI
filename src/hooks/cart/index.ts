@@ -4,5 +4,7 @@ export { useAddToCart } from './useAddToCart';
 export type { UseAddToCartResult } from './useAddToCart';
 export { useCreateOrderForm } from './useCreateOrderForm';
 export type { UseCreateOrderFormResult } from './useCreateOrderForm';
+export { useCreateCustomerForm } from './useCreateCustomerForm';
+export type { UseCreateCustomerFormResult } from './useCreateCustomerForm';
 export { useBestExpressLocations } from './useBestExpressLocations';
 export type { UseBestExpressLocationsResult } from './useBestExpressLocations';

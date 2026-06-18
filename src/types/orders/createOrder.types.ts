@@ -43,7 +43,7 @@ export interface CreateOrderSelectOption {
   id: number;
   label: string;
   subtitle?: string;
-  /** Id sent to POST /shipping-rates/estimate-cost as shipping_partner_seller_id. */
+  /** Id sent to POST /shipping-rates/estimate-cost (seller or warehouse partner row id). */
   estimatePartnerId?: number;
 }
 

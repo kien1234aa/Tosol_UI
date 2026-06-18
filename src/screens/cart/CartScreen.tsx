@@ -8,6 +8,7 @@ import {
   CartGroupCard,
   CartHeader,
   CartSummaryBar,
+  CreateCustomerModal,
   CreateOrderModal,
 } from '@/src/components/cart';
 import { Box } from '@/src/uikits/box';
@@ -87,6 +88,10 @@ export function CartScreen() {
         shopOptions={cart.shopOptions}
         warehouseOptions={cart.warehouseOptions}
         shippingPartnerOptions={cart.shippingPartnerOptions}
+        suggestedShopOptions={cart.suggestedShopOptions}
+        suggestedWarehouseOptions={cart.suggestedWarehouseOptions}
+        suggestedShippingPartnerOptions={cart.suggestedShippingPartnerOptions}
+        recentCustomers={cart.recentCustomers}
         selectedShopLabel={cart.selectedShopLabel}
         selectedWarehouseLabel={cart.selectedWarehouseLabel}
         selectedShippingPartnerLabel={cart.selectedShippingPartnerLabel}
@@ -125,6 +130,7 @@ export function CartScreen() {
         customerSearchError={cart.customerSearchError}
         onChangeCustomerSearchQuery={cart.onChangeCustomerSearchQuery}
         onSelectCustomer={cart.onSelectCustomer}
+        onPressCreateCustomer={cart.onPressCreateCustomer}
         onSelectShippingMethod={cart.onSelectShippingMethod}
         onChangeRecipientName={cart.onChangeRecipientName}
         onChangeRecipientPhone={cart.onChangeRecipientPhone}
@@ -135,6 +141,33 @@ export function CartScreen() {
         onToggleCod={cart.onToggleCod}
         onToggleAdvanced={cart.onToggleAdvanced}
         onSubmit={cart.onSubmit}
+      />
+
+      <CreateCustomerModal
+        visible={cart.createCustomer.visible}
+        form={cart.createCustomer.form}
+        isSubmitting={cart.createCustomer.isSubmitting}
+        provinceOptions={cart.createCustomer.provinceOptions}
+        districtOptions={cart.createCustomer.districtOptions}
+        wardOptions={cart.createCustomer.wardOptions}
+        selectedProvinceLabel={cart.createCustomer.selectedProvinceLabel}
+        selectedDistrictLabel={cart.createCustomer.selectedDistrictLabel}
+        selectedWardLabel={cart.createCustomer.selectedWardLabel}
+        isLoadingProvinces={cart.createCustomer.isLoadingProvinces}
+        isLoadingDistricts={cart.createCustomer.isLoadingDistricts}
+        isLoadingWards={cart.createCustomer.isLoadingWards}
+        provincesError={cart.createCustomer.provincesError}
+        districtsError={cart.createCustomer.districtsError}
+        wardsError={cart.createCustomer.wardsError}
+        closeCreateCustomer={cart.createCustomer.closeCreateCustomer}
+        onChangeName={cart.createCustomer.onChangeName}
+        onChangePhone={cart.createCustomer.onChangePhone}
+        onChangeEmail={cart.createCustomer.onChangeEmail}
+        onChangeAddress={cart.createCustomer.onChangeAddress}
+        onSelectProvince={cart.createCustomer.onSelectProvince}
+        onSelectDistrict={cart.createCustomer.onSelectDistrict}
+        onSelectWard={cart.createCustomer.onSelectWard}
+        onSubmit={cart.createCustomer.onSubmit}
       />
     </Box>
   );

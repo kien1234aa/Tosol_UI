@@ -43,6 +43,58 @@ export function filterSearchProducts(
   );
 }
 
+/** Lower rank = higher priority in search results. */
+export function getSearchProductStockRank(product: SearchProduct): number {
+  const availableStock = product.availableStock ?? 0;
+
+  if (product.isOutOfStock || availableStock <= 0) {
+    return 3;
+  }
+
+  if (product.isInStock) {
+    return 0;
+  }
+
+  if (product.isLowStock) {
+    return 1;
+  }
+
+  return 2;
+}
+
+/**
+ * Sorts loaded catalog items so in-stock products appear first.
+ * Works on the client-side accumulated paginated list.
+ */
+export function sortSearchProductsByStockPriority(
+  products: SearchProduct[],
+  productPreferenceScores?: ReadonlyMap<string, number>,
+): SearchProduct[] {
+  return [...products].sort((a, b) => {
+    const rankDiff =
+      getSearchProductStockRank(a) - getSearchProductStockRank(b);
+    if (rankDiff !== 0) {
+      return rankDiff;
+    }
+
+    const stockDiff = (b.availableStock ?? 0) - (a.availableStock ?? 0);
+    if (stockDiff !== 0) {
+      return stockDiff;
+    }
+
+    if (productPreferenceScores) {
+      const prefDiff =
+        (productPreferenceScores.get(b.id) ?? 0) -
+        (productPreferenceScores.get(a.id) ?? 0);
+      if (prefDiff !== 0) {
+        return prefDiff;
+      }
+    }
+
+    return a.name.localeCompare(b.name, 'vi');
+  });
+}
+
 export function getProductById(
   products: SearchProduct[],
   productId: string,
