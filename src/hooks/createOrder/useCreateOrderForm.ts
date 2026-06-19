@@ -123,6 +123,7 @@ export interface UseCreateOrderFormResult {
   selectedProvinceLabel: string;
   selectedDistrictLabel: string;
   selectedWardLabel: string;
+  isWardRequired: boolean;
   isLoadingProvinces: boolean;
   isLoadingDistricts: boolean;
   isLoadingWards: boolean;
@@ -641,17 +642,15 @@ export function useCreateOrderForm(
     const estimateItems = buildEstimateDraftItems(groups, null);
     const goodsTotalVnd = computeGrandGoodsTotal(groups);
 
-    const toProvince = locations.selectedProvinceLabel;
-    const toDistrict = locations.selectedDistrictLabel;
-    const toWard = locations.selectedWardLabel;
+    const { province, district, ward } = locations.shipmentLocation;
 
     const hasLocation =
       form.provinceId != null &&
       form.districtId != null &&
-      form.wardId != null &&
-      toProvince !== createOrderCopy.selectProvince &&
-      toDistrict !== createOrderCopy.selectDistrict &&
-      toWard !== createOrderCopy.selectWard;
+      province !== '' &&
+      (locations.isWardRequired
+        ? form.wardId != null && ward !== ''
+        : district !== '' || ward !== '');
 
     const estimatePayload =
       activeWarehouseId != null &&
@@ -660,9 +659,9 @@ export function useCreateOrderForm(
       form.warehousePartnerId != null
         ? buildShippingRateEstimatePayload({
             form,
-            toProvince,
-            toDistrict,
-            toWard,
+            toProvince: province,
+            toDistrict: district,
+            toWard: ward,
             items: estimateItems,
             activeWarehouseId,
             shippingPartnerOptions,
@@ -729,9 +728,8 @@ export function useCreateOrderForm(
     form.wardId,
     form.warehousePartnerId,
     groups,
-    locations.selectedDistrictLabel,
-    locations.selectedProvinceLabel,
-    locations.selectedWardLabel,
+    locations.isWardRequired,
+    locations.shipmentLocation,
     shippingPartnerOptions,
     isFocused,
   ]);
@@ -1022,6 +1020,7 @@ export function useCreateOrderForm(
         locations.selectedProvinceLabel,
         locations.selectedDistrictLabel,
         locations.selectedWardLabel,
+        locations.isWardRequired,
       )
     ) {
       Alert.alert(createOrderCopy.title, createOrderCopy.locationRequired);
@@ -1043,6 +1042,8 @@ export function useCreateOrderForm(
       return;
     }
 
+    const { province, district, ward } = locations.shipmentLocation;
+
     const payload = buildCreateOrderPayload({
       form,
       shop,
@@ -1051,9 +1052,9 @@ export function useCreateOrderForm(
       groups,
       context: null,
       shippingPartnerOptions,
-      provinceLabel: locations.selectedProvinceLabel,
-      districtLabel: locations.selectedDistrictLabel,
-      wardLabel: locations.selectedWardLabel,
+      provinceLabel: province,
+      districtLabel: district,
+      wardLabel: ward,
       shippingFeeVnd,
     });
 
@@ -1072,9 +1073,9 @@ export function useCreateOrderForm(
               warehouseLabel: selectedWarehouseLabel,
               shippingPartnerLabel: selectedShippingPartnerLabel,
               customer: selectedCustomerRef.current,
-              provinceLabel: locations.selectedProvinceLabel,
-              districtLabel: locations.selectedDistrictLabel,
-              wardLabel: locations.selectedWardLabel,
+              provinceLabel: locations.shipmentLocation.province,
+              districtLabel: locations.shipmentLocation.district,
+              wardLabel: locations.shipmentLocation.ward,
             }),
             ...buildDraftProductPreferenceRecords(draftProducts),
           ]),
@@ -1106,9 +1107,8 @@ export function useCreateOrderForm(
     form,
     groups,
     isSubmitting,
-    locations.selectedDistrictLabel,
-    locations.selectedProvinceLabel,
-    locations.selectedWardLabel,
+    locations.isWardRequired,
+    locations.shipmentLocation,
     options,
     orderTotalVnd,
     shippingFeeVnd,
@@ -1152,6 +1152,7 @@ export function useCreateOrderForm(
     selectedProvinceLabel: locations.selectedProvinceLabel,
     selectedDistrictLabel: locations.selectedDistrictLabel,
     selectedWardLabel: locations.selectedWardLabel,
+    isWardRequired: locations.isWardRequired,
     isLoadingProvinces: locations.isLoadingProvinces,
     isLoadingDistricts: locations.isLoadingDistricts,
     isLoadingWards: locations.isLoadingWards,

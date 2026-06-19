@@ -17,11 +17,72 @@ import type {
   CreateSaleOrderPayload,
   CreateSaleOrderItemPayload,
 } from '@/src/types/orders/saleOrder.types';
+import type { BestExpressDistrict } from '@/src/types/orders/location.types';
 import type {
   SellerShippingPartnerApiItem,
   ShippingRateEstimateItem,
   ShippingRateEstimatePayload,
 } from '@/src/types/orders/shippingEstimate.types';
+
+export interface BestExpressShipmentLocation {
+  province: string;
+  district: string;
+  ward: string;
+}
+
+/** Địa chỉ 3 cấp (cũ) có phường/xã con; 2 cấp (mới) chọn thẳng phường/xã ở bước quận/huyện. */
+export function isBestExpressWardRequired(
+  district: Pick<BestExpressDistrict, 'children_count'> | null | undefined,
+): boolean {
+  return district != null && district.children_count > 0;
+}
+
+export function resolveBestExpressShipmentLocation(input: {
+  provinceLabel: string;
+  districtLabel: string;
+  wardLabel: string;
+  isWardRequired: boolean;
+}): BestExpressShipmentLocation {
+  const province =
+    input.provinceLabel !== createOrderCopy.selectProvince
+      ? input.provinceLabel.trim()
+      : '';
+  const district =
+    input.districtLabel !== createOrderCopy.selectDistrict
+      ? input.districtLabel.trim()
+      : '';
+  const ward =
+    input.wardLabel !== createOrderCopy.selectWard ? input.wardLabel.trim() : '';
+
+  if (input.isWardRequired) {
+    return { province, district, ward };
+  }
+
+  return {
+    province,
+    district: '',
+    ward: district,
+  };
+}
+
+export function resolveBestExpressCustomerLocation(input: {
+  provinceLabel: string;
+  districtLabel: string;
+  wardLabel: string;
+  isWardRequired: boolean;
+}): {
+  province: string | null;
+  district: string | null;
+  ward: string | null;
+} {
+  const resolved = resolveBestExpressShipmentLocation(input);
+
+  return {
+    province: resolved.province || null,
+    district: resolved.district || null,
+    ward: resolved.ward || null,
+  };
+}
 
 function getTargetDraftGroups(
   groups: DraftProductGroup[],
@@ -177,19 +238,26 @@ export function isCreateOrderLocationComplete(
   provinceLabel: string,
   districtLabel: string,
   wardLabel: string,
+  isWardRequired: boolean,
 ): boolean {
   if (form.shippingMethod === 'customer_pickup') {
     return true;
   }
 
-  return (
-    form.provinceId != null &&
-    form.districtId != null &&
-    form.wardId != null &&
-    provinceLabel !== createOrderCopy.selectProvince &&
-    districtLabel !== createOrderCopy.selectDistrict &&
-    wardLabel !== createOrderCopy.selectWard
-  );
+  const hasProvince =
+    form.provinceId != null && provinceLabel !== createOrderCopy.selectProvince;
+  const hasDistrict =
+    form.districtId != null && districtLabel !== createOrderCopy.selectDistrict;
+
+  if (!hasProvince || !hasDistrict) {
+    return false;
+  }
+
+  if (!isWardRequired) {
+    return true;
+  }
+
+  return form.wardId != null && wardLabel !== createOrderCopy.selectWard;
 }
 
 export function getOrderedDraftProductKeys(

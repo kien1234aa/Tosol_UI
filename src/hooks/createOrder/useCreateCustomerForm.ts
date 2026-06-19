@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 import { customersService } from '@/src/apis/customers/customers.api';
-import { createOrderCopy, mapCustomerToSearchResult } from '@/src/configs/createOrder/createOrder.constants';
+import { mapCustomerToSearchResult } from '@/src/configs/createOrder/createOrder.constants';
 import {
   createCustomerCopy,
   defaultCreateCustomerFormState,
@@ -11,6 +11,7 @@ import type { CreateOrderSelectOption } from '@/src/types/orders/createOrder.typ
 import type { CustomerSearchResult } from '@/src/types/orders/createOrder.types';
 
 import { useBestExpressLocations } from './useBestExpressLocations';
+import { resolveBestExpressCustomerLocation } from '@/src/helpers/createOrder/createOrder.helpers';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,21 +20,23 @@ function buildCreateCustomerPayload(
   provinceLabel: string,
   districtLabel: string,
   wardLabel: string,
+  isWardRequired: boolean,
 ) {
-  const province =
-    provinceLabel !== createOrderCopy.selectProvince ? provinceLabel.trim() : null;
-  const district =
-    districtLabel !== createOrderCopy.selectDistrict ? districtLabel.trim() : null;
-  const ward = wardLabel !== createOrderCopy.selectWard ? wardLabel.trim() : null;
+  const location = resolveBestExpressCustomerLocation({
+    provinceLabel,
+    districtLabel,
+    wardLabel,
+    isWardRequired,
+  });
 
   return {
     name: form.name.trim(),
     phone: form.phone.trim(),
     email: form.email.trim() || null,
     address: form.address.trim() || null,
-    province,
-    district,
-    ward,
+    province: location.province,
+    district: location.district,
+    ward: location.ward,
   };
 }
 
@@ -47,6 +50,7 @@ export interface UseCreateCustomerFormResult {
   selectedProvinceLabel: string;
   selectedDistrictLabel: string;
   selectedWardLabel: string;
+  isWardRequired: boolean;
   isLoadingProvinces: boolean;
   isLoadingDistricts: boolean;
   isLoadingWards: boolean;
@@ -171,6 +175,7 @@ export function useCreateCustomerForm(
       locations.selectedProvinceLabel,
       locations.selectedDistrictLabel,
       locations.selectedWardLabel,
+      locations.isWardRequired,
     );
 
     setIsSubmitting(true);
@@ -196,6 +201,7 @@ export function useCreateCustomerForm(
     closeCreateCustomer,
     form,
     isSubmitting,
+    locations.isWardRequired,
     locations.selectedDistrictLabel,
     locations.selectedProvinceLabel,
     locations.selectedWardLabel,
@@ -212,6 +218,7 @@ export function useCreateCustomerForm(
     selectedProvinceLabel: locations.selectedProvinceLabel,
     selectedDistrictLabel: locations.selectedDistrictLabel,
     selectedWardLabel: locations.selectedWardLabel,
+    isWardRequired: locations.isWardRequired,
     isLoadingProvinces: locations.isLoadingProvinces,
     isLoadingDistricts: locations.isLoadingDistricts,
     isLoadingWards: locations.isLoadingWards,

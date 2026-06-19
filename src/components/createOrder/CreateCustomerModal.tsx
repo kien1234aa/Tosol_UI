@@ -32,6 +32,7 @@ type CreateCustomerModalProps = Pick<
   | 'selectedProvinceLabel'
   | 'selectedDistrictLabel'
   | 'selectedWardLabel'
+  | 'isWardRequired'
   | 'isLoadingProvinces'
   | 'isLoadingDistricts'
   | 'isLoadingWards'
@@ -59,6 +60,7 @@ function CreateCustomerModalComponent({
   selectedProvinceLabel,
   selectedDistrictLabel,
   selectedWardLabel,
+  isWardRequired,
   isLoadingProvinces,
   isLoadingDistricts,
   isLoadingWards,
@@ -176,18 +178,20 @@ function CreateCustomerModalComponent({
                     style={{ flex: 1, minWidth: 0 }}
                     onSelect={onSelectDistrict}
                   />
-                  <CreateOrderSelectField
-                    label={createOrderCopy.wardLabel}
-                    value={selectedWardLabel}
-                    options={wardOptions}
-                    selectedId={form.wardId}
-                    placeholder={createOrderCopy.selectWard}
-                    pickerTitle={createOrderCopy.wardPickerTitle}
-                    isLoading={isLoadingWards}
-                    disabled={form.districtId == null}
-                    style={{ flex: 1, minWidth: 0 }}
-                    onSelect={onSelectWard}
-                  />
+                  {isWardRequired ? (
+                    <CreateOrderSelectField
+                      label={createOrderCopy.wardLabel}
+                      value={selectedWardLabel}
+                      options={wardOptions}
+                      selectedId={form.wardId}
+                      placeholder={createOrderCopy.selectWard}
+                      pickerTitle={createOrderCopy.wardPickerTitle}
+                      isLoading={isLoadingWards}
+                      disabled={form.districtId == null}
+                      style={{ flex: 1, minWidth: 0 }}
+                      onSelect={onSelectWard}
+                    />
+                  ) : null}
                 </HStack>
 
                 {provincesError ? (

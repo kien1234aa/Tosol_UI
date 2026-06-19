@@ -172,6 +172,7 @@ export function CreateOrderScreen({
                 selectedProvinceLabel={order.selectedProvinceLabel}
                 selectedDistrictLabel={order.selectedDistrictLabel}
                 selectedWardLabel={order.selectedWardLabel}
+                isWardRequired={order.isWardRequired}
                 isLoadingProvinces={order.isLoadingProvinces}
                 isLoadingDistricts={order.isLoadingDistricts}
                 isLoadingWards={order.isLoadingWards}
@@ -241,6 +242,7 @@ export function CreateOrderScreen({
                 selectedProvinceLabel={order.selectedProvinceLabel}
                 selectedDistrictLabel={order.selectedDistrictLabel}
                 selectedWardLabel={order.selectedWardLabel}
+                isWardRequired={order.isWardRequired}
                 isLoadingProvinces={order.isLoadingProvinces}
                 isLoadingDistricts={order.isLoadingDistricts}
                 isLoadingWards={order.isLoadingWards}
@@ -293,6 +295,7 @@ export function CreateOrderScreen({
         selectedProvinceLabel={order.createCustomer.selectedProvinceLabel}
         selectedDistrictLabel={order.createCustomer.selectedDistrictLabel}
         selectedWardLabel={order.createCustomer.selectedWardLabel}
+        isWardRequired={order.createCustomer.isWardRequired}
         isLoadingProvinces={order.createCustomer.isLoadingProvinces}
         isLoadingDistricts={order.createCustomer.isLoadingDistricts}
         isLoadingWards={order.createCustomer.isLoadingWards}
