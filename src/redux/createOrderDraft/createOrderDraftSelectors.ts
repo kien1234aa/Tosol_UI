@@ -9,8 +9,15 @@ import {
 import type { RootState } from '@/src/redux/rootReducer';
 import type {
   DraftOrderSummary,
+  DraftProductGroup,
   DraftProductGroupViewModel,
 } from '@/src/types/createOrderDraft/createOrderDraft.types';
+
+const EMPTY_DRAFT_GROUPS: DraftProductGroup[] = [];
+
+/** Stable empty list for useAppSelector when no draft is active. */
+export const selectEmptyDraftGroups = (_state: RootState): DraftProductGroup[] =>
+  EMPTY_DRAFT_GROUPS;
 
 const selectCreateOrderDraftState = (state: RootState) => state.createOrderDraft;
 
@@ -64,7 +71,10 @@ export const makeSelectDraftById = (draftId: string) =>
   );
 
 export const makeSelectDraftGroups = (draftId: string) =>
-  createSelector(makeSelectDraftById(draftId), draft => draft?.groups ?? []);
+  createSelector(
+    makeSelectDraftById(draftId),
+    draft => draft?.groups ?? EMPTY_DRAFT_GROUPS,
+  );
 
 export const makeSelectDraftGroupViewModels = (draftId: string) =>
   createSelector(makeSelectDraftGroups(draftId), (groups): DraftProductGroupViewModel[] =>

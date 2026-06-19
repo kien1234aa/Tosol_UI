@@ -86,8 +86,9 @@ function WaveBottomTabNavigatorComponent({
   const screenOptions = useMemo(
     () => ({
       headerShown: false,
-      lazy: true,
-      freezeOnBlur: true,
+      lazy: false,
+      freezeOnBlur: false,
+      popToTopOnBlur: true,
       tabBarActiveTintColor: colors.activeTint,
       tabBarInactiveTintColor: colors.inactiveTint,
       tabBarActiveBackgroundColor: colors.activeBackground,

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Keyboard } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { saleOrdersService } from '@/src/apis/orders/saleOrders.api';
 import { customersService } from '@/src/apis/customers/customers.api';
@@ -829,6 +829,7 @@ export function useCreateOrderForm(
 
   const onSelectCustomer = useCallback(
     (customer: CustomerSearchResult) => {
+      Keyboard.dismiss();
       customerSearchRequestId.current += 1;
       setSelectedCustomerName(customer.name);
       setCustomerSearchQuery(customer.name);

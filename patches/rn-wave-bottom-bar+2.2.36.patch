@@ -1,5 +1,5 @@
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
-index f1d127f..4ce0f38 100644
+index f1d127f..2355de4 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
 @@ -10,7 +10,7 @@ var _reactNativeReanimated = _interopRequireWildcard(require("react-native-reani
@@ -66,6 +66,19 @@ index f1d127f..4ce0f38 100644
      style: [_reactNative.StyleSheet.absoluteFill, _bottomTab.style.barShapeWrapper]
    }, /*#__PURE__*/_react.default.createElement(ReanimatedSvg, {
      width: width * 2.5,
+@@ -162,7 +123,11 @@ const FabTabBar = _ref => {
+         canPreventDefault: true
+       });
+       if (!isFocused && !event.defaultPrevented) {
+-        navigation.navigate(route.name);
++        navigation.dispatch({
++          type: 'NAVIGATE',
++          payload: { name: route.name },
++          target: state.key,
++        });
+       }
+     };
+     const onLongPress = () => {
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
 index 27c9f3b..c259496 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
@@ -316,7 +329,7 @@ index 8c0355c..0123953 100644
 -//# sourceMappingURL=tab.bar.button.styles.js.map
 \ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
-index e97bc3c..959aa55 100644
+index e97bc3c..f78ecff 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
 @@ -4,7 +4,7 @@ import RNReanimated, { useAnimatedStyle, useSharedValue, withSpring } from 'reac
@@ -383,6 +396,19 @@ index e97bc3c..959aa55 100644
      style: [StyleSheet.absoluteFill, style.barShapeWrapper]
    }, /*#__PURE__*/React.createElement(ReanimatedSvg, {
      width: width * 2.5,
+@@ -153,7 +114,11 @@ export const FabTabBar = _ref => {
+         canPreventDefault: true
+       });
+       if (!isFocused && !event.defaultPrevented) {
+-        navigation.navigate(route.name);
++        navigation.dispatch({
++          type: 'NAVIGATE',
++          payload: { name: route.name },
++          target: state.key,
++        });
+       }
+     };
+     const onLongPress = () => {
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
 index c84e9c6..d2eb0ec 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js

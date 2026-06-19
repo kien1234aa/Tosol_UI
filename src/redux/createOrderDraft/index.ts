@@ -26,6 +26,7 @@ export {
   selectDraftSummaries,
   makeSelectDraftById,
   makeSelectDraftGroups,
+  selectEmptyDraftGroups,
   makeSelectDraftGroupViewModels,
   makeSelectDraftGrandTotal,
   makeSelectHasDraftProducts,

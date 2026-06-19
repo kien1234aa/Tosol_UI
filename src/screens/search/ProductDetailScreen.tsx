@@ -18,6 +18,7 @@ import {
   ensureDraftWithProduct,
   makeSelectDraftGroups,
   selectActiveDraftId,
+  selectEmptyDraftGroups,
 } from '@/src/redux/createOrderDraft';
 import { recordPreference } from '@/src/redux/preferences';
 import { store } from '@/src/redux/store';
@@ -43,13 +44,14 @@ export function ProductDetailScreen({
   const { productId } = route.params;
   const dispatch = useAppDispatch();
   const activeDraftId = useAppSelector(selectActiveDraftId);
-  const activeDraftGroups = useAppSelector(
-    useMemo(
-      () =>
-        activeDraftId ? makeSelectDraftGroups(activeDraftId) : () => [],
-      [activeDraftId],
-    ),
+  const selectActiveDraftGroups = useMemo(
+    () =>
+      activeDraftId
+        ? makeSelectDraftGroups(activeDraftId)
+        : selectEmptyDraftGroups,
+    [activeDraftId],
   );
+  const activeDraftGroups = useAppSelector(selectActiveDraftGroups);
   const {
     product,
     quantity,
