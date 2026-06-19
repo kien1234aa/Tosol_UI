@@ -143,6 +143,15 @@ export interface SaleOrderShippingPartnerSellerApi {
   shipping_partner?: SaleOrderShippingPartnerApi | null;
 }
 
+export interface SaleOrderShippingPartnerWarehouseApi {
+  id: number;
+  description?: string | null;
+  shipping_partner_config?: {
+    description?: string | null;
+    shipping_partner?: SaleOrderShippingPartnerApi | null;
+  } | null;
+}
+
 export interface SaleOrderShipmentApi {
   id: number;
   status: string;
@@ -156,13 +165,22 @@ export interface SaleOrderShipmentApi {
   recipient_district?: string | null;
   recipient_ward?: string | null;
   tracking_number?: string | null;
+  shipping_partner_code?: string | null;
   shipping_partner_seller?: SaleOrderShippingPartnerSellerApi | null;
+  shipping_partner_warehouse?: SaleOrderShippingPartnerWarehouseApi | null;
+}
+
+export interface SaleOrderPackingOrderBoxApi {
+  id: number;
+  box_code?: string | null;
+  tracking_number?: string | null;
 }
 
 export interface SaleOrderPackingOrderApi {
   id: number;
   order_number: string;
   status: string;
+  boxes?: SaleOrderPackingOrderBoxApi[] | null;
 }
 
 export interface UpdateSaleOrderPayload {
@@ -180,6 +198,7 @@ export interface SaleOrderDetailApi extends SaleOrderApiItem {
   shipping_payer?: string | null;
   collect_cod?: boolean;
   cod_amount?: string | null;
+  tracking_number?: string | null;
   note?: string | null;
   has_issue?: boolean;
   issue_note?: string | null;

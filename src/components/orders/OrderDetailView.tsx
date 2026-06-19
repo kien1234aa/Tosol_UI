@@ -257,12 +257,10 @@ function OrderDetailShippingComponent({ shipping }: OrderDetailShippingProps) {
           label={orderDetailCopy.shippingPartnerLabel}
           value={shipping.shippingPartnerName}
         />
-        {shipping.trackingNumber ? (
-          <DetailRow
-            label={orderDetailCopy.trackingNumberLabel}
-            value={shipping.trackingNumber}
-          />
-        ) : null}
+        <DetailRow
+          label={orderDetailCopy.trackingNumberLabel}
+          value={shipping.trackingNumber ?? '—'}
+        />
         <DetailRow
           label={orderDetailCopy.shippingPayerLabel}
           value={formatOrderLabel(
@@ -391,23 +389,19 @@ function OrderDetailCostBreakdownComponent({
 interface OrderDetailActionsProps {
   canPay: boolean;
   canCancel: boolean;
-  canEdit: boolean;
   remainingVnd: number;
   onPressPay: () => void;
   onPressCancel: () => void;
-  onPressEdit: () => void;
 }
 
 function OrderDetailActionsComponent({
   canPay,
   canCancel,
-  canEdit,
   remainingVnd,
   onPressPay,
   onPressCancel,
-  onPressEdit,
 }: OrderDetailActionsProps) {
-  if (!canPay && !canCancel && !canEdit) {
+  if (!canPay && !canCancel) {
     return null;
   }
 
@@ -425,21 +419,6 @@ function OrderDetailActionsComponent({
       ) : null}
 
       <HStack className="w-full" space="md">
-        {canEdit ? (
-          <Pressable
-            onPress={onPressEdit}
-            accessibilityRole="button"
-            accessibilityLabel={orderDetailCopy.editOrder}
-            style={[buttonFooterAction, buttonFlex, styles.editButton]}>
-            <Text
-              size="sm"
-              className="font-semibold text-tertiary-600"
-              style={buttonLabelStyle}>
-              {orderDetailCopy.editOrder}
-            </Text>
-          </Pressable>
-        ) : null}
-
         {canCancel ? (
           <Pressable
             onPress={onPressCancel}
@@ -518,11 +497,6 @@ const styles = StyleSheet.create({
   outlineButton: {
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.error500,
-    backgroundColor: lightTokens.background0,
-  },
-  editButton: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: lightTokens.tertiary500,
     backgroundColor: lightTokens.background0,
   },
   primaryButton: {

@@ -30,7 +30,7 @@ import {
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { draftCopy } from '@/src/configs/createOrder/draft.constants';
-import { formatVndPrice, validateCustomDraftProducts } from '@/src/helpers/createOrder';
+import { formatVndPrice, validateCustomDraftProducts, computeGrandGoodsTotal } from '@/src/helpers/createOrder';
 import {
   buildCreateOrderPreferenceRecords,
   findSelectOptionById,
@@ -46,7 +46,6 @@ import {
   buildCreateOrderPayload,
   buildEstimateDraftItems,
   buildShippingRateEstimatePayload,
-  computeCreateOrderGoodsTotalVnd,
   findBestExpressSellerPartner,
   getWarehouseCodeFromRecords,
   isCreateOrderLocationComplete,
@@ -152,8 +151,8 @@ export interface UseCreateOrderFormResult {
   onPressCreateCustomer: () => void;
 }
 
-function computeOrderTotalVnd(groups: DraftProductGroup[]): number {
-  return computeCreateOrderGoodsTotalVnd(groups, null);
+function computeOrderGoodsTotalVnd(groups: DraftProductGroup[]): number {
+  return computeGrandGoodsTotal(groups);
 }
 
 export interface UseCreateOrderFormOptions {
@@ -626,7 +625,7 @@ export function useCreateOrderForm(
   }, [form.shopId, shopOptions]);
 
   const orderTotalVnd = useMemo(() => {
-    const goodsTotalVnd = computeOrderTotalVnd(groups);
+    const goodsTotalVnd = computeOrderGoodsTotalVnd(groups);
     return goodsTotalVnd + shippingFeeVnd;
   }, [groups, shippingFeeVnd]);
 
@@ -640,7 +639,7 @@ export function useCreateOrderForm(
     }
 
     const estimateItems = buildEstimateDraftItems(groups, null);
-    const goodsTotalVnd = computeCreateOrderGoodsTotalVnd(groups, null);
+    const goodsTotalVnd = computeGrandGoodsTotal(groups);
 
     const toProvince = locations.selectedProvinceLabel;
     const toDistrict = locations.selectedDistrictLabel;

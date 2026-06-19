@@ -10,7 +10,6 @@ import { orderDetailCopy } from '@/src/configs/orders';
 import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
 import { OrderCancelReasonModal } from '@/src/components/orders/OrderCancelReasonModal';
-import { OrderEditModal } from '@/src/components/orders/OrderEditModal';
 import {
   OrderDetailActions,
   OrderDetailCostBreakdown,
@@ -22,7 +21,7 @@ import {
   OrderDetailSummary,
 } from '@/src/components/orders/OrderDetailView';
 import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
-import { useOrderCancel, useOrderDetail, useOrderEdit } from '@/src/hooks/orders';
+import { useOrderCancel, useOrderDetail } from '@/src/hooks/orders';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { OrdersStackScreenProps } from '@/src/navigation/types';
 import { DetailScreenSkeleton } from '@/src/shared/components/ui/skeleton';
@@ -41,10 +40,8 @@ interface OrderDetailBodyProps {
   reload: () => void;
   canPay: boolean;
   canCancel: boolean;
-  canEdit: boolean;
   onPressPay: () => void;
   onPressCancel: () => void;
-  onPressEdit: () => void;
 }
 
 function OrderDetailBody({
@@ -54,10 +51,8 @@ function OrderDetailBody({
   reload,
   canPay,
   canCancel,
-  canEdit,
   onPressPay,
   onPressCancel,
-  onPressEdit,
 }: OrderDetailBodyProps) {
   const refreshControl = useMemo(
     () => (
@@ -116,11 +111,9 @@ function OrderDetailBody({
         <OrderDetailActions
           canPay={canPay}
           canCancel={canCancel}
-          canEdit={canEdit}
           remainingVnd={order.costs.remainingVnd}
           onPressPay={onPressPay}
           onPressCancel={onPressCancel}
-          onPressEdit={onPressEdit}
         />
       </VStack>
     </ScrollView>
@@ -132,7 +125,7 @@ export function OrderDetailScreen({
   route,
 }: OrderDetailScreenProps) {
   const { orderId } = route.params;
-  const { order, isLoading, error, reload, canPay, canCancel, canEdit } =
+  const { order, isLoading, error, reload, canPay, canCancel } =
     useOrderDetail(orderId);
 
   const {
@@ -147,18 +140,6 @@ export function OrderDetailScreen({
     confirmCancel,
   } = useOrderCancel({ onSuccess: reload });
 
-  const {
-    isVisible: isEditVisible,
-    orderNumber: editOrderNumber,
-    note: editNote,
-    isSubmitting: isEditing,
-    error: editError,
-    openEdit,
-    closeEdit,
-    onChangeNote: onChangeEditNote,
-    confirmEdit,
-  } = useOrderEdit({ onSuccess: reload });
-
   const handleBack = useStackGoBack(navigation, 'OrdersMain');
 
   const handlePay = useCallback(() => {
@@ -168,10 +149,6 @@ export function OrderDetailScreen({
   const handleCancel = useCallback(() => {
     openCancel(orderId);
   }, [openCancel, orderId]);
-
-  const handleEdit = useCallback(() => {
-    openEdit(orderId, order?.note ?? '');
-  }, [openEdit, order?.note, orderId]);
 
   return (
     <Box className="flex-1 bg-background-50">
@@ -185,10 +162,8 @@ export function OrderDetailScreen({
             reload={reload}
             canPay={canPay}
             canCancel={canCancel}
-            canEdit={canEdit}
             onPressPay={handlePay}
             onPressCancel={handleCancel}
-            onPressEdit={handleEdit}
           />
         </VStack>
 
@@ -201,17 +176,6 @@ export function OrderDetailScreen({
           onChangeReason={onChangeCancelReason}
           onClose={closeCancel}
           onConfirm={confirmCancel}
-        />
-
-        <OrderEditModal
-          visible={isEditVisible}
-          orderNumber={editOrderNumber}
-          note={editNote}
-          isSubmitting={isEditing}
-          error={editError}
-          onChangeNote={onChangeEditNote}
-          onClose={closeEdit}
-          onConfirm={confirmEdit}
         />
       </SafeAreaView>
     </Box>

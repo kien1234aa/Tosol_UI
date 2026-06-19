@@ -92,6 +92,57 @@ function mapSaleOrderItemsToDetailProducts(
   }));
 }
 
+function resolveShippingPartnerName(
+  shipment: NonNullable<SaleOrderDetailApi['shipment']>,
+): string {
+  const fromSeller =
+    shipment.shipping_partner_seller?.shipping_partner?.name?.trim();
+  if (fromSeller) {
+    return fromSeller;
+  }
+
+  const fromWarehouse =
+    shipment.shipping_partner_warehouse?.shipping_partner_config?.shipping_partner?.name?.trim();
+  if (fromWarehouse) {
+    return fromWarehouse;
+  }
+
+  const fromWarehouseDescription =
+    shipment.shipping_partner_warehouse?.description?.trim() ||
+    shipment.shipping_partner_warehouse?.shipping_partner_config?.description?.trim();
+  if (fromWarehouseDescription) {
+    return fromWarehouseDescription;
+  }
+
+  const fromCode = shipment.shipping_partner_code?.trim();
+  if (fromCode) {
+    return fromCode;
+  }
+
+  return '—';
+}
+
+function resolveTrackingNumber(order: SaleOrderDetailApi): string | null {
+  const shipment = order.shipment;
+  const candidates = [
+    shipment?.tracking_number,
+    order.tracking_number,
+    ...(order.packing_order?.boxes ?? []).flatMap(box => [
+      box.tracking_number,
+      box.box_code,
+    ]),
+  ];
+
+  for (const candidate of candidates) {
+    const value = candidate?.trim();
+    if (value) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
 function mapSaleOrderShipment(
   order: SaleOrderDetailApi,
 ): OrderDetailShipping | null {
@@ -113,9 +164,8 @@ function mapSaleOrderShipment(
     recipientName: shipment.recipient_name?.trim() || '—',
     recipientPhone: shipment.recipient_phone?.trim() || '—',
     recipientAddress: addressParts.join(', ') || '—',
-    shippingPartnerName:
-      shipment.shipping_partner_seller?.shipping_partner?.name?.trim() || '—',
-    trackingNumber: shipment.tracking_number?.trim() || null,
+    shippingPartnerName: resolveShippingPartnerName(shipment),
+    trackingNumber: resolveTrackingNumber(order),
     shippingFeeVnd: parseMoney(shipment.shipping_fee ?? order.shipping_fee),
     collectCod: Boolean(shipment.collect_cod ?? order.collect_cod),
     codAmountVnd: parseMoney(shipment.cod_amount ?? order.cod_amount),

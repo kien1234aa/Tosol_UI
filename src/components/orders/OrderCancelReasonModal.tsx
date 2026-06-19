@@ -1,21 +1,24 @@
 import React, { memo } from 'react';
 import {
-  ActivityIndicator,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable as RNPressable,
   StyleSheet,
+  TextInput,
 } from 'react-native';
+import { AlertCircle, MessageCircle, X } from 'lucide-react-native';
 import { ordersCopy } from '@/src/configs/orders';
-import {
-  buttonContentCenter,
-  buttonLabelStyle,
-  lightTokens,
-} from '@/src/configs/theme';
+import { lightTokens } from '@/src/configs/theme';
+import { fonts } from '@/src/configs/theme/fonts';
+import { fontSizes, lineHeights } from '@/src/configs/theme/typography';
 import { Box } from '@/src/uikits/box';
-import { Input, InputField } from '@/src/uikits/input';
+import { Button, ButtonSpinner, ButtonText } from '@/src/uikits/button';
+import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
+import { CreateOrderFieldLabel } from '@/src/components/createOrder/createOrderFormFields';
 
 export interface OrderCancelReasonModalProps {
   visible: boolean;
@@ -27,6 +30,8 @@ export interface OrderCancelReasonModalProps {
   onClose: () => void;
   onConfirm: () => void;
 }
+
+const PLACEHOLDER_COLOR = 'rgb(140, 148, 154)';
 
 function OrderCancelReasonModalComponent({
   visible,
@@ -44,122 +49,157 @@ function OrderCancelReasonModalComponent({
       transparent
       animationType="fade"
       onRequestClose={onClose}>
-      <RNPressable style={styles.overlay} onPress={onClose}>
-        <RNPressable style={styles.sheet} onPress={() => {}}>
-          <VStack space="md">
-            <Text size="md" className="font-semibold text-typography-900">
-              {ordersCopy.cancelModalTitle}
-            </Text>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <RNPressable style={styles.overlay} onPress={onClose}>
+          <RNPressable style={styles.sheet} onPress={() => {}}>
+            <HStack className="mb-4 items-start justify-between">
+              <HStack className="min-w-0 flex-1 items-center gap-2.5">
+                <Box className="h-10 w-10 items-center justify-center rounded-full bg-error-50">
+                  <AlertCircle color={lightTokens.error500} size={20} />
+                </Box>
+                <VStack className="min-w-0 flex-1" space="xs">
+                  <Text size="md" className="font-bold text-typography-900">
+                    {ordersCopy.cancelModalTitle}
+                  </Text>
+                  <Text size="xs" className="text-typography-500">
+                    {ordersCopy.cancelModalSubtitle}
+                  </Text>
+                </VStack>
+              </HStack>
 
-            {orderNumber ? (
-              <Text size="sm" className="text-typography-600">
-                {ordersCopy.cancelModalSubtitle}{' '}
-                <Text size="sm" className="font-semibold text-typography-900">
-                  {orderNumber}
-                </Text>
-              </Text>
-            ) : null}
-
-            <VStack space="xs">
-              <Text size="xs" className="text-typography-500">
-                {ordersCopy.cancelReasonLabel}
-              </Text>
-              <Input
-                variant="outline"
-                size="md"
-                className="min-h-[88px] rounded-xl border border-outline-200 bg-background-0">
-                <InputField
-                  value={reason}
-                  onChangeText={onChangeReason}
-                  placeholder={ordersCopy.cancelReasonPlaceholder}
-                  placeholderTextColor={lightTokens.typography500}
-                  multiline
-                  numberOfLines={4}
-                  textAlignVertical="top"
-                  className="px-3 py-3 text-sm text-typography-900"
-                />
-              </Input>
-            </VStack>
-
-            {error ? (
-              <Text size="sm" className="text-error-500">
-                {error}
-              </Text>
-            ) : null}
-
-            <Box className="flex-row gap-3">
               <Pressable
                 onPress={onClose}
                 disabled={isSubmitting}
                 accessibilityRole="button"
-                style={[styles.dismissButton, buttonContentCenter]}>
-                <Text
-                  size="sm"
-                  className="font-semibold text-typography-700"
-                  style={buttonLabelStyle}>
-                  {ordersCopy.cancelDismiss}
-                </Text>
+                accessibilityLabel={ordersCopy.cancelDismiss}
+                className="h-8 w-8 items-center justify-center rounded-full bg-background-50">
+                <X color={lightTokens.typography500} size={18} />
               </Pressable>
+            </HStack>
 
-              <Pressable
-                onPress={onConfirm}
-                disabled={isSubmitting}
-                accessibilityRole="button"
-                style={[
-                  styles.confirmButton,
-                  buttonContentCenter,
-                  isSubmitting && styles.confirmButtonDisabled,
-                ]}>
+            {orderNumber ? (
+              <Box className="mb-4 rounded-xl border border-outline-100 bg-background-50 px-3.5 py-3">
+                <Text size="xs" className="text-typography-500">
+                  {ordersCopy.editModalSubtitle}
+                </Text>
+                <Text size="sm" className="mt-0.5 font-semibold text-typography-900">
+                  {orderNumber}
+                </Text>
+              </Box>
+            ) : null}
+
+            <VStack space="xs">
+              <CreateOrderFieldLabel label={ordersCopy.cancelReasonLabel} required />
+              <Box style={styles.reasonField}>
+                <HStack className="items-start gap-2.5">
+                  <Box className="pt-0.5">
+                    <MessageCircle
+                      color={lightTokens.tertiary600}
+                      size={18}
+                    />
+                  </Box>
+                  <TextInput
+                    value={reason}
+                    onChangeText={onChangeReason}
+                    placeholder={ordersCopy.cancelReasonPlaceholder}
+                    placeholderTextColor={PLACEHOLDER_COLOR}
+                    multiline
+                    numberOfLines={4}
+                    textAlignVertical="top"
+                    editable={!isSubmitting}
+                    style={styles.reasonInput}
+                  />
+                </HStack>
+              </Box>
+            </VStack>
+
+            {error ? (
+              <Box className="mt-3 rounded-lg border border-error-200 bg-error-50 px-3 py-2">
+                <Text size="sm" className="text-error-600">
+                  {error}
+                </Text>
+              </Box>
+            ) : null}
+
+            <HStack className="mt-5 justify-end gap-2.5">
+              <Button
+                size="md"
+                action="default"
+                variant="outline"
+                className="h-11 rounded-xl border-outline-200 bg-background-0 px-5"
+                onPress={onClose}
+                isDisabled={isSubmitting}>
+                <ButtonText className="font-semibold text-typography-700">
+                  {ordersCopy.cancelDismiss}
+                </ButtonText>
+              </Button>
+
+              <Button
+                size="md"
+                action="default"
+                variant="solid"
+                className="h-11 rounded-xl border-0 bg-error-500 px-5"
+                isDisabled={isSubmitting}
+                onPress={onConfirm}>
                 {isSubmitting ? (
-                  <ActivityIndicator color={lightTokens.typography0} size="small" />
+                  <ButtonSpinner color={lightTokens.typography0} />
                 ) : (
-                  <Text
-                    size="sm"
-                    className="font-semibold text-typography-0"
-                    style={buttonLabelStyle}>
+                  <ButtonText className="font-semibold text-typography-0">
                     {ordersCopy.cancelConfirm}
-                  </Text>
+                  </ButtonText>
                 )}
-              </Pressable>
-            </Box>
-          </VStack>
+              </Button>
+            </HStack>
+          </RNPressable>
         </RNPressable>
-      </RNPressable>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
   sheet: {
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingTop: 18,
+    paddingBottom: 18,
     backgroundColor: lightTokens.background0,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    elevation: 8,
   },
-  dismissButton: {
-    flex: 1,
-    height: 44,
+  reasonField: {
+    minHeight: 112,
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline200,
     backgroundColor: lightTokens.background0,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
-  confirmButton: {
+  reasonInput: {
     flex: 1,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: lightTokens.error500,
-  },
-  confirmButtonDisabled: {
-    opacity: 0.7,
+    minHeight: 88,
+    padding: 0,
+    fontFamily: fonts.regular,
+    fontSize: fontSizes.sm,
+    lineHeight: lineHeights.sm,
+    color: lightTokens.typography900,
   },
 });
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { saleOrdersService } from '@/src/apis/orders/saleOrders.api';
 import { orderDetailCopy } from '@/src/configs/orders';
-import { mapSaleOrderDetailToOrderDetail, canCancelSaleOrder, canEditSaleOrder } from '@/src/helpers/orders/saleOrder.helpers';
+import { mapSaleOrderDetailToOrderDetail, canCancelSaleOrder } from '@/src/helpers/orders/saleOrder.helpers';
 import type { OrderDetail } from '@/src/types/orders/orders.types';
 
 export interface UseOrderDetailResult {
@@ -10,7 +10,6 @@ export interface UseOrderDetailResult {
   error: string | null;
   canPay: boolean;
   canCancel: boolean;
-  canEdit: boolean;
   reload: () => void;
 }
 
@@ -49,7 +48,6 @@ export function useOrderDetail(orderId: string): UseOrderDetailResult {
       order.paymentStatus === 'partial_paid');
 
   const canCancel = order != null && canCancelSaleOrder(order.status);
-  const canEdit = order != null && canEditSaleOrder(order.status);
 
   return {
     order,
@@ -57,7 +55,6 @@ export function useOrderDetail(orderId: string): UseOrderDetailResult {
     error,
     canPay,
     canCancel,
-    canEdit,
     reload: loadOrder,
   };
 }

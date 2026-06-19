@@ -3,7 +3,7 @@ export type ApiEnvironment = 'development' | 'staging' | 'production';
 const API_URLS: Record<ApiEnvironment, string> = {
   development: 'https://tosol-api-v2-j4flv6af.on-forge.com/api/v1',
   staging: 'https://tosol-api-v2-j4flv6af.on-forge.com/api/v1',
-  production: 'https://tosol-api-v2-j4flv6af.on-forge.com/api/v1',
+  production: 'https://api-tosol.tomonisolution.com/api/v1',
 };
 
 /** Override at build time when wiring dev/staging/prod flavors. */
