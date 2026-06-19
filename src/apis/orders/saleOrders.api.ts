@@ -42,8 +42,8 @@ class HttpSaleOrdersService implements ISaleOrdersService {
       include: saleOrdersListInclude,
     };
 
-    if (params.search?.trim()) {
-      query['filter[search]'] = params.search.trim();
+    if (params.customerId != null) {
+      query['filter[customer_id]'] = params.customerId;
     }
 
     if (params.status?.trim()) {

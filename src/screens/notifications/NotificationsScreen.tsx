@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -118,6 +118,28 @@ export function NotificationsScreen({ navigation }: NotificationsScreenProps) {
     );
   }, [isLoadingMore]);
 
+  const listSkeleton = useMemo(
+    () => (
+      <ListScreenSkeleton
+        count={6}
+        showSectionHeader={false}
+        ItemSkeleton={NotificationListItemSkeleton}
+      />
+    ),
+    [],
+  );
+
+  const refreshControl = useMemo(
+    () => (
+      <RefreshControl
+        refreshing={isLoading && notifications.length > 0}
+        onRefresh={reloadNotifications}
+        tintColor={lightTokens.tertiary600}
+      />
+    ),
+    [isLoading, notifications.length, reloadNotifications],
+  );
+
   return (
     <Box className="flex-1 bg-background-50">
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
@@ -139,13 +161,7 @@ export function NotificationsScreen({ navigation }: NotificationsScreenProps) {
             refreshing={isLoading && notifications.length > 0}
             itemCount={notifications.length}
             options={{ canShowSkeleton: !loadError }}
-            skeleton={
-              <ListScreenSkeleton
-                count={6}
-                showSectionHeader={false}
-                renderItem={() => <NotificationListItemSkeleton />}
-              />
-            }>
+            skeleton={listSkeleton}>
             <FlatList
               data={notifications}
               keyExtractor={keyExtractor}
@@ -157,13 +173,7 @@ export function NotificationsScreen({ navigation }: NotificationsScreenProps) {
               ItemSeparatorComponent={ListSeparator}
               ListEmptyComponent={listEmptyComponent}
               ListFooterComponent={listFooterComponent}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isLoading && notifications.length > 0}
-                  onRefresh={reloadNotifications}
-                  tintColor={lightTokens.tertiary600}
-                />
-              }
+              refreshControl={refreshControl}
               onEndReached={handleEndReached}
               onEndReachedThreshold={0.4}
             />

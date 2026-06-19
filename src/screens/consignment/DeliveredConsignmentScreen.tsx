@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { deliveredConsignmentCopy } from '@/src/configs/consignment';
 import { mainLayout } from '@/src/configs/main';
 import { useDeliveredConsignment } from '@/src/hooks/consignment';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
 import type { DeliveredConsignmentItem } from '@/src/types/consignment/deliveredConsignment.types';
@@ -20,6 +21,7 @@ type DeliveredConsignmentScreenProps =
 export function DeliveredConsignmentScreen({
   navigation,
 }: DeliveredConsignmentScreenProps) {
+  useFeatureInDevelopmentNotice();
   const { items } = useDeliveredConsignment();
 
   const handleBack = useStackGoBack(navigation, 'HomeMain');

@@ -1,19 +1,16 @@
 import React, { useEffect } from 'react';
-import { Dimensions, Image, StatusBar, StyleSheet, View } from 'react-native';
+import { Image, StatusBar, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { animationConfig, lightTokens } from '@/src/configs/theme';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { restoreSessionThunk, fetchCurrentUserThunk } from '@/src/redux/login';
 import { fetchNotificationsThunk } from '@/src/redux/notifications';
 import { fetchOrderDashboardCountsThunk } from '@/src/redux/orders';
+import { store } from '@/src/redux';
 import { syncFcmTokenWithBackend } from '@/src/push';
 import type { RootStackScreenProps } from '@/src/navigation/types';
 
-const logo = require('@/assets/images/logo.png');
 const splashIllustration = require('@/assets/images/mascot_splash.png');
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const LOGO_SIZE = 64;
 
 type SplashScreenProps = RootStackScreenProps<'Splash'>;
 
@@ -26,6 +23,7 @@ function wait(ms: number): Promise<void> {
 export function SplashScreen({ navigation }: SplashScreenProps) {
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
   useEffect(() => {
     let cancelled = false;
@@ -46,6 +44,16 @@ export function SplashScreen({ navigation }: SplashScreenProps) {
           dispatch(fetchNotificationsThunk({ page: 1, append: false })),
           dispatch(fetchOrderDashboardCountsThunk()),
         ]);
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!store.getState().auth.token) {
+          navigation.replace('Login');
+          return;
+        }
+
         void syncFcmTokenWithBackend();
         navigation.replace('Main');
         return;
@@ -79,13 +87,15 @@ export function SplashScreen({ navigation }: SplashScreenProps) {
         <View style={styles.heroBlock}>
           <Image
             source={splashIllustration}
-            style={styles.illustration}
+            style={[
+              styles.illustration,
+              {
+                width: screenWidth * 0.92,
+                height: screenHeight * 0.52,
+              },
+            ]}
             resizeMode="contain"
           />
-
-          <View style={styles.logoRing}>
-            <Image source={logo} style={styles.logo} resizeMode="contain" />
-          </View>
         </View>
       </View>
     </View>
@@ -106,23 +116,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   illustration: {
-    width: SCREEN_WIDTH * 0.92,
-    height: SCREEN_HEIGHT * 0.52,
     maxWidth: 460,
-  },
-  logoRing: {
-    marginTop: 36,
-    width: LOGO_SIZE + 24,
-    height: LOGO_SIZE + 24,
-    borderRadius: (LOGO_SIZE + 24) / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: lightTokens.background0,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: lightTokens.outline100,
-  },
-  logo: {
-    width: LOGO_SIZE,
-    height: LOGO_SIZE,
   },
 });

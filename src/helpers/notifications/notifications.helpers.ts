@@ -55,6 +55,7 @@ export function mapApiNotificationToAppNotification(
     id: item.id,
     category: mapApiCategory(item.category),
     type: mapApiNotificationType(item.type, item.category),
+    apiType: item.type.trim(),
     typeLabel: item.type_label?.trim() || item.type,
     icon: item.icon,
     title: item.title,

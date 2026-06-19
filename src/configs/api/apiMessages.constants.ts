@@ -1,0 +1,51 @@
+/** Known API messages mapped to Vietnamese copy. Keys are normalized (trim + lowercase). */
+export const API_MESSAGE_MAP: Record<string, string> = {
+  'invalid email or password.': 'Email hoặc mật khẩu không đúng',
+  'invalid email or password': 'Email hoặc mật khẩu không đúng',
+  'email is required.': 'Vui lòng nhập email',
+  'email is required': 'Vui lòng nhập email',
+  'password is required.': 'Vui lòng nhập mật khẩu',
+  'password is required': 'Vui lòng nhập mật khẩu',
+  'the email field is required.': 'Vui lòng nhập email',
+  'the email field is required': 'Vui lòng nhập email',
+  'the password field is required.': 'Vui lòng nhập mật khẩu',
+  'the password field is required': 'Vui lòng nhập mật khẩu',
+  'the email must be a valid email address.': 'Email không hợp lệ',
+  'the email must be a valid email address': 'Email không hợp lệ',
+  'the password must be at least 6 characters.': 'Mật khẩu phải có ít nhất 6 ký tự',
+  'the password must be at least 6 characters': 'Mật khẩu phải có ít nhất 6 ký tự',
+  'the password confirmation does not match.': 'Mật khẩu không khớp',
+  'the password confirmation does not match': 'Mật khẩu không khớp',
+  'the password confirmation field is required.': 'Vui lòng nhập lại mật khẩu',
+  'the password confirmation field is required': 'Vui lòng nhập lại mật khẩu',
+  'too many attempts.': 'Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.',
+  'too many attempts': 'Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.',
+  unauthenticated: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+  'unauthenticated.': 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+  unauthorized: 'Bạn không có quyền thực hiện thao tác này',
+  'unauthorized.': 'Bạn không có quyền thực hiện thao tác này',
+  'password reset link sent to your email.':
+    'Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.',
+  'password reset link sent to your email':
+    'Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.',
+  'server error': 'Lỗi máy chủ. Vui lòng thử lại sau.',
+  'service unavailable': 'Dịch vụ tạm thời không khả dụng. Vui lòng thử lại sau.',
+  'not found': 'Không tìm thấy dữ liệu',
+  'the given data was invalid.': 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.',
+  'the given data was invalid': 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.',
+};
+
+/** Field keys from API validation mapped to Vietnamese labels. */
+export const API_FIELD_LABEL_MAP: Record<string, string> = {
+  email: 'Email',
+  password: 'Mật khẩu',
+  password_confirmation: 'Xác nhận mật khẩu',
+  name: 'Họ tên',
+  username: 'Tên đăng nhập',
+  phone: 'Số điện thoại',
+  current_password: 'Mật khẩu hiện tại',
+  new_password: 'Mật khẩu mới',
+  recipient_name: 'Tên người nhận',
+  recipient_phone: 'Số điện thoại người nhận',
+  recipient_address: 'Địa chỉ người nhận',
+};

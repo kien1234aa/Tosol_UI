@@ -12,6 +12,8 @@ import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 
+const EMPTY_SUGGESTED_WAREHOUSE_IDS: number[] = [];
+
 interface SearchWarehouseSelectorProps {
   warehouses: AuthWarehouse[];
   selectedWarehouseId: number | null;
@@ -28,7 +30,7 @@ function SearchWarehouseSelectorComponent({
   selectedWarehouseId,
   selectedLabel,
   isLoading = false,
-  suggestedWarehouseIds = [],
+  suggestedWarehouseIds = EMPTY_SUGGESTED_WAREHOUSE_IDS,
   onSelect,
 }: SearchWarehouseSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);

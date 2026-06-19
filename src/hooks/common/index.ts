@@ -7,3 +7,4 @@ export {
   useListStaleWhileRevalidate,
   type ListStaleWhileRevalidateOptions,
 } from './useListStaleWhileRevalidate';
+export { useFeatureInDevelopmentNotice } from './useFeatureInDevelopmentNotice';

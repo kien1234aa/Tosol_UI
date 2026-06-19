@@ -111,7 +111,7 @@ function ConsignmentOrderCardComponent({
           onPress={handleView}
           accessibilityRole="button"
           accessibilityLabel={consignmentListCopy.viewDetail}
-          style={[styles.viewButton]}>
+          style={styles.viewButton}>
           <Text size="sm" className="font-semibold text-tertiary-600">
             {consignmentListCopy.viewDetail}
           </Text>

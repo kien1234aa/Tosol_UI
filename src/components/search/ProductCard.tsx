@@ -1,8 +1,6 @@
 import React, { memo, useMemo } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { Package } from 'lucide-react-native';
+import { StyleSheet, View } from 'react-native';
 import { Box } from '@/src/uikits/box';
-import { Center } from '@/src/uikits/center';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
@@ -14,14 +12,16 @@ import {
   getProductStockStatusLabel,
 } from '@/src/helpers/search';
 import { lightTokens } from '@/src/configs/theme';
+import {
+  ProductThumbnailImage,
+  productThumbnailContainerStyle,
+} from '@/src/shared/components/ui/ProductThumbnailImage';
 import type { SearchProduct } from '@/src/types/search/search.types';
 
 interface ProductCardProps {
   product: SearchProduct;
   onPress?: (product: SearchProduct) => void;
 }
-
-const ICON_SIZE = 32;
 
 function ProductCardComponent({ product, onPress }: ProductCardProps) {
   const stockStatusLabel = useMemo(
@@ -53,17 +53,7 @@ function ProductCardComponent({ product, onPress }: ProductCardProps) {
       <Box style={styles.card}>
         <VStack className="w-full" space="sm">
           <Box style={styles.imageWrap}>
-            {product.thumbnailUrl ? (
-              <Image
-                source={{ uri: product.thumbnailUrl }}
-                style={styles.image}
-                resizeMode="cover"
-              />
-            ) : (
-              <Center style={styles.imageFallback}>
-                <Package color={lightTokens.tertiary500} size={ICON_SIZE} />
-              </Center>
-            )}
+            <ProductThumbnailImage uri={product.thumbnailUrl} />
 
             {stockStatusLabel ? (
               <View style={[styles.stockBadge, stockBadgeStyle]}>
@@ -125,15 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.tertiary50,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  imageFallback: {
-    width: '100%',
-    height: '100%',
+    ...productThumbnailContainerStyle,
   },
   stockBadge: {
     position: 'absolute',

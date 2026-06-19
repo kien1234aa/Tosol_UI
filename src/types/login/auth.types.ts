@@ -60,6 +60,8 @@ export interface AuthSession {
   token: string;
   tokenType: string;
   expiresIn: number;
+  /** Absolute expiry timestamp (ms) used for proactive session checks. */
+  tokenExpiresAt: number;
 }
 
 export type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'error';

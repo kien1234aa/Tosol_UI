@@ -3,6 +3,7 @@ import { Pressable as RNPressable, StyleSheet } from 'react-native';
 import { ChevronLeft } from 'lucide-react-native';
 import { lightTokens } from '@/src/configs/theme';
 import { buttonContentCenter } from '@/src/configs/theme/buttonLayout';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import { Box } from '@/src/uikits/box';
 import { Heading } from '@/src/uikits/heading';
 import { HStack } from '@/src/uikits/hstack';
@@ -27,18 +28,36 @@ function StackHeaderComponent({
   rightAction,
   uppercase = true,
 }: StackHeaderProps) {
+  const { horizontalPadding, scale } = useResponsiveLayout();
+  const backSize = scale(STACK_HEADER_BACK_SIZE);
+  const sideSlotWidth = scale(STACK_HEADER_SLOT_WIDTH);
+
   return (
-    <Box style={styles.container}>
+    <Box
+      style={[
+        styles.container,
+        {
+          paddingHorizontal: horizontalPadding,
+          paddingVertical: scale(14),
+        },
+      ]}>
       <HStack className="w-full items-center justify-between">
-        <Box style={styles.sideSlot}>
+        <Box style={[styles.sideSlot, { width: sideSlotWidth, minHeight: backSize }]}>
           {onPressBack ? (
             <RNPressable
               onPress={onPressBack}
               accessibilityRole="button"
               accessibilityLabel={backAccessibilityLabel}
               hitSlop={BACK_HIT_SLOP}
-              style={styles.backButton}>
-              <ChevronLeft color={lightTokens.typography900} size={24} />
+              style={[
+                styles.backButton,
+                {
+                  width: backSize,
+                  height: backSize,
+                  borderRadius: backSize / 2,
+                },
+              ]}>
+              <ChevronLeft color={lightTokens.typography900} size={scale(24)} />
             </RNPressable>
           ) : null}
         </Box>
@@ -57,7 +76,7 @@ function StackHeaderComponent({
           </Heading>
         </Box>
 
-        <Box style={styles.sideSlot}>{rightAction ?? null}</Box>
+        <Box style={[styles.sideSlot, { width: sideSlotWidth }]}>{rightAction ?? null}</Box>
       </HStack>
     </Box>
   );
@@ -65,15 +84,11 @@ function StackHeaderComponent({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
     backgroundColor: lightTokens.tertiary50,
     borderBottomWidth: 1,
     borderBottomColor: lightTokens.outline100,
   },
   sideSlot: {
-    width: STACK_HEADER_SLOT_WIDTH,
-    minHeight: STACK_HEADER_BACK_SIZE,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -89,9 +104,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   backButton: {
-    width: STACK_HEADER_BACK_SIZE,
-    height: STACK_HEADER_BACK_SIZE,
-    borderRadius: STACK_HEADER_BACK_SIZE / 2,
     ...buttonContentCenter,
     backgroundColor: lightTokens.background0,
     borderWidth: StyleSheet.hairlineWidth,

@@ -15,6 +15,7 @@ import {
   lightTokens,
 } from '@/src/configs/theme';
 import { useEstimate } from '@/src/hooks/estimate';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
 import type { EstimateForm } from '@/src/types/estimate/estimate.types';
@@ -32,8 +33,8 @@ import { VStack } from '@/src/uikits/vstack';
 type EstimateScreenProps = HomeStackScreenProps<'Estimate'>;
 
 export function EstimateScreen({ navigation }: EstimateScreenProps) {
-  const { mode, form, errors, result, setMode, setField, submit } =
-    useEstimate();
+  const blockFeature = useFeatureInDevelopmentNotice();
+  const { mode, form, errors, result, setField } = useEstimate();
 
   const handleBack = useStackGoBack(navigation, 'HomeMain');
 
@@ -47,6 +48,14 @@ export function EstimateScreen({ navigation }: EstimateScreenProps) {
     [setField],
   );
 
+  const handleModeChange = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleSubmit = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
+
   return (
     <Box className="flex-1 bg-background-50">
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
@@ -58,7 +67,7 @@ export function EstimateScreen({ navigation }: EstimateScreenProps) {
           />
 
           <Box style={styles.tabsWrap}>
-            <EstimateTabs mode={mode} onChange={setMode} />
+            <EstimateTabs mode={mode} onChange={handleModeChange} />
           </Box>
 
           <KeyboardAvoidingView
@@ -111,7 +120,7 @@ export function EstimateScreen({ navigation }: EstimateScreenProps) {
                 </HStack>
 
                 <RNPressable
-                  onPress={submit}
+                  onPress={handleSubmit}
                   accessibilityRole="button"
                   accessibilityLabel={submitLabel}
                   style={[buttonPrimaryCta, styles.submitButton]}>

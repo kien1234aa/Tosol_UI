@@ -17,3 +17,8 @@ export const selectIsForgotPasswordSuccess = createSelector(
   selectForgotPasswordState,
   forgotPassword => forgotPassword.status === 'success',
 );
+
+export const selectForgotPasswordSuccessMessage = createSelector(
+  selectForgotPasswordState,
+  forgotPassword => forgotPassword.successMessage,
+);

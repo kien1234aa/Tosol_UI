@@ -2,7 +2,7 @@
 
 /** Keys for the order + package icon actions on the dashboard. */
 export type HomeActionKey =
-  | 'orderCart'
+  | 'orderCreate'
   | 'orderList'
   | 'orderPayment'
   | 'orderReady'

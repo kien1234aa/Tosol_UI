@@ -1,26 +1,27 @@
 import React, { memo } from 'react';
-import type { ImageSourcePropType } from 'react-native';
+import { View, type ImageSourcePropType } from 'react-native';
 import { Image } from '@/src/uikits/image';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 
 interface AuthHeroImageProps {
   source: ImageSourcePropType;
   alt: string;
-  className?: string;
 }
 
-function AuthHeroImageComponent({
-  source,
-  alt,
-  className = 'w-[300px] h-[288px]',
-}: AuthHeroImageProps) {
+function AuthHeroImageComponent({ source, alt }: AuthHeroImageProps) {
+  const { width, scale } = useResponsiveLayout();
+  const imageWidth = Math.min(scale(300), width * 0.78);
+  const imageHeight = imageWidth * 0.96;
+
   return (
-    <Image
-      source={source}
-      alt={alt}
-      size="none"
-      resizeMode="contain"
-      className={className}
-    />
+    <View style={{ width: imageWidth, height: imageHeight }}>
+      <Image
+        source={source}
+        alt={alt}
+        size="full"
+        resizeMode="contain"
+      />
+    </View>
   );
 }
 

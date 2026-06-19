@@ -11,13 +11,13 @@ const MOCK_LATENCY_MS = 900;
 
 class MockRegisterService implements IRegisterService {
   async register(credentials: RegisterCredentials): Promise<RegisterResult> {
-    await new Promise<void>(resolve =>
-      setTimeout(() => resolve(), MOCK_LATENCY_MS),
-    );
-
     if (credentials.username.toLowerCase() === 'existing') {
       throw new Error('Tên đăng nhập đã tồn tại');
     }
+
+    await new Promise<void>(resolve =>
+      setTimeout(() => resolve(), MOCK_LATENCY_MS),
+    );
 
     return {
       userId: `u-${Date.now()}`,

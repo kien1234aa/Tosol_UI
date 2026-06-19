@@ -1,8 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { authService } from '@/src/apis/login/auth.api';
 import { warehouseService } from '@/src/apis/warehouse';
+import { toApiFailurePayload } from '@/src/helpers/api/apiError.helpers';
+import { isTokenExpired } from '@/src/helpers/api/session.helpers';
 import { authSessionStorage } from '@/src/storage';
 import type { AuthSession, AuthUser, LoginCredentials } from '@/src/types/login/auth.types';
+import type { ApiFailurePayload } from '@/src/types/api/apiError.types';
 import type { SwitchWarehouseResult } from '@/src/types/warehouse';
 import type { StoredAuthSession } from '@/src/storage';
 import { isSameWarehouseSelection } from '@/src/configs/warehouse';
@@ -15,14 +18,12 @@ import type { RootState } from '../rootReducer';
 export const loginThunk = createAsyncThunk<
   AuthSession,
   LoginCredentials,
-  { rejectValue: string }
+  { rejectValue: ApiFailurePayload }
 >('auth/login', async (credentials, { rejectWithValue }) => {
   try {
     return await authService.login(credentials);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : 'Đăng nhập thất bại';
-    return rejectWithValue(message);
+    return rejectWithValue(toApiFailurePayload(error, 'Đăng nhập thất bại'));
   }
 });
 
@@ -36,6 +37,11 @@ export const restoreSessionThunk = createAsyncThunk<
 
     if (!session) {
       return rejectWithValue('Không có phiên đăng nhập');
+    }
+
+    if (isTokenExpired(session.tokenExpiresAt)) {
+      await authSessionStorage.clear();
+      return rejectWithValue('Phiên đăng nhập đã hết hạn');
     }
 
     return session;

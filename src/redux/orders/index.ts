@@ -1,6 +1,7 @@
 export {
   setOrderListFilters,
-  setOrderListSearch,
+  setOrderListCustomerFilter,
+  clearOrderListCustomerFilter,
   resetOrdersState,
   ordersReducer,
 } from './ordersSlice';
@@ -8,7 +9,9 @@ export type { OrdersState, OrdersListStatus } from './ordersSlice';
 export { fetchOrdersThunk, fetchOrderDashboardCountsThunk } from './ordersThunks';
 export {
   selectOrderListFilters,
-  selectOrderListSearch,
+  selectOrderListCustomerId,
+  selectOrderListCustomerName,
+  selectHasOrderListCustomerFilter,
   selectOrderStatusFilter,
   selectOrderItems,
   selectFilteredOrderItems,

@@ -1,4 +1,3 @@
-export { TabScreenShell } from './TabScreenShell';
 export { HomeTabLogo } from './HomeTabLogo';
 export { WaveTabBar } from './WaveTabBar';
 export {

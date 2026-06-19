@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -35,8 +35,26 @@ export interface StaffEditModalProps {
   onSave: (payload: UpdateStaffPayload) => Promise<void>;
 }
 
-function StaffEditModalComponent({
-  visible,
+interface StaffEditFormProps {
+  initialName: string;
+  initialEmail: string;
+  initialPhone: string;
+  initialRole: string;
+  isSubmitting: boolean;
+  onClose: () => void;
+  onSave: (payload: UpdateStaffPayload) => Promise<void>;
+}
+
+function staffEditFormKey(
+  name: string,
+  email: string,
+  phone: string,
+  role: string,
+): string {
+  return `${name}|${email}|${phone}|${role}`;
+}
+
+function StaffEditForm({
   initialName,
   initialEmail,
   initialPhone,
@@ -44,7 +62,7 @@ function StaffEditModalComponent({
   isSubmitting,
   onClose,
   onSave,
-}: StaffEditModalProps) {
+}: StaffEditFormProps) {
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
   const [phone, setPhone] = useState(initialPhone);
@@ -56,19 +74,6 @@ function StaffEditModalComponent({
     email?: string;
   }>({});
   const [serverError, setServerError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!visible) {
-      return;
-    }
-
-    setName(initialName);
-    setEmail(initialEmail);
-    setPhone(initialPhone);
-    setRole(staffRoleToFormValue(initialRole));
-    setErrors({});
-    setServerError(null);
-  }, [visible, initialEmail, initialName, initialPhone, initialRole]);
 
   const handleSave = useCallback(async () => {
     const nextErrors: { name?: string; email?: string } = {};
@@ -109,6 +114,136 @@ function StaffEditModalComponent({
   }, [email, name, onClose, onSave, phone, role]);
 
   return (
+    <>
+      <Text size="md" className="mb-4 font-semibold text-typography-900">
+        {staffDetailCopy.editModalTitle}
+      </Text>
+
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        style={styles.scroll}>
+        <VStack space="md">
+          <PersonalInfoField
+            label={staffDetailCopy.fullNameLabel}
+            placeholder="Nhập họ và tên"
+            value={name}
+            onChangeText={setName}
+            error={errors.name}
+          />
+          <PersonalInfoField
+            label={staffDetailCopy.emailLabel}
+            placeholder="Nhập email"
+            value={email}
+            onChangeText={setEmail}
+            error={errors.email}
+            keyboardType="email-address"
+          />
+          <PersonalInfoField
+            label={staffDetailCopy.phoneLabel}
+            placeholder="Nhập số điện thoại"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+          />
+
+          <VStack space="xs">
+            <Text size="sm" className="font-medium text-typography-700">
+              {staffDetailCopy.roleLabel}
+            </Text>
+            <HStack className="gap-2">
+              <Pressable
+                onPress={() => setRole('staff')}
+                disabled={isSubmitting}
+                style={[
+                  styles.roleChip,
+                  role === 'staff' && styles.roleChipActive,
+                ]}>
+                <Text
+                  size="sm"
+                  className={
+                    role === 'staff'
+                      ? 'font-semibold text-tertiary-700'
+                      : 'font-medium text-typography-700'
+                  }>
+                  {staffDetailCopy.roleStaff}
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setRole('admin')}
+                disabled={isSubmitting}
+                style={[
+                  styles.roleChip,
+                  role === 'admin' && styles.roleChipActive,
+                ]}>
+                <Text
+                  size="sm"
+                  className={
+                    role === 'admin'
+                      ? 'font-semibold text-tertiary-700'
+                      : 'font-medium text-typography-700'
+                  }>
+                  {staffDetailCopy.roleAdmin}
+                </Text>
+              </Pressable>
+            </HStack>
+          </VStack>
+
+          {serverError ? (
+            <Text size="sm" className="text-error-500">
+              {serverError}
+            </Text>
+          ) : null}
+        </VStack>
+      </ScrollView>
+
+      <HStack className="mt-4 gap-3">
+        <Pressable
+          onPress={onClose}
+          disabled={isSubmitting}
+          style={[styles.dismissButton, buttonContentCenter]}>
+          <Text
+            size="sm"
+            className="font-semibold text-typography-700"
+            style={buttonLabelStyle}>
+            {staffDetailCopy.editDismiss}
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => void handleSave()}
+          disabled={isSubmitting}
+          style={[
+            styles.confirmButton,
+            buttonContentCenter,
+            isSubmitting && styles.confirmButtonDisabled,
+          ]}>
+          {isSubmitting ? (
+            <ActivityIndicator color={lightTokens.typography0} size="small" />
+          ) : (
+            <Text
+              size="sm"
+              className="font-semibold text-typography-0"
+              style={buttonLabelStyle}>
+              {staffDetailCopy.editSave}
+            </Text>
+          )}
+        </Pressable>
+      </HStack>
+    </>
+  );
+}
+
+function StaffEditModalComponent({
+  visible,
+  initialName,
+  initialEmail,
+  initialPhone,
+  initialRole,
+  isSubmitting,
+  onClose,
+  onSave,
+}: StaffEditModalProps) {
+  return (
     <Modal
       visible={visible}
       transparent
@@ -119,120 +254,23 @@ function StaffEditModalComponent({
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <RNPressable style={styles.overlay} onPress={onClose}>
           <RNPressable style={styles.sheet} onPress={() => {}}>
-            <Text size="md" className="mb-4 font-semibold text-typography-900">
-              {staffDetailCopy.editModalTitle}
-            </Text>
-
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-              style={styles.scroll}>
-              <VStack space="md">
-                <PersonalInfoField
-                  label={staffDetailCopy.fullNameLabel}
-                  placeholder="Nhập họ và tên"
-                  value={name}
-                  onChangeText={setName}
-                  error={errors.name}
-                />
-                <PersonalInfoField
-                  label={staffDetailCopy.emailLabel}
-                  placeholder="Nhập email"
-                  value={email}
-                  onChangeText={setEmail}
-                  error={errors.email}
-                  keyboardType="email-address"
-                />
-                <PersonalInfoField
-                  label={staffDetailCopy.phoneLabel}
-                  placeholder="Nhập số điện thoại"
-                  value={phone}
-                  onChangeText={setPhone}
-                  keyboardType="phone-pad"
-                />
-
-                <VStack space="xs">
-                  <Text size="sm" className="font-medium text-typography-700">
-                    {staffDetailCopy.roleLabel}
-                  </Text>
-                  <HStack className="gap-2">
-                    <Pressable
-                      onPress={() => setRole('staff')}
-                      disabled={isSubmitting}
-                      style={[
-                        styles.roleChip,
-                        role === 'staff' && styles.roleChipActive,
-                      ]}>
-                      <Text
-                        size="sm"
-                        className={
-                          role === 'staff'
-                            ? 'font-semibold text-tertiary-700'
-                            : 'font-medium text-typography-700'
-                        }>
-                        {staffDetailCopy.roleStaff}
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={() => setRole('admin')}
-                      disabled={isSubmitting}
-                      style={[
-                        styles.roleChip,
-                        role === 'admin' && styles.roleChipActive,
-                      ]}>
-                      <Text
-                        size="sm"
-                        className={
-                          role === 'admin'
-                            ? 'font-semibold text-tertiary-700'
-                            : 'font-medium text-typography-700'
-                        }>
-                        {staffDetailCopy.roleAdmin}
-                      </Text>
-                    </Pressable>
-                  </HStack>
-                </VStack>
-
-                {serverError ? (
-                  <Text size="sm" className="text-error-500">
-                    {serverError}
-                  </Text>
-                ) : null}
-              </VStack>
-            </ScrollView>
-
-            <HStack className="mt-4 gap-3">
-              <Pressable
-                onPress={onClose}
-                disabled={isSubmitting}
-                style={[styles.dismissButton, buttonContentCenter]}>
-                <Text
-                  size="sm"
-                  className="font-semibold text-typography-700"
-                  style={buttonLabelStyle}>
-                  {staffDetailCopy.editDismiss}
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => void handleSave()}
-                disabled={isSubmitting}
-                style={[
-                  styles.confirmButton,
-                  buttonContentCenter,
-                  isSubmitting && styles.confirmButtonDisabled,
-                ]}>
-                {isSubmitting ? (
-                  <ActivityIndicator color={lightTokens.typography0} size="small" />
-                ) : (
-                  <Text
-                    size="sm"
-                    className="font-semibold text-typography-0"
-                    style={buttonLabelStyle}>
-                    {staffDetailCopy.editSave}
-                  </Text>
+            {visible ? (
+              <StaffEditForm
+                key={staffEditFormKey(
+                  initialName,
+                  initialEmail,
+                  initialPhone,
+                  initialRole,
                 )}
-              </Pressable>
-            </HStack>
+                initialName={initialName}
+                initialEmail={initialEmail}
+                initialPhone={initialPhone}
+                initialRole={initialRole}
+                isSubmitting={isSubmitting}
+                onClose={onClose}
+                onSave={onSave}
+              />
+            ) : null}
           </RNPressable>
         </RNPressable>
       </KeyboardAvoidingView>

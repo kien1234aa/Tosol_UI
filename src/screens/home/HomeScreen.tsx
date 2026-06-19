@@ -7,14 +7,15 @@ import { Box } from '@/src/uikits/box';
 import { VStack } from '@/src/uikits/vstack';
 import {
   homeCopy,
-  homeGridColumns,
   orderActions,
   packageActions,
   quickActions,
 } from '@/src/configs/home';
 import { mainLayout } from '@/src/configs/main';
 import { animationConfig } from '@/src/configs/theme';
+import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import { useHomeDashboard } from '@/src/hooks/home';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { fetchOrderDashboardCountsThunk } from '@/src/redux/orders';
@@ -28,7 +29,6 @@ import {
   ActionIconGrid,
   DashboardHeader,
   QuickActionsSection,
-  SupportFab,
 } from '@/src/components/home';
 
 type HomeScreenProps = HomeStackScreenProps<'HomeMain'>;
@@ -38,6 +38,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
   const { displayName, badges } = useHomeDashboard();
   const unreadNotificationCount = useAppSelector(selectUnreadNotificationCount);
   const { stagger, screenEntry } = animationConfig;
+  const { horizontalPadding, contentMaxWidth, isTablet } = useResponsiveLayout();
 
   useFocusEffect(
     useCallback(() => {
@@ -47,8 +48,8 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
 
   const handleOrderAction = useCallback(
     (key: HomeActionKey) => {
-      if (key === 'orderCart') {
-        navigation.navigate('Cart');
+      if (key === 'orderCreate') {
+        navigation.navigate('CreateOrder', { screen: 'CreateOrderList' });
         return;
       }
       if (key === 'orderList') {
@@ -73,20 +74,13 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
 
   const handlePackageAction = useCallback(
     (key: HomeActionKey) => {
-      if (key === 'packageCreate') {
-        navigation.navigate('CreateConsignment');
-        return;
-      }
-      if (key === 'packageList') {
-        navigation.navigate('ConsignmentList');
-        return;
-      }
-      if (key === 'packagePayment') {
-        navigation.navigate('AwaitingPayment');
-        return;
-      }
-      if (key === 'packageReady') {
-        navigation.navigate('DeliveredConsignment');
+      if (
+        key === 'packageCreate' ||
+        key === 'packageList' ||
+        key === 'packagePayment' ||
+        key === 'packageReady'
+      ) {
+        showFeatureInDevelopmentAlert();
         return;
       }
       navigation.navigate('Orders');
@@ -98,20 +92,11 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
     navigation.navigate('Notifications');
   }, [navigation]);
 
-  const handleQuickAction = useCallback(
-    (key: QuickActionKey) => {
-      if (key === 'walletTopup') {
-        navigation.navigate('Wallet');
-        return;
-      }
-      if (key === 'costEstimate') {
-        navigation.navigate('Estimate');
-        return;
-      }
-      // Remaining quick-action routes are not registered yet.
-    },
-    [navigation],
-  );
+  const handleQuickAction = useCallback((key: QuickActionKey) => {
+    if (key === 'walletTopup' || key === 'costEstimate') {
+      showFeatureInDevelopmentAlert();
+    }
+  }, []);
 
   const noop = useCallback(() => {}, []);
 
@@ -120,51 +105,55 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}>
+          contentContainerStyle={[
+            styles.content,
+            {
+              paddingHorizontal: horizontalPadding,
+              maxWidth: isTablet ? contentMaxWidth.screen : undefined,
+              alignSelf: isTablet ? 'center' : undefined,
+              width: isTablet ? '100%' : undefined,
+            },
+          ]}>
           <VStack className="w-full" space="xl">
-          <Animated.View entering={FadeInDown.duration(screenEntry)}>
-            <DashboardHeader
-              name={displayName}
-              unreadCount={unreadNotificationCount}
-              onPressAvatar={noop}
-              onPressNotifications={handleNotifications}
-            />
-          </Animated.View>
+            <Animated.View entering={FadeInDown.duration(screenEntry)}>
+              <DashboardHeader
+                name={displayName}
+                unreadCount={unreadNotificationCount}
+                onPressAvatar={noop}
+                onPressNotifications={handleNotifications}
+              />
+            </Animated.View>
 
-          <Animated.View
-            entering={FadeInDown.duration(screenEntry).delay(stagger)}>
-            <ActionIconGrid
-              title={homeCopy.ordersSection}
-              items={orderActions}
-              columns={homeGridColumns.orders}
-              badges={badges}
-              onPressItem={handleOrderAction}
-            />
-          </Animated.View>
+            <Animated.View
+              entering={FadeInDown.duration(screenEntry).delay(stagger)}>
+              <ActionIconGrid
+                title={homeCopy.ordersSection}
+                items={orderActions}
+                badges={badges}
+                onPressItem={handleOrderAction}
+              />
+            </Animated.View>
 
-          <Animated.View
-            entering={FadeInDown.duration(screenEntry).delay(stagger * 2)}>
-            <ActionIconGrid
-              title={homeCopy.packagesSection}
-              items={packageActions}
-              columns={homeGridColumns.packages}
-              badges={badges}
-              onPressItem={handlePackageAction}
-            />
-          </Animated.View>
+            <Animated.View
+              entering={FadeInDown.duration(screenEntry).delay(stagger * 2)}>
+              <ActionIconGrid
+                title={homeCopy.packagesSection}
+                items={packageActions}
+                badges={badges}
+                onPressItem={handlePackageAction}
+              />
+            </Animated.View>
 
-          <Animated.View
-            entering={FadeInDown.duration(screenEntry).delay(stagger * 3)}>
-            <QuickActionsSection
-              title={homeCopy.quickActionsSection}
-              items={quickActions}
-              onPressItem={handleQuickAction}
-            />
-          </Animated.View>
+            <Animated.View
+              entering={FadeInDown.duration(screenEntry).delay(stagger * 3)}>
+              <QuickActionsSection
+                title={homeCopy.quickActionsSection}
+                items={quickActions}
+                onPressItem={handleQuickAction}
+              />
+            </Animated.View>
           </VStack>
         </ScrollView>
-
-        <SupportFab onPress={noop} />
       </SafeAreaView>
     </Box>
   );
@@ -175,8 +164,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: mainLayout.tabContentBottomPaddingLoose,
+    paddingBottom: mainLayout.tabContentBottomPadding,
   },
 });

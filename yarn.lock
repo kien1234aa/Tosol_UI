@@ -1880,18 +1880,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@legendapp/motion@^2.5.3":
-  version "2.5.3"
-  resolved "https://registry.npmjs.org/@legendapp/motion/-/motion-2.5.3.tgz"
-  integrity sha512-IcNiStiK3qG5LaIPLC8fVV0BHIrkf7EY5HfOv3xbuMH0z4D945yaaEDafP5bboHf/uj9XRjTQHVTtZgwpMNlHw==
-  dependencies:
-    "@legendapp/tools" "2.0.1"
-
-"@legendapp/tools@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/@legendapp/tools/-/tools-2.0.1.tgz"
-  integrity sha512-Kxt0HWvWElRK6oybHRzcYxdgaKGwuaiRNreS7usW7QuHXRIHaH4yMcW2YNRG4DHE5fpefv+Bno/BohQcCE4FaA==
-
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
   resolved "https://registry.npmjs.org/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz"
@@ -2435,11 +2423,6 @@
     metro-config "^0.83.1"
     metro-runtime "^0.83.1"
 
-"@react-native/new-app-screen@0.81.4":
-  version "0.81.4"
-  resolved "https://registry.npmjs.org/@react-native/new-app-screen/-/new-app-screen-0.81.4.tgz"
-  integrity sha512-W0HU/8s0nXlLicMRVG+HFmYunGS9tdKxdJEmN6HinkRgBF4yA4EF9jsLybvZHGzWm99kJlDlH3PH0MJA68WAgg==
-
 "@react-native/normalize-colors@0.81.4":
   version "0.81.4"
   resolved "https://registry.npmjs.org/@react-native/normalize-colors/-/normalize-colors-0.81.4.tgz"
@@ -2715,6 +2698,11 @@
   version "3.35.0"
   resolved "https://registry.npmjs.org/@react-types/shared/-/shared-3.35.0.tgz"
   integrity sha512-iNWvuzEwANttpQpdlu8nPBtdHb0mcCMj1ZTH//iRB5E/14IAnyRlR25rxH7pNLyzHINsPGEKnWvpwDMCT6vziQ==
+
+"@react-types/shared@^3.36.0":
+  version "3.36.0"
+  resolved "https://registry.yarnpkg.com/@react-types/shared/-/shared-3.36.0.tgz#52e713c6bae8e117967bf1d19d89db3a56219037"
+  integrity sha512-DkP/H0C2YjjS7gZWKNqOmU8a16qHPjQNdzMwmTq9SzplM6Iw0kVMTZ0OIoe6FOgGqa+FwMsE2QbPjh/n3g/jXQ==
 
 "@react-types/slider@^3.8.2":
   version "3.9.0"
@@ -7134,7 +7122,7 @@ react-aria-components@1.18.0:
     react-aria "3.49.0"
     react-stately "3.47.0"
 
-react-aria@3.49.0, react-aria@^3.48.0, react-aria@^3.49.0:
+react-aria@3.49.0, react-aria@^3.48.0:
   version "3.49.0"
   resolved "https://registry.npmjs.org/react-aria/-/react-aria-3.49.0.tgz"
   integrity sha512-4+oK9FwJQWYhyA5zLfj/feOGY0zZbkE1muoF4gyxMroHVypjcYaRSTlJwvxph2zIlxt757KX6xIK2wJ5Aw1Kog==
@@ -7149,6 +7137,21 @@ react-aria@3.49.0, react-aria@^3.48.0, react-aria@^3.49.0:
     react-stately "3.47.0"
     use-sync-external-store "^1.6.0"
 
+react-aria@^3.49.0:
+  version "3.50.0"
+  resolved "https://registry.yarnpkg.com/react-aria/-/react-aria-3.50.0.tgz#75cb002c8ff94be3bc1afb6f717b37c6d0548119"
+  integrity sha512-S0Os6QZk33fzUAKu1QLT9afoUaCBt1ZNdoiq0n2YMVgKIdNIQS8zxiZ8O9hYE6QyDkHKjD6q39LQZ+qaSAIgjw==
+  dependencies:
+    "@internationalized/date" "^3.12.2"
+    "@internationalized/number" "^3.6.7"
+    "@internationalized/string" "^3.2.9"
+    "@react-types/shared" "^3.36.0"
+    "@swc/helpers" "^0.5.0"
+    aria-hidden "^1.2.3"
+    clsx "^2.0.0"
+    react-stately "3.48.0"
+    use-sync-external-store "^1.6.0"
+
 react-devtools-core@^6.1.5:
   version "6.1.5"
   resolved "https://registry.npmjs.org/react-devtools-core/-/react-devtools-core-6.1.5.tgz"
@@ -7158,11 +7161,11 @@ react-devtools-core@^6.1.5:
     ws "^7"
 
 react-dom@^19.1.0:
-  version "19.1.0"
-  resolved "https://registry.npmjs.org/react-dom/-/react-dom-19.1.0.tgz"
-  integrity sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==
+  version "19.2.7"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.2.7.tgz#0450dc9ae9ddbff76ef196401cd8b8c7fb466ccc"
+  integrity sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ==
   dependencies:
-    scheduler "^0.26.0"
+    scheduler "^0.27.0"
 
 react-freeze@^1.0.0:
   version "1.0.4"
@@ -7311,7 +7314,7 @@ react-refresh@^0.14.0:
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.14.2.tgz"
   integrity sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==
 
-react-stately@3.47.0, react-stately@^3.46.0, react-stately@^3.47.0:
+react-stately@3.47.0, react-stately@^3.46.0:
   version "3.47.0"
   resolved "https://registry.npmjs.org/react-stately/-/react-stately-3.47.0.tgz"
   integrity sha512-H3ar+SOWP920EbVg7qWfP3fZjZiwhlEJAEJQqjt+w8oKijCwFgr0+R4941PIHscOXRNRvEOjvWilitImC0DdBg==
@@ -7320,6 +7323,18 @@ react-stately@3.47.0, react-stately@^3.46.0, react-stately@^3.47.0:
     "@internationalized/number" "^3.6.7"
     "@internationalized/string" "^3.2.9"
     "@react-types/shared" "^3.35.0"
+    "@swc/helpers" "^0.5.0"
+    use-sync-external-store "^1.6.0"
+
+react-stately@3.48.0, react-stately@^3.47.0:
+  version "3.48.0"
+  resolved "https://registry.yarnpkg.com/react-stately/-/react-stately-3.48.0.tgz#80b658d91a20b35f9803102302268a477ba819e4"
+  integrity sha512-ImicSAG+lTotAe5izcs1fz49Zk48w7pDusqYg04WaPhCoej8BJ24soMu3iLXIrsi273s4P1gZrYGrqReMfgEEA==
+  dependencies:
+    "@internationalized/date" "^3.12.2"
+    "@internationalized/number" "^3.6.7"
+    "@internationalized/string" "^3.2.9"
+    "@react-types/shared" "^3.36.0"
     "@swc/helpers" "^0.5.0"
     use-sync-external-store "^1.6.0"
 
@@ -7586,6 +7601,11 @@ scheduler@0.26.0, scheduler@^0.26.0:
   version "0.26.0"
   resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.26.0.tgz"
   integrity sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==
+
+scheduler@^0.27.0:
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.27.0.tgz#0c4ef82d67d1e5c1e359e8fc76d3a87f045fe5bd"
+  integrity sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==
 
 semver@7.7.2:
   version "7.7.2"

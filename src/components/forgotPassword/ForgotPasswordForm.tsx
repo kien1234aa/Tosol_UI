@@ -2,13 +2,13 @@ import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Button, ButtonSpinner, ButtonText } from '@/src/uikits/button';
-import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { forgotPasswordCopy } from '@/src/configs/forgotPassword';
 import { usePressScale } from '@/src/hooks';
 import { lightTokens } from '@/src/configs/theme';
 import type { UseForgotPasswordFormResult } from '@/src/hooks/forgotPassword';
 import { AuthTextField } from '@/src/components/login/AuthTextField';
+import { AuthServerMessage } from '@/src/components/login/AuthServerMessage';
 
 interface ForgotPasswordFormProps {
   form: UseForgotPasswordFormResult;
@@ -30,9 +30,7 @@ function ForgotPasswordFormComponent({ form }: ForgotPasswordFormProps) {
       />
 
       {form.serverError ? (
-        <Text className="text-error-500" size="sm">
-          {form.serverError}
-        </Text>
+        <AuthServerMessage message={form.serverError} />
       ) : null}
 
       <Animated.View style={animatedStyle}>

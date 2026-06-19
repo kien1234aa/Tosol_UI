@@ -11,7 +11,8 @@ export const orderAdvancedFilterCopy = {
   issueLabel: 'Đơn hàng có vấn đề',
   dateFromLabel: 'Từ ngày',
   dateToLabel: 'Đến ngày',
-  datePlaceholder: 'dd/mm/yyyy',
+  datePlaceholder: 'Chọn ngày',
+  selectDate: 'Chọn ngày',
   allOption: 'Tất cả',
   yesOption: 'Có',
   noOption: 'Không',
@@ -21,6 +22,8 @@ export const orderAdvancedFilterCopy = {
   selectStatus: 'Chọn trạng thái',
   selectPayment: 'Chọn thanh toán',
   selectIssue: 'Chọn điều kiện',
+  clearDate: 'Xóa ngày',
+  selectedDateLabel: 'Ngày đã chọn',
   invalidDateRange: 'Ngày bắt đầu không được sau ngày kết thúc',
 } as const;
 

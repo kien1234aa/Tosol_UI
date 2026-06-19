@@ -4,10 +4,23 @@ export type NotificationCategory = 'personal' | 'system';
 
 export type NotificationType = 'order' | 'payment' | 'delivery' | 'system';
 
+/** Raw `type` from API / FCM data (server enum, ~23 values). */
+export type NotificationApiType = string;
+
+/** FCM `data` payload when notification includes action_url. */
+export interface NotificationActionPayload {
+  notificationId: string | null;
+  type: NotificationApiType | null;
+  actionUrl: string | null;
+  title: string;
+  body: string;
+}
+
 export interface AppNotification {
   id: string;
   category: NotificationCategory;
   type: NotificationType;
+  apiType: NotificationApiType;
   typeLabel: string;
   icon: string;
   title: string;

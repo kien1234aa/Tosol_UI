@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     left: 16,
     right: 16,
     zIndex: 9999,
-    elevation: 12,
   },
   card: {
     borderRadius: 14,
@@ -69,10 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.background0,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-    shadowColor: lightTokens.typography900,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
+    boxShadow: '0px 4px 12px rgba(22, 30, 36, 0.12)',
   },
   iconWrap: {
     width: 32,

@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import {
-  Alert,
   FlatList,
   KeyboardAvoidingView,
   ListRenderItem,
@@ -15,6 +14,7 @@ import { walletCopy } from '@/src/configs/wallet';
 import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
 import { useWallet } from '@/src/hooks/wallet';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
 import type { WalletTransaction } from '@/src/types/wallet/wallet.types';
@@ -32,15 +32,13 @@ import { VStack } from '@/src/uikits/vstack';
 type WalletScreenProps = HomeStackScreenProps<'Wallet'>;
 
 export function WalletScreen({ navigation }: WalletScreenProps) {
+  const blockFeature = useFeatureInDevelopmentNotice();
   const {
     mode,
     activeTab,
     amount,
     transactions,
-    setActiveTab,
     setAmount,
-    toggleMode,
-    resetAmount,
   } = useWallet();
 
   const handleBack = useStackGoBack(navigation, 'HomeMain');
@@ -53,17 +51,20 @@ export function WalletScreen({ navigation }: WalletScreenProps) {
     : walletCopy.toggleToTopup;
 
   const handlePrimary = useCallback(() => {
-    if (!amount || Number(amount) <= 0) {
-      Alert.alert(walletCopy.amountRequired);
-      return;
-    }
-    Alert.alert(isTopup ? walletCopy.qrCreated : walletCopy.withdrawCreated);
-    resetAmount();
-  }, [amount, isTopup, resetAmount]);
+    blockFeature();
+  }, [blockFeature]);
 
   const handleSecondary = useCallback(() => {
-    Alert.alert(walletCopy.missingMoney, walletCopy.missingMoneyHint);
-  }, []);
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleToggleMode = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleTabChange = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
 
   const renderItem = useCallback<ListRenderItem<WalletTransaction>>(
     ({ item }) => <WalletTransactionCard item={item} />,
@@ -74,7 +75,7 @@ export function WalletScreen({ navigation }: WalletScreenProps) {
 
   const rightAction = (
     <RNPressable
-      onPress={toggleMode}
+      onPress={handleToggleMode}
       accessibilityRole="button"
       accessibilityLabel={toggleLabel}
       hitSlop={8}
@@ -101,7 +102,7 @@ export function WalletScreen({ navigation }: WalletScreenProps) {
             <WalletSegmentedTabs
               mode={mode}
               activeTab={activeTab}
-              onChange={setActiveTab}
+              onChange={handleTabChange}
             />
           </Box>
 

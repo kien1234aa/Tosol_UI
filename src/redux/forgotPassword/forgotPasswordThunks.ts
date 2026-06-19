@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { forgotPasswordService } from '@/src/apis/forgotPassword/forgotPassword.api';
+import { toApiFailurePayload } from '@/src/helpers/api/apiError.helpers';
 import type {
   ForgotPasswordRequest,
   ForgotPasswordResult,
@@ -13,8 +14,8 @@ export const forgotPasswordThunk = createAsyncThunk<
   try {
     return await forgotPasswordService.requestReset(request);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : 'Gửi yêu cầu thất bại';
-    return rejectWithValue(message);
+    return rejectWithValue(
+      toApiFailurePayload(error, 'Gửi yêu cầu thất bại').message,
+    );
   }
 });

@@ -3,10 +3,10 @@ import { notificationsCopy } from '@/src/configs/notifications';
 import { countUnreadNotificationsByCategory } from '@/src/helpers/notifications';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
+import { openNotificationPayload } from '@/src/push/notificationNavigation';
 import {
   fetchNotificationsThunk,
   markAllNotificationsReadThunk,
-  markNotificationReadThunk,
   selectFilteredNotifications,
   selectHasMoreNotifications,
   selectIsLoadingMoreNotifications,
@@ -105,13 +105,16 @@ export function useNotificationsList(): UseNotificationsListResult {
     (notificationId: string) => {
       const notification = allItems.find(item => item.id === notificationId);
 
-      if (notification == null || notification.isRead) {
+      if (notification == null) {
         return;
       }
 
-      void dispatch(markNotificationReadThunk(notificationId));
+      openNotificationPayload({
+        notificationId: notification.id,
+        actionUrl: notification.actionUrl,
+      });
     },
-    [allItems, dispatch],
+    [allItems],
   );
 
   const onMarkAllRead = useCallback(() => {

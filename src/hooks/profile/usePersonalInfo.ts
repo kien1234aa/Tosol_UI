@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { personalInfoCopy } from '@/src/configs/profile';
 import {
   isPersonalInfoValid,
@@ -31,11 +31,13 @@ export function usePersonalInfo(): UsePersonalInfoResult {
     toPersonalInfoFormValues(profile),
   );
   const [errors, setErrors] = useState<PersonalInfoValidationErrors>({});
+  const [syncedProfile, setSyncedProfile] = useState(profile);
 
-  useEffect(() => {
+  if (profile !== syncedProfile) {
+    setSyncedProfile(profile);
     setValues(toPersonalInfoFormValues(profile));
     setErrors({});
-  }, [profile]);
+  }
 
   const baselineValues = useMemo(
     () => toPersonalInfoFormValues(profile),

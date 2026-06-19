@@ -17,6 +17,7 @@ export interface CreateSaleOrderShipmentPayload {
   recipient_ward: string;
   shipping_payer: string;
   shipping_partner_seller_id?: number;
+  shipping_partner_warehouse_id?: number;
 }
 
 export interface CreateSaleOrderPayload {
@@ -112,7 +113,7 @@ export interface SaleOrderApiItem {
 export interface SaleOrderListParams {
   page?: number;
   perPage?: number;
-  search?: string;
+  customerId?: number;
   status?: string;
   paymentStatus?: string;
   hasIssue?: boolean;

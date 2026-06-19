@@ -1,6 +1,10 @@
 import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
-import { saleOrderStatusLabels } from '@/src/configs/orders';
+import {
+  saleOrderPaymentStatusLabels,
+  saleOrderStatusLabels,
+} from '@/src/configs/orders';
+import { formatOrderLabel } from '@/src/helpers/orders';
 import { lightTokens } from '@/src/configs/theme';
 import { Box } from '@/src/uikits/box';
 import { Text } from '@/src/uikits/text';
@@ -71,6 +75,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
+  paymentBadge: {
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: lightTokens.background100,
+  },
 });
 
 export const OrderStatusBadge = memo(OrderStatusBadgeComponent);
+
+interface PaymentStatusBadgeProps {
+  status: string;
+}
+
+function PaymentStatusBadgeComponent({ status }: PaymentStatusBadgeProps) {
+  const label = formatOrderLabel(saleOrderPaymentStatusLabels, status);
+
+  return (
+    <Box style={styles.paymentBadge}>
+      <Text size="xs" className="font-medium text-typography-700">
+        {label}
+      </Text>
+    </Box>
+  );
+}
+
+export const PaymentStatusBadge = memo(PaymentStatusBadgeComponent);

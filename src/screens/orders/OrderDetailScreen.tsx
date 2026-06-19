@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Alert,
   RefreshControl,
@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { orderDetailCopy } from '@/src/configs/orders';
+import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
 import { OrderCancelReasonModal } from '@/src/components/orders/OrderCancelReasonModal';
 import { OrderEditModal } from '@/src/components/orders/OrderEditModal';
@@ -20,6 +21,7 @@ import {
   OrderDetailShipping,
   OrderDetailSummary,
 } from '@/src/components/orders/OrderDetailView';
+import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import { useOrderCancel, useOrderDetail, useOrderEdit } from '@/src/hooks/orders';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { OrdersStackScreenProps } from '@/src/navigation/types';
@@ -31,6 +33,99 @@ import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 
 type OrderDetailScreenProps = OrdersStackScreenProps<'OrderDetail'>;
+
+interface OrderDetailBodyProps {
+  order: ReturnType<typeof useOrderDetail>['order'];
+  isLoading: boolean;
+  error: string | null;
+  reload: () => void;
+  canPay: boolean;
+  canCancel: boolean;
+  canEdit: boolean;
+  onPressPay: () => void;
+  onPressCancel: () => void;
+  onPressEdit: () => void;
+}
+
+function OrderDetailBody({
+  order,
+  isLoading,
+  error,
+  reload,
+  canPay,
+  canCancel,
+  canEdit,
+  onPressPay,
+  onPressCancel,
+  onPressEdit,
+}: OrderDetailBodyProps) {
+  const refreshControl = useMemo(
+    () => (
+      <RefreshControl
+        refreshing={isLoading}
+        onRefresh={reload}
+        tintColor={lightTokens.tertiary600}
+      />
+    ),
+    [isLoading, reload],
+  );
+
+  if (isLoading && !order) {
+    return (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}>
+        <DetailScreenSkeleton style={styles.skeletonContent} />
+      </ScrollView>
+    );
+  }
+
+  if (!order) {
+    return (
+      <Center className="flex-1 px-4 py-16">
+        <Text size="sm" className="mb-3 text-center text-typography-500">
+          {error ?? orderDetailCopy.notFound}
+        </Text>
+        {error ? (
+          <Pressable onPress={reload} accessibilityRole="button">
+            <Text size="sm" className="font-semibold text-tertiary-600">
+              {orderDetailCopy.retry}
+            </Text>
+          </Pressable>
+        ) : null}
+      </Center>
+    );
+  }
+
+  return (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.content}
+      refreshControl={refreshControl}>
+      <VStack className="w-full" space="md">
+        <OrderDetailSummary order={order} />
+        <OrderDetailProducts products={order.products} />
+        {order.shipping ? (
+          <OrderDetailShipping shipping={order.shipping} />
+        ) : null}
+        {order.hasIssue && order.issueNote ? (
+          <OrderDetailIssue issueNote={order.issueNote} />
+        ) : null}
+        <OrderDetailNote note={order.note} />
+        <OrderDetailCostBreakdown order={order} />
+        <OrderDetailActions
+          canPay={canPay}
+          canCancel={canCancel}
+          canEdit={canEdit}
+          remainingVnd={order.costs.remainingVnd}
+          onPressPay={onPressPay}
+          onPressCancel={onPressCancel}
+          onPressEdit={onPressEdit}
+        />
+      </VStack>
+    </ScrollView>
+  );
+}
 
 export function OrderDetailScreen({
   navigation,
@@ -67,7 +162,7 @@ export function OrderDetailScreen({
   const handleBack = useStackGoBack(navigation, 'OrdersMain');
 
   const handlePay = useCallback(() => {
-    Alert.alert(orderDetailCopy.paySuccess);
+    showFeatureInDevelopmentAlert();
   }, []);
 
   const handleCancel = useCallback(() => {
@@ -78,81 +173,23 @@ export function OrderDetailScreen({
     openEdit(orderId, order?.note ?? '');
   }, [openEdit, order?.note, orderId]);
 
-  const renderBody = () => {
-    if (isLoading && !order) {
-      return (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}>
-          <DetailScreenSkeleton style={styles.skeletonContent} />
-        </ScrollView>
-      );
-    }
-
-    if (!order) {
-      return (
-        <Center className="flex-1 px-4 py-16">
-          <Text
-            size="sm"
-            className="mb-3 text-center text-typography-500">
-            {error ?? orderDetailCopy.notFound}
-          </Text>
-          {error ? (
-            <Pressable onPress={reload} accessibilityRole="button">
-              <Text size="sm" className="font-semibold text-tertiary-600">
-                {orderDetailCopy.retry}
-              </Text>
-            </Pressable>
-          ) : null}
-        </Center>
-      );
-    }
-
-    return (
-      <>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={reload}
-              tintColor={lightTokens.tertiary600}
-            />
-          }>
-          <VStack className="w-full" space="md">
-            <OrderDetailSummary order={order} />
-            <OrderDetailProducts products={order.products} />
-            {order.shipping ? (
-              <OrderDetailShipping shipping={order.shipping} />
-            ) : null}
-            {order.hasIssue && order.issueNote ? (
-              <OrderDetailIssue issueNote={order.issueNote} />
-            ) : null}
-            <OrderDetailNote note={order.note} />
-            <OrderDetailCostBreakdown order={order} />
-          </VStack>
-        </ScrollView>
-
-        <OrderDetailActions
-          canPay={canPay}
-          canCancel={canCancel}
-          canEdit={canEdit}
-          remainingVnd={order.costs.remainingVnd}
-          onPressPay={handlePay}
-          onPressCancel={handleCancel}
-          onPressEdit={handleEdit}
-        />
-      </>
-    );
-  };
-
   return (
     <Box className="flex-1 bg-background-50">
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
         <VStack className="flex-1">
           <OrderDetailHeader onPressBack={handleBack} />
-          {renderBody()}
+          <OrderDetailBody
+            order={order}
+            isLoading={isLoading}
+            error={error}
+            reload={reload}
+            canPay={canPay}
+            canCancel={canCancel}
+            canEdit={canEdit}
+            onPressPay={handlePay}
+            onPressCancel={handleCancel}
+            onPressEdit={handleEdit}
+          />
         </VStack>
 
         <OrderCancelReasonModal
@@ -188,7 +225,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 24,
+    paddingBottom: mainLayout.tabContentBottomPadding,
   },
   skeletonContent: {
     paddingHorizontal: 0,

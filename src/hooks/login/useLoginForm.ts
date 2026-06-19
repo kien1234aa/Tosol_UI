@@ -1,12 +1,19 @@
-import { useCallback, useMemo, useState } from 'react';
-import { isFormValid, validateLoginForm, type LoginValidationErrors } from '@/src/helpers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  isFormValid,
+  validateLoginForm,
+  type LoginValidationErrors,
+} from '@/src/helpers';
+import { mapLoginApiFieldErrors } from '@/src/helpers/api/apiError.helpers';
 import {
   selectAuthError,
+  selectAuthFieldErrors,
   selectIsAuthenticating,
   selectRememberMe,
 } from '@/src/redux/login/authSelectors';
 import { clearAuthError, setRememberMe } from '@/src/redux/login/authSlice';
 import { loginThunk } from '@/src/redux/login/authThunks';
+import { loginCredentialsStorage } from '@/src/storage';
 import { useAppDispatch } from '../common/useAppDispatch';
 import { useAppSelector } from '../common/useAppSelector';
 
@@ -34,16 +41,40 @@ export function useLoginForm(): UseLoginFormResult {
   const isSubmitting = useAppSelector(selectIsAuthenticating);
   const rememberMe = useAppSelector(selectRememberMe);
   const serverError = useAppSelector(selectAuthError);
+  const serverFieldErrors = useAppSelector(selectAuthFieldErrors);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const errors = useMemo<LoginValidationErrors>(
-    () => (touched ? validateLoginForm(username, password) : {}),
-    [touched, username, password],
-  );
+  useEffect(() => {
+    let cancelled = false;
+
+    void loginCredentialsStorage.load().then(stored => {
+      if (cancelled || !stored) {
+        return;
+      }
+
+      setUsername(stored.username);
+      setPassword(stored.password);
+      dispatch(setRememberMe(true));
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dispatch]);
+
+  const errors = useMemo<LoginValidationErrors>(() => {
+    const clientErrors = touched ? validateLoginForm(username, password) : {};
+    const apiFieldErrors = mapLoginApiFieldErrors(serverFieldErrors);
+
+    return {
+      ...clientErrors,
+      ...apiFieldErrors,
+    };
+  }, [password, serverFieldErrors, touched, username]);
 
   const onChangeUsername = useCallback(
     (value: string) => {
@@ -72,6 +103,10 @@ export function useLoginForm(): UseLoginFormResult {
   const onToggleRememberMe = useCallback(
     (value: boolean) => {
       dispatch(setRememberMe(value));
+
+      if (!value) {
+        void loginCredentialsStorage.clear();
+      }
     },
     [dispatch],
   );

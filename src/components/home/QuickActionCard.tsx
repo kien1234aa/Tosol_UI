@@ -6,6 +6,7 @@ import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { lightTokens } from '@/src/configs/theme';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 
 interface QuickActionCardProps {
   label: string;
@@ -13,15 +14,16 @@ interface QuickActionCardProps {
   onPress?: () => void;
 }
 
-const ICON_SIZE = 20;
-const CARD_HEIGHT = 68;
-const CARD_RADIUS = 12;
-
 function QuickActionCardComponent({
   label,
   icon: Icon,
   onPress,
 }: QuickActionCardProps) {
+  const { scale } = useResponsiveLayout();
+  const iconSize = scale(20);
+  const cardHeight = scale(68);
+  const cardRadius = scale(12);
+
   return (
     <Pressable
       onPress={onPress}
@@ -29,8 +31,11 @@ function QuickActionCardComponent({
       accessibilityLabel={label}
       className="w-full">
       <HStack
-        className="w-full items-center justify-between px-3.5"
-        style={styles.card}>
+        className="w-full items-center justify-between"
+        style={[
+          styles.card,
+          { height: cardHeight, borderRadius: cardRadius, paddingHorizontal: scale(14) },
+        ]}>
         <Text
           size="sm"
           className="flex-1 pr-2 font-medium leading-5 text-typography-900"
@@ -40,7 +45,7 @@ function QuickActionCardComponent({
         <Box className="shrink-0">
           <Icon
             color={lightTokens.tertiary600}
-            size={ICON_SIZE}
+            size={iconSize}
             strokeWidth={1.75}
           />
         </Box>
@@ -51,8 +56,6 @@ function QuickActionCardComponent({
 
 const styles = StyleSheet.create({
   card: {
-    height: CARD_HEIGHT,
-    borderRadius: CARD_RADIUS,
     backgroundColor: lightTokens.tertiary50,
   },
 });

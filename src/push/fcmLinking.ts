@@ -1,49 +1,63 @@
 import type { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import { resolveActionUrlFromFcmMessage } from './fcmMessage.helpers';
+import { resolveNotificationPayloadFromFcmMessage } from './fcmMessage.helpers';
 import {
   getFirebaseAppModule,
   getFirebaseMessagingModule,
 } from './firebaseNative';
-import { openNotificationActionUrl } from './notificationNavigation';
+import {
+  openNotificationActionUrl,
+  openNotificationPayload,
+} from './notificationNavigation';
+import type { NotificationActionPayload } from '@/src/types/notifications/notifications.types';
 
-let pendingActionUrl: string | null = null;
+let pendingPayload: NotificationActionPayload | null = null;
 let notificationOpenedListenerAttached = false;
 let coldStartNotificationChecked = false;
+
+function queueOrOpenPayload(payload: NotificationActionPayload): void {
+  const opened = openNotificationPayload(payload);
+
+  if (!opened) {
+    pendingPayload = payload;
+  } else {
+    pendingPayload = null;
+  }
+}
 
 export function handleFcmNotificationOpen(
   remoteMessage: FirebaseMessagingTypes.RemoteMessage | null | undefined,
 ): void {
-  const url = resolveActionUrlFromFcmMessage(remoteMessage);
+  const payload = resolveNotificationPayloadFromFcmMessage(remoteMessage);
 
-  if (url == null) {
+  if (payload == null) {
     const opened = openNotificationActionUrl(null);
 
     if (!opened) {
-      pendingActionUrl = '';
+      pendingPayload = {
+        notificationId: null,
+        type: null,
+        actionUrl: null,
+        title: '',
+        body: '',
+      };
     } else {
-      pendingActionUrl = null;
+      pendingPayload = null;
     }
 
     return;
   }
 
-  const opened = openNotificationActionUrl(url);
-
-  if (!opened) {
-    pendingActionUrl = url;
-  } else {
-    pendingActionUrl = null;
-  }
+  queueOrOpenPayload(payload);
 }
 
 export function flushPendingFcmNotificationOpen(): void {
-  if (pendingActionUrl == null) {
+  if (pendingPayload == null) {
     return;
   }
 
-  const url = pendingActionUrl;
-  pendingActionUrl = null;
-  openNotificationActionUrl(url);
+  const payload = pendingPayload;
+  pendingPayload = null;
+  openNotificationPayload(payload);
 }
 
 export function ensureFcmNotificationOpenedAppListener(): void {

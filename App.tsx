@@ -12,7 +12,7 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import { Provider as ReduxProvider } from 'react-redux';
-import { setAuthTokenGetter } from '@/src/apis/http';
+import { configureApiClient } from '@/src/apis/http';
 import { GluestackUIProvider } from '@/src/uikits/gluestack-ui-provider';
 import { RootNavigator } from '@/src/navigation';
 import type { RootStackParamList } from '@/src/navigation/types';
@@ -32,7 +32,7 @@ function App() {
   const navigationRef = useNavigationContainerRef<RootStackParamList>();
 
   useEffect(() => {
-    setAuthTokenGetter(() => store.getState().auth.token);
+    configureApiClient(store);
     ensureFcmTokenRefreshListener();
     ensureFcmNotificationOpenedAppListener();
     ensureFcmColdStartNotification();

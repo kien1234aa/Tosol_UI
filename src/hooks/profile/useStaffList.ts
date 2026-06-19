@@ -21,7 +21,7 @@ export function useStaffList(enabled: boolean): UseStaffListResult {
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [lastPage, setLastPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -81,7 +81,9 @@ export function useStaffList(enabled: boolean): UseStaffListResult {
     });
   }, [currentPage, fetchPage, isLoading, isLoadingMore, isRefreshing, lastPage]);
 
-  useEffect(() => {
+  const [prevEnabled, setPrevEnabled] = useState(enabled);
+  if (enabled !== prevEnabled) {
+    setPrevEnabled(enabled);
     if (!enabled) {
       requestId.current += 1;
       setStaff([]);
@@ -92,10 +94,16 @@ export function useStaffList(enabled: boolean): UseStaffListResult {
       setIsLoading(false);
       setIsRefreshing(false);
       setIsLoadingMore(false);
+    } else {
+      setIsLoading(true);
+    }
+  }
+
+  useEffect(() => {
+    if (!enabled) {
       return;
     }
 
-    setIsLoading(true);
     void fetchPage(1, false).finally(() => {
       setIsLoading(false);
     });

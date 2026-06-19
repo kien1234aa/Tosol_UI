@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -70,6 +70,23 @@ export function StaffListScreen({ navigation }: StaffListScreenProps) {
     }
   }, [hasMore, loadMore]);
 
+  const listSkeleton = useMemo(
+    () => (
+      <ListScreenSkeleton
+        count={5}
+        showSectionHeader={false}
+        withLeading={false}
+        style={styles.skeletonContent}
+      />
+    ),
+    [],
+  );
+
+  const refreshControl = useMemo(
+    () => <RefreshControl refreshing={isRefreshing} onRefresh={reload} />,
+    [isRefreshing, reload],
+  );
+
   if (!isAdmin) {
     return null;
   }
@@ -100,14 +117,7 @@ export function StaffListScreen({ navigation }: StaffListScreenProps) {
             refreshing={isRefreshing}
             itemCount={staff.length}
             options={{ canShowSkeleton: !loadError }}
-            skeleton={
-              <ListScreenSkeleton
-                count={5}
-                showSectionHeader={false}
-                withLeading={false}
-                style={styles.skeletonContent}
-              />
-            }>
+            skeleton={listSkeleton}>
             {loadError && staff.length === 0 ? (
               <Center className="flex-1 px-6">
                 <Text size="sm" className="mb-4 text-center text-error-500">
@@ -128,9 +138,7 @@ export function StaffListScreen({ navigation }: StaffListScreenProps) {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.listContent}
                 ItemSeparatorComponent={ListSeparator}
-                refreshControl={
-                  <RefreshControl refreshing={isRefreshing} onRefresh={reload} />
-                }
+                refreshControl={refreshControl}
                 onEndReached={handleEndReached}
                 onEndReachedThreshold={0.35}
                 ListEmptyComponent={

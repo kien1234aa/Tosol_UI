@@ -1,3 +1,6 @@
+import { postJsonMessage } from '@/src/apis/http';
+import { apiEndpoints } from '@/src/configs/api';
+import { forgotPasswordCopy } from '@/src/configs/forgotPassword';
 import type {
   ForgotPasswordRequest,
   ForgotPasswordResult,
@@ -7,26 +10,21 @@ export interface IForgotPasswordService {
   requestReset(request: ForgotPasswordRequest): Promise<ForgotPasswordResult>;
 }
 
-const MOCK_LATENCY_MS = 900;
-
-class MockForgotPasswordService implements IForgotPasswordService {
+class HttpForgotPasswordService implements IForgotPasswordService {
   async requestReset(
     request: ForgotPasswordRequest,
   ): Promise<ForgotPasswordResult> {
-    await new Promise<void>(resolve =>
-      setTimeout(() => resolve(), MOCK_LATENCY_MS),
-    );
-
-    if (request.email.toLowerCase() === 'unknown@example.com') {
-      throw new Error('Email chưa được đăng ký');
-    }
+    const email = request.email.trim();
+    await postJsonMessage(apiEndpoints.forgotPassword, {
+      email,
+    });
 
     return {
-      email: request.email,
-      message: 'Mã xác nhận đã được gửi đến email của bạn',
+      email,
+      message: forgotPasswordCopy.successMessage,
     };
   }
 }
 
 export const forgotPasswordService: IForgotPasswordService =
-  new MockForgotPasswordService();
+  new HttpForgotPasswordService();

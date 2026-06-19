@@ -1,5 +1,4 @@
 export { SearchHeader } from './SearchHeader';
-export { SearchPlatformSelector } from './SearchPlatformSelector';
 export { SearchWarehouseSelector } from './SearchWarehouseSelector';
 export { ProductQuantitySelector } from './ProductQuantitySelector';
 export { ProductDetailActions } from './ProductDetailView';

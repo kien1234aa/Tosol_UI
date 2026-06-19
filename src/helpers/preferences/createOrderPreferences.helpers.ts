@@ -4,7 +4,7 @@ import {
   buildWarehouseContextKey,
   preferenceKeys,
 } from '@/src/configs/preferences/preferences.constants';
-import { createOrderShippingMethods } from '@/src/configs/cart/createOrder.constants';
+import { createOrderShippingMethods } from '@/src/configs/createOrder/createOrder.constants';
 import { customerSearchResultToPreferenceMeta } from '@/src/helpers/preferences/preferences.helpers';
 import type {
   CreateOrderFormState,

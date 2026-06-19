@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   RefreshControl,
@@ -32,9 +32,162 @@ import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
+import type { StaffDetailItem } from '@/src/types/profile/staff.types';
 import { VStack } from '@/src/uikits/vstack';
 
 type StaffDetailScreenProps = ProfileStackScreenProps<'StaffDetail'>;
+
+interface StaffDetailBodyProps {
+  staff: StaffDetailItem | null;
+  isLoading: boolean;
+  isRefreshing: boolean;
+  loadError: string | null;
+  reload: () => void;
+  onPressEdit: () => void;
+  onPressChangePassword: () => void;
+  onToggleActive: () => void;
+  onDelete: () => void;
+}
+
+function StaffDetailBody({
+  staff,
+  isLoading,
+  isRefreshing,
+  loadError,
+  reload,
+  onPressEdit,
+  onPressChangePassword,
+  onToggleActive,
+  onDelete,
+}: StaffDetailBodyProps) {
+  const refreshControl = useMemo(
+    () => (
+      <RefreshControl
+        refreshing={isRefreshing}
+        onRefresh={reload}
+        tintColor={lightTokens.tertiary600}
+      />
+    ),
+    [isRefreshing, reload],
+  );
+
+  if (isLoading && !staff) {
+    return (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}>
+        <DetailScreenSkeleton style={styles.skeletonContent} />
+      </ScrollView>
+    );
+  }
+
+  if (!staff) {
+    return (
+      <Center className="flex-1 px-6">
+        <Text size="sm" className="mb-4 text-center text-error-500">
+          {loadError ?? staffDetailCopy.loadError}
+        </Text>
+        <Pressable onPress={reload} accessibilityRole="button">
+          <Text size="sm" className="font-semibold text-tertiary-600">
+            {staffDetailCopy.retry}
+          </Text>
+        </Pressable>
+      </Center>
+    );
+  }
+
+  return (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.content}
+      refreshControl={refreshControl}>
+      <VStack className="w-full" space="md">
+        <StaffDetailSummaryCard staff={staff} />
+
+        <ProfileSectionCard title={staffDetailCopy.accountSection}>
+          <StaffDetailInfoRow
+            label={staffDetailCopy.emailLabel}
+            value={staff.email}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.phoneLabel}
+            value={staff.phone || staffCopy.noPhone}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.roleLabel}
+            value={staff.roleLabel}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.statusLabel}
+            value={staff.isActive ? staffCopy.active : staffCopy.inactive}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.emailVerifiedLabel}
+            value={
+              staff.emailVerifiedAt
+                ? staffDetailCopy.emailVerified
+                : staffDetailCopy.emailUnverified
+            }
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.lastLoginLabel}
+            value={formatStaffLastLogin(staff.lastLoginAt)}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.createdAtLabel}
+            value={formatStaffDateTime(staff.createdAt)}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.updatedAtLabel}
+            value={formatStaffDateTime(staff.updatedAt)}
+          />
+        </ProfileSectionCard>
+
+        <ProfileSectionCard title={staffDetailCopy.sellerSection}>
+          <StaffDetailInfoRow
+            label={staffDetailCopy.sellerNameLabel}
+            value={staff.sellerName}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.sellerPhoneLabel}
+            value={staff.sellerPhone || staffCopy.noPhone}
+          />
+          <StaffDetailInfoRow
+            label={staffDetailCopy.warehouseCountLabel}
+            value={String(staff.warehouseCount)}
+          />
+        </ProfileSectionCard>
+
+        <ProfileSectionCard title={staffDetailCopy.actionsSection}>
+          <ProfileMenuRow
+            label={staffDetailCopy.editInfo}
+            onPress={onPressEdit}
+          />
+          <ProfileMenuRow
+            label={staffDetailCopy.changePassword}
+            onPress={onPressChangePassword}
+          />
+          <ProfileMenuRow
+            label={
+              staff.isActive
+                ? staffDetailCopy.deactivate
+                : staffDetailCopy.activate
+            }
+            onPress={onToggleActive}
+            danger={staff.isActive}
+            showChevron={false}
+          />
+          <ProfileMenuRow
+            label={staffDetailCopy.deleteAccount}
+            onPress={onDelete}
+            danger
+            showChevron={false}
+          />
+        </ProfileSectionCard>
+      </VStack>
+    </ScrollView>
+  );
+}
 
 export function StaffDetailScreen({
   navigation,
@@ -165,131 +318,6 @@ export function StaffDetailScreen({
     return null;
   }
 
-  const renderBody = () => {
-    if (isLoading && !staff) {
-      return (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}>
-          <DetailScreenSkeleton style={styles.skeletonContent} />
-        </ScrollView>
-      );
-    }
-
-    if (!staff) {
-      return (
-        <Center className="flex-1 px-6">
-          <Text size="sm" className="mb-4 text-center text-error-500">
-            {loadError ?? staffDetailCopy.loadError}
-          </Text>
-          <Pressable onPress={reload} accessibilityRole="button">
-            <Text size="sm" className="font-semibold text-tertiary-600">
-              {staffDetailCopy.retry}
-            </Text>
-          </Pressable>
-        </Center>
-      );
-    }
-
-    return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={reload}
-            tintColor={lightTokens.tertiary600}
-          />
-        }>
-        <VStack className="w-full" space="md">
-          <StaffDetailSummaryCard staff={staff} />
-
-          <ProfileSectionCard title={staffDetailCopy.accountSection}>
-            <StaffDetailInfoRow
-              label={staffDetailCopy.emailLabel}
-              value={staff.email}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.phoneLabel}
-              value={staff.phone || staffCopy.noPhone}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.roleLabel}
-              value={staff.roleLabel}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.statusLabel}
-              value={staff.isActive ? staffCopy.active : staffCopy.inactive}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.emailVerifiedLabel}
-              value={
-                staff.emailVerifiedAt
-                  ? staffDetailCopy.emailVerified
-                  : staffDetailCopy.emailUnverified
-              }
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.lastLoginLabel}
-              value={formatStaffLastLogin(staff.lastLoginAt)}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.createdAtLabel}
-              value={formatStaffDateTime(staff.createdAt)}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.updatedAtLabel}
-              value={formatStaffDateTime(staff.updatedAt)}
-            />
-          </ProfileSectionCard>
-
-          <ProfileSectionCard title={staffDetailCopy.sellerSection}>
-            <StaffDetailInfoRow
-              label={staffDetailCopy.sellerNameLabel}
-              value={staff.sellerName}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.sellerPhoneLabel}
-              value={staff.sellerPhone || staffCopy.noPhone}
-            />
-            <StaffDetailInfoRow
-              label={staffDetailCopy.warehouseCountLabel}
-              value={String(staff.warehouseCount)}
-            />
-          </ProfileSectionCard>
-
-          <ProfileSectionCard title={staffDetailCopy.actionsSection}>
-            <ProfileMenuRow
-              label={staffDetailCopy.editInfo}
-              onPress={() => setIsEditOpen(true)}
-            />
-            <ProfileMenuRow
-              label={staffDetailCopy.changePassword}
-              onPress={() => setIsPasswordOpen(true)}
-            />
-            <ProfileMenuRow
-              label={
-                staff.isActive
-                  ? staffDetailCopy.deactivate
-                  : staffDetailCopy.activate
-              }
-              onPress={handleToggleActive}
-              danger={staff.isActive}
-              showChevron={false}
-            />
-            <ProfileMenuRow
-              label={staffDetailCopy.deleteAccount}
-              onPress={handleDelete}
-              danger
-              showChevron={false}
-            />
-          </ProfileSectionCard>
-        </VStack>
-      </ScrollView>
-    );
-  };
-
   return (
     <Box className="flex-1 bg-background-50">
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
@@ -298,7 +326,17 @@ export function StaffDetailScreen({
             title={staffDetailCopy.screenTitle}
             onPressBack={handleBack}
           />
-          {renderBody()}
+          <StaffDetailBody
+            staff={staff}
+            isLoading={isLoading}
+            isRefreshing={isRefreshing}
+            loadError={loadError}
+            reload={reload}
+            onPressEdit={() => setIsEditOpen(true)}
+            onPressChangePassword={() => setIsPasswordOpen(true)}
+            onToggleActive={handleToggleActive}
+            onDelete={handleDelete}
+          />
         </VStack>
 
         {staff ? (

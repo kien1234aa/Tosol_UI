@@ -26,6 +26,11 @@ export const selectAuthError = createSelector(
   auth => auth.error,
 );
 
+export const selectAuthFieldErrors = createSelector(
+  selectAuthState,
+  auth => auth.fieldErrors,
+);
+
 export const selectRememberMe = createSelector(
   selectAuthState,
   auth => auth.rememberMe,

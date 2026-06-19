@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -27,6 +27,21 @@ const HIDDEN_LIBRARY_FAB_STYLE = {
   elevation: 0,
   borderWidth: 0,
 };
+
+const BUBBLE_PLATFORM_STYLE = Platform.select({
+  android: {
+    elevation: 0,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+  },
+  default: {
+    elevation: 8,
+    shadowColor: lightTokens.tertiary600,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.14,
+    shadowRadius: 10,
+  },
+});
 
 /** BottomFabBar + bong bóng icon trượt theo tab đang focus. */
 function WaveTabBarComponent(props: BottomTabBarProps) {
@@ -79,6 +94,7 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
           pointerEvents="none"
           style={[
             styles.floatingBubble,
+            BUBBLE_PLATFORM_STYLE,
             {
               backgroundColor: tabBarColors.bubbleBackground,
               borderColor: tabBarColors.bubbleBorder,
@@ -107,11 +123,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 100,
-    elevation: 8,
-    shadowColor: lightTokens.tertiary600,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.14,
-    shadowRadius: 10,
   },
 });
 

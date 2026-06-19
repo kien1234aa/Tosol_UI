@@ -11,4 +11,4 @@ export {
   handleFcmNotificationOpen,
 } from './fcmLinking';
 export { ForegroundPushBannerHost } from './ForegroundPushBannerHost';
-export { setNavigationRef, openNotificationActionUrl } from './notificationNavigation';
+export { setNavigationRef, openNotificationActionUrl, openNotificationPayload } from './notificationNavigation';

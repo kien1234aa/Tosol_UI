@@ -2,13 +2,13 @@ import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Button, ButtonSpinner, ButtonText } from '@/src/uikits/button';
-import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { registerCopy } from '@/src/configs/register';
 import { usePressScale } from '@/src/hooks';
 import { lightTokens } from '@/src/configs/theme';
 import type { UseRegisterFormResult } from '@/src/hooks/register';
 import { AuthTextField } from '@/src/components/login/AuthTextField';
+import { AuthServerMessage } from '@/src/components/login/AuthServerMessage';
 import { PasswordField } from '@/src/components/login/PasswordField';
 
 interface RegisterFormProps {
@@ -59,9 +59,7 @@ function RegisterFormComponent({ form }: RegisterFormProps) {
       />
 
       {form.serverError ? (
-        <Text className="text-error-500" size="sm">
-          {form.serverError}
-        </Text>
+        <AuthServerMessage message={form.serverError} />
       ) : null}
 
       <Animated.View style={animatedStyle}>

@@ -18,6 +18,9 @@ export const awaitingPaymentCopy = {
   paySuccess: 'Đã gửi yêu cầu thanh toán (mock)',
 } as const;
 
+/** Mock available wallet balance shown on the awaiting payment screen. */
+export const mockAvailableBalanceVnd = 1_200_000;
+
 /** Mock consignment packages waiting for payment. */
 export const mockAwaitingPaymentItems: AwaitingPaymentItem[] = [
   {

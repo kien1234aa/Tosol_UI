@@ -7,6 +7,7 @@ import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { registerCopy } from '@/src/configs/register';
 import { useRegisterForm, useResponsiveLayout } from '@/src/hooks';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { animationConfig } from '@/src/configs/theme';
 import type { RootStackScreenProps } from '@/src/navigation/types';
 import { KeyboardAwareScreen } from '@/src/components/login';
@@ -21,6 +22,7 @@ import { selectIsRegisterSuccess } from '@/src/redux/register/registerSelectors'
 type RegisterScreenProps = RootStackScreenProps<'Register'>;
 
 export function RegisterScreen({ navigation }: RegisterScreenProps) {
+  useFeatureInDevelopmentNotice();
   const form = useRegisterForm();
   const { contentMaxWidth, horizontalPadding } = useResponsiveLayout();
   const isRegisterSuccess = useAppSelector(selectIsRegisterSuccess);
@@ -46,7 +48,7 @@ export function RegisterScreen({ navigation }: RegisterScreenProps) {
         <VStack
           className="w-full items-center gap-6"
           space="lg"
-          style={[styles.content, { maxWidth: contentMaxWidth }]}>
+          style={[styles.content, { maxWidth: contentMaxWidth.form }]}>
           <Animated.View
             entering={FadeInDown.duration(screenEntry)}
             style={styles.fullWidthCenter}>

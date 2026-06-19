@@ -12,6 +12,7 @@ import { Box } from '@/src/uikits/box';
 import { HStack } from '@/src/uikits/hstack';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import type {
   QuickActionItem,
   QuickActionKey,
@@ -26,12 +27,10 @@ const QUICK_ACTION_ICONS: Record<QuickActionKey, LucideIcon> = {
   deliveryRequest: Truck,
 };
 
-const GRID_GAP = 12;
-
-function pairRows<T>(items: T[]): T[][] {
+function chunkItems<T>(items: T[], columns: number): T[][] {
   const rows: T[][] = [];
-  for (let index = 0; index < items.length; index += 2) {
-    rows.push(items.slice(index, index + 2));
+  for (let index = 0; index < items.length; index += columns) {
+    rows.push(items.slice(index, index + columns));
   }
   return rows;
 }
@@ -47,7 +46,11 @@ function QuickActionsSectionComponent({
   items,
   onPressItem,
 }: QuickActionsSectionProps) {
-  const rows = useMemo(() => pairRows(items), [items]);
+  const { quickActionColumns, gridGap } = useResponsiveLayout();
+  const rows = useMemo(
+    () => chunkItems(items, quickActionColumns),
+    [items, quickActionColumns],
+  );
 
   const handlePress = useCallback(
     (key: QuickActionKey) => () => onPressItem?.(key),
@@ -60,9 +63,9 @@ function QuickActionsSectionComponent({
         {title}
       </Text>
 
-      <VStack className="w-full" style={styles.grid}>
+      <VStack className="w-full" style={{ gap: gridGap }}>
         {rows.map((row, rowIndex) => (
-          <HStack key={`quick-action-row-${rowIndex}`} style={styles.row}>
+          <HStack key={`quick-action-row-${rowIndex}`} style={{ gap: gridGap }}>
             {row.map(item => (
               <Box key={item.key} style={styles.cell}>
                 <QuickActionCard
@@ -72,7 +75,11 @@ function QuickActionsSectionComponent({
                 />
               </Box>
             ))}
-            {row.length === 1 ? <Box style={styles.cell} /> : null}
+            {row.length < quickActionColumns
+              ? Array.from({ length: quickActionColumns - row.length }, (_, i) => (
+                  <Box key={`quick-action-spacer-${rowIndex}-${i}`} style={styles.cell} />
+                ))
+              : null}
           </HStack>
         ))}
       </VStack>
@@ -81,13 +88,6 @@ function QuickActionsSectionComponent({
 }
 
 const styles = StyleSheet.create({
-  grid: {
-    gap: GRID_GAP,
-  },
-  row: {
-    gap: GRID_GAP,
-    width: '100%',
-  },
   cell: {
     flex: 1,
   },

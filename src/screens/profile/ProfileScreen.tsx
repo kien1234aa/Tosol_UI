@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { profileCopy } from '@/src/configs/profile';
+import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import { mainLayout } from '@/src/configs/main';
 import {
   ProfileDivider,
@@ -12,6 +13,7 @@ import {
   ProfileSupportCard,
 } from '@/src/components/profile';
 import { useProfile } from '@/src/hooks/profile';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { selectUnreadNotificationCount } from '@/src/redux/notifications';
 import { useAppDispatch } from '@/src/hooks';
@@ -34,6 +36,7 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
   const isAdmin = useAppSelector(selectIsAdminUser);
   const unreadNotificationCount = useAppSelector(selectUnreadNotificationCount);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { horizontalPadding, contentMaxWidth, isTablet } = useResponsiveLayout();
 
   useEffect(() => {
     void dispatch(fetchCurrentUserThunk());
@@ -49,7 +52,7 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
   }, [reload]);
 
   const showComingSoon = useCallback(() => {
-    Alert.alert(profileCopy.featureComingSoon);
+    showFeatureInDevelopmentAlert();
   }, []);
 
   const handlePersonalInfo = useCallback(() => {
@@ -57,8 +60,8 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
   }, [navigation]);
 
   const handleChangePassword = useCallback(() => {
-    navigation.navigate('ChangePassword');
-  }, [navigation]);
+    showFeatureInDevelopmentAlert();
+  }, []);
 
   const handleStaffList = useCallback(() => {
     navigation.navigate('StaffList');
@@ -78,6 +81,13 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
     });
   }, [dispatch, rootNavigation]);
 
+  const refreshControl = useMemo(
+    () => (
+      <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+    ),
+    [handleRefresh, isRefreshing],
+  );
+
   return (
     <Box className="flex-1 bg-background-50">
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
@@ -93,13 +103,16 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={handleRefresh}
-            />
-          }>
+          contentContainerStyle={[
+            styles.content,
+            {
+              paddingHorizontal: horizontalPadding,
+              maxWidth: isTablet ? contentMaxWidth.screen : undefined,
+              alignSelf: isTablet ? 'center' : undefined,
+              width: isTablet ? '100%' : undefined,
+            },
+          ]}
+          refreshControl={refreshControl}>
           <VStack className="w-full" space="md">
             <ProfileSectionCard title={profileCopy.accountSection}>
               <ProfileMenuRow
@@ -165,7 +178,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: mainLayout.tabContentBottomPadding,
   },

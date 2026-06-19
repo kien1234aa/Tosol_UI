@@ -10,8 +10,12 @@ import { VStack } from '@/src/uikits/vstack';
 import { searchCopy } from '@/src/configs/search';
 import { preferencesCopy } from '@/src/configs/preferences/preferences.constants';
 import { lightTokens } from '@/src/configs/theme';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import type { AuthWarehouse } from '@/src/types/login/auth.types';
 import { SearchWarehouseSelector } from './SearchWarehouseSelector';
+
+const EMPTY_SUGGESTED_WAREHOUSE_IDS: number[] = [];
+const EMPTY_RECENT_QUERIES: string[] = [];
 
 interface SearchHeaderProps {
   query: string;
@@ -27,7 +31,6 @@ interface SearchHeaderProps {
   onSelectRecentQuery?: (query: string) => void;
 }
 
-const SEARCH_BAR_HEIGHT = 48;
 const CAMERA_ICON_SIZE = 20;
 const CAMERA_BUTTON_SIZE = 40;
 
@@ -40,22 +43,41 @@ function SearchHeaderComponent({
   onSelectWarehouse,
   isSwitchingWarehouse = false,
   onPressImageSearch,
-  suggestedWarehouseIds = [],
-  recentQueries = [],
+  suggestedWarehouseIds = EMPTY_SUGGESTED_WAREHOUSE_IDS,
+  recentQueries = EMPTY_RECENT_QUERIES,
   onSelectRecentQuery,
 }: SearchHeaderProps) {
+  const { horizontalPadding, scale } = useResponsiveLayout();
+  const searchBarHeight = scale(48);
+  const cameraButtonSize = scale(CAMERA_BUTTON_SIZE);
+
   const handleImageSearch = useCallback(() => {
     onPressImageSearch?.();
   }, [onPressImageSearch]);
 
   return (
-    <Box style={styles.container}>
+    <Box
+      style={[
+        styles.container,
+        {
+          paddingHorizontal: horizontalPadding,
+          paddingTop: scale(10),
+          paddingBottom: scale(10),
+        },
+      ]}>
       <VStack className="w-full" space="sm">
         <Text size="md" className="font-medium text-typography-900">
           {searchCopy.greeting}
         </Text>
 
-        <HStack style={styles.searchBar}>
+        <HStack
+          style={[
+            styles.searchBar,
+            {
+              height: searchBarHeight,
+              borderRadius: searchBarHeight / 2,
+            },
+          ]}>
           <SearchWarehouseSelector
             warehouses={warehouses}
             selectedWarehouseId={selectedWarehouseId}
@@ -75,7 +97,10 @@ function SearchHeaderComponent({
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="search"
-            style={styles.input}
+            style={[
+              styles.input,
+              { fontSize: scale(15), paddingLeft: scale(12) },
+            ]}
           />
 
           <Pressable
@@ -83,8 +108,19 @@ function SearchHeaderComponent({
             accessibilityRole="button"
             accessibilityLabel={searchCopy.imageSearchLabel}
             style={styles.cameraButton}>
-            <Center style={styles.cameraIconWrap}>
-              <Camera color={lightTokens.tertiary600} size={CAMERA_ICON_SIZE} />
+            <Center
+              style={[
+                styles.cameraIconWrap,
+                {
+                  width: cameraButtonSize,
+                  height: cameraButtonSize,
+                  borderRadius: cameraButtonSize / 2,
+                },
+              ]}>
+              <Camera
+                color={lightTokens.tertiary600}
+                size={scale(CAMERA_ICON_SIZE)}
+              />
             </Center>
           </Pressable>
         </HStack>
@@ -117,14 +153,9 @@ function SearchHeaderComponent({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 10,
     backgroundColor: lightTokens.tertiary50,
   },
   searchBar: {
-    height: SEARCH_BAR_HEIGHT,
-    borderRadius: SEARCH_BAR_HEIGHT / 2,
     backgroundColor: lightTokens.background0,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.tertiary200,
@@ -139,10 +170,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: '100%',
-    paddingLeft: 12,
     paddingRight: 4,
     paddingVertical: 0,
-    fontSize: 15,
     color: lightTokens.typography900,
   },
   cameraButton: {
@@ -150,11 +179,7 @@ const styles = StyleSheet.create({
     paddingRight: 6,
     justifyContent: 'center',
   },
-  cameraIconWrap: {
-    width: CAMERA_BUTTON_SIZE,
-    height: CAMERA_BUTTON_SIZE,
-    borderRadius: CAMERA_BUTTON_SIZE / 2,
-  },
+  cameraIconWrap: {},
 });
 
 export const SearchHeader = memo(SearchHeaderComponent);

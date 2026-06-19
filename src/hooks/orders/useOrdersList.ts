@@ -1,30 +1,41 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { customersService } from '@/src/apis/customers/customers.api';
+import { customerSearchMinLength } from '@/src/configs/api';
+import { mapCustomerToSearchResult } from '@/src/configs/createOrder/createOrder.constants';
 import { countActiveOrderFilters } from '@/src/configs/orders/orderFilters.constants';
 import { ordersCopy } from '@/src/configs/orders';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import {
+  clearOrderListCustomerFilter,
   fetchOrdersThunk,
   selectFilteredOrderItems,
   selectHasMoreOrders,
+  selectHasOrderListCustomerFilter,
   selectIsLoadingMoreOrders,
   selectIsLoadingOrders,
+  selectOrderListCustomerId,
+  selectOrderListCustomerName,
   selectOrderListFilters,
-  selectOrderListSearch,
   selectOrdersCurrentPage,
   selectOrdersListError,
+  setOrderListCustomerFilter,
   setOrderListFilters,
-  setOrderListSearch,
 } from '@/src/redux/orders';
+import type { CustomerSearchResult } from '@/src/types/orders/createOrder.types';
 import type { OrderListItem } from '@/src/types/orders/orders.types';
 import type { OrderAdvancedFilters } from '@/src/types/orders/orderFilters.types';
 
-const SEARCH_DEBOUNCE_MS = 450;
+const CUSTOMER_SEARCH_DEBOUNCE_MS = 350;
 
 export interface UseOrdersListResult {
   orders: OrderListItem[];
   listFilters: OrderAdvancedFilters;
-  searchQuery: string;
+  customerQuery: string;
+  customerResults: CustomerSearchResult[];
+  selectedCustomerName: string | null;
+  isSearchingCustomers: boolean;
+  customerSearchError: string | null;
   activeFilterCount: number;
   isFilterOpen: boolean;
   emptyMessage: string;
@@ -36,6 +47,8 @@ export interface UseOrdersListResult {
   onCloseFilter: () => void;
   onApplyFilters: (filters: OrderAdvancedFilters) => void;
   onSearchChange: (value: string) => void;
+  onSelectCustomer: (customer: CustomerSearchResult) => void;
+  onClearCustomer: () => void;
   onRemoveOrder: (orderId: string) => void;
   onOrderAction: (orderId: string, action: 'view' | 'edit' | 'pay' | 'cancel') => void;
   reloadOrders: () => void;
@@ -46,26 +59,28 @@ export function useOrdersList(): UseOrdersListResult {
   const dispatch = useAppDispatch();
   const orders = useAppSelector(selectFilteredOrderItems);
   const listFilters = useAppSelector(selectOrderListFilters);
-  const listSearch = useAppSelector(selectOrderListSearch);
+  const listCustomerId = useAppSelector(selectOrderListCustomerId);
+  const listCustomerName = useAppSelector(selectOrderListCustomerName);
+  const hasCustomerFilter = useAppSelector(selectHasOrderListCustomerFilter);
   const isLoading = useAppSelector(selectIsLoadingOrders);
   const isLoadingMore = useAppSelector(selectIsLoadingMoreOrders);
   const hasMore = useAppSelector(selectHasMoreOrders);
   const loadError = useAppSelector(selectOrdersListError);
   const currentPage = useAppSelector(selectOrdersCurrentPage);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(() => listSearch);
-  const listSearchRef = useRef(listSearch);
-  listSearchRef.current = listSearch;
+  const [customerQuery, setCustomerQuery] = useState('');
+  const [customerResults, setCustomerResults] = useState<CustomerSearchResult[]>([]);
+  const [isSearchingCustomers, setIsSearchingCustomers] = useState(false);
+  const [customerSearchError, setCustomerSearchError] = useState<string | null>(null);
+  const customerSearchRequestId = useRef(0);
 
   const activeFilterCount = useMemo(
     () => countActiveOrderFilters(listFilters),
     [listFilters],
   );
 
-  const hasSearch = Boolean(listSearch.trim());
-
-  const emptyMessage = hasSearch
-    ? ordersCopy.emptySearchResults
+  const emptyMessage = hasCustomerFilter
+    ? ordersCopy.emptyCustomerSearchOrders
     : activeFilterCount === 0
       ? ordersCopy.emptyOrders
       : ordersCopy.emptyFilteredOrders;
@@ -88,20 +103,60 @@ export function useOrdersList(): UseOrdersListResult {
   }, [currentPage, dispatch, hasMore, isLoading, isLoadingMore]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const next = searchQuery.trim();
-      if (next === listSearchRef.current) {
-        return;
-      }
-      dispatch(setOrderListSearch(next));
-    }, SEARCH_DEBOUNCE_MS);
-
-    return () => clearTimeout(timeoutId);
-  }, [dispatch, searchQuery]);
+    reloadOrders();
+  }, [listFilters, listCustomerId, reloadOrders]);
 
   useEffect(() => {
-    reloadOrders();
-  }, [listFilters, listSearch, reloadOrders]);
+    if (listCustomerName) {
+      return;
+    }
+
+    const trimmed = customerQuery.trim();
+
+    if (trimmed.length < customerSearchMinLength) {
+      customerSearchRequestId.current += 1;
+      setCustomerResults([]);
+      setCustomerSearchError(null);
+      setIsSearchingCustomers(false);
+      return;
+    }
+
+    const requestId = customerSearchRequestId.current + 1;
+    customerSearchRequestId.current = requestId;
+    setIsSearchingCustomers(true);
+    setCustomerSearchError(null);
+
+    const timeoutId = setTimeout(() => {
+      void customersService
+        .search(trimmed)
+        .then(records => {
+          if (customerSearchRequestId.current !== requestId) {
+            return;
+          }
+
+          setCustomerResults(records.map(mapCustomerToSearchResult));
+        })
+        .catch(error => {
+          if (customerSearchRequestId.current !== requestId) {
+            return;
+          }
+
+          setCustomerResults([]);
+          setCustomerSearchError(
+            error instanceof Error
+              ? error.message
+              : ordersCopy.searchCustomerError,
+          );
+        })
+        .finally(() => {
+          if (customerSearchRequestId.current === requestId) {
+            setIsSearchingCustomers(false);
+          }
+        });
+    }, CUSTOMER_SEARCH_DEBOUNCE_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [customerQuery, listCustomerName]);
 
   const onOpenFilter = useCallback(() => {
     setIsFilterOpen(true);
@@ -119,8 +174,34 @@ export function useOrdersList(): UseOrdersListResult {
   );
 
   const onSearchChange = useCallback((value: string) => {
-    setSearchQuery(value);
+    setCustomerQuery(value);
   }, []);
+
+  const onSelectCustomer = useCallback(
+    (customer: CustomerSearchResult) => {
+      customerSearchRequestId.current += 1;
+      setCustomerQuery('');
+      setCustomerResults([]);
+      setCustomerSearchError(null);
+      setIsSearchingCustomers(false);
+      dispatch(
+        setOrderListCustomerFilter({
+          customerId: customer.id,
+          customerName: customer.name,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  const onClearCustomer = useCallback(() => {
+    customerSearchRequestId.current += 1;
+    setCustomerQuery('');
+    setCustomerResults([]);
+    setCustomerSearchError(null);
+    setIsSearchingCustomers(false);
+    dispatch(clearOrderListCustomerFilter());
+  }, [dispatch]);
 
   const onRemoveOrder = useCallback((_orderId: string) => {
     // Delete order API is not wired yet.
@@ -136,7 +217,11 @@ export function useOrdersList(): UseOrdersListResult {
   return {
     orders,
     listFilters,
-    searchQuery,
+    customerQuery,
+    customerResults,
+    selectedCustomerName: listCustomerName,
+    isSearchingCustomers,
+    customerSearchError,
     activeFilterCount,
     isFilterOpen,
     emptyMessage,
@@ -148,6 +233,8 @@ export function useOrdersList(): UseOrdersListResult {
     onCloseFilter,
     onApplyFilters,
     onSearchChange,
+    onSelectCustomer,
+    onClearCustomer,
     onRemoveOrder,
     onOrderAction,
     reloadOrders,

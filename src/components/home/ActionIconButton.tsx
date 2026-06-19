@@ -6,6 +6,7 @@ import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { lightTokens } from '@/src/configs/theme';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 
 interface ActionIconButtonProps {
   label: string;
@@ -14,15 +15,16 @@ interface ActionIconButtonProps {
   onPress?: () => void;
 }
 
-const ICON_SIZE = 26;
-const ICON_WRAP_SIZE = 44;
-
 function ActionIconButtonComponent({
   label,
   icon: Icon,
   badge,
   onPress,
 }: ActionIconButtonProps) {
+  const { scale } = useResponsiveLayout();
+  const iconSize = scale(26);
+  const iconWrapSize = scale(44);
+  const badgeSize = scale(18);
   const showBadge = typeof badge === 'number' && badge > 0;
 
   return (
@@ -32,10 +34,22 @@ function ActionIconButtonComponent({
       accessibilityLabel={label}
       className="w-full">
       <VStack className="items-center" space="xs">
-        <Box style={styles.iconWrap}>
-          <Icon color={lightTokens.typography900} size={ICON_SIZE} />
+        <Box
+          style={[
+            styles.iconWrap,
+            { width: iconWrapSize, height: iconWrapSize },
+          ]}>
+          <Icon color={lightTokens.typography900} size={iconSize} />
           {showBadge ? (
-            <Box style={styles.badge}>
+            <Box
+              style={[
+                styles.badge,
+                {
+                  minWidth: badgeSize,
+                  height: badgeSize,
+                  borderRadius: badgeSize / 2,
+                },
+              ]}>
               <Text size="2xs" className="font-bold text-typography-0">
                 {badge > 99 ? '99+' : String(badge)}
               </Text>
@@ -45,7 +59,8 @@ function ActionIconButtonComponent({
         <Text
           size="xs"
           className="text-center text-typography-500"
-          numberOfLines={2}>
+          numberOfLines={2}
+          style={styles.label}>
           {label}
         </Text>
       </VStack>
@@ -55,19 +70,18 @@ function ActionIconButtonComponent({
 
 const styles = StyleSheet.create({
   iconWrap: {
-    width: ICON_WRAP_SIZE,
-    height: ICON_WRAP_SIZE,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+  },
+  label: {
+    width: '100%',
+    paddingHorizontal: 2,
   },
   badge: {
     position: 'absolute',
     top: 2,
     left: 2,
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',

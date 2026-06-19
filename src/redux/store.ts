@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authPersistenceMiddleware } from './authPersistenceMiddleware';
-import { cartPersistenceMiddleware } from './cartPersistenceMiddleware';
+import { createOrderDraftPersistenceMiddleware } from './createOrderDraftPersistenceMiddleware';
 import { preferencesPersistenceMiddleware } from './preferencesPersistenceMiddleware';
 import { rootReducer, type RootState } from './rootReducer';
 
@@ -11,7 +11,7 @@ export const store = configureStore({
       serializableCheck: true,
     }).concat(
       authPersistenceMiddleware,
-      cartPersistenceMiddleware,
+      createOrderDraftPersistenceMiddleware,
       preferencesPersistenceMiddleware,
     ),
 });

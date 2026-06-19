@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { computeTokenExpiresAt } from '@/src/helpers/api/session.helpers';
 import type { AuthSession, AuthUser } from '@/src/types/login/auth.types';
 
 const AUTH_SESSION_STORAGE_KEY = '@tosol/auth_session';
@@ -8,6 +9,7 @@ export interface StoredAuthSession {
   token: string;
   tokenType: string;
   expiresIn: number;
+  tokenExpiresAt: number;
   rememberMe: boolean;
 }
 
@@ -28,6 +30,23 @@ function isStoredAuthSession(value: unknown): value is StoredAuthSession {
   );
 }
 
+function normalizeStoredSession(
+  session: StoredAuthSession,
+): StoredAuthSession | null {
+  if (!session.tokenExpiresAt && session.expiresIn > 0) {
+    return {
+      ...session,
+      tokenExpiresAt: computeTokenExpiresAt(session.expiresIn),
+    };
+  }
+
+  if (!session.tokenExpiresAt) {
+    return null;
+  }
+
+  return session;
+}
+
 export const authSessionStorage = {
   async save(session: AuthSession, rememberMe: boolean): Promise<void> {
     const payload: StoredAuthSession = {
@@ -35,6 +54,7 @@ export const authSessionStorage = {
       token: session.token,
       tokenType: session.tokenType,
       expiresIn: session.expiresIn,
+      tokenExpiresAt: session.tokenExpiresAt,
       rememberMe,
     };
 
@@ -59,7 +79,14 @@ export const authSessionStorage = {
         return null;
       }
 
-      return parsed;
+      const normalized = normalizeStoredSession(parsed);
+
+      if (!normalized) {
+        await AsyncStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
+        return null;
+      }
+
+      return normalized;
     } catch {
       await AsyncStorage.removeItem(AUTH_SESSION_STORAGE_KEY);
       return null;

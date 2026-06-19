@@ -5,10 +5,16 @@ import type {
 } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+/** Nested stack inside the Create Order tab. */
+export type CreateOrderStackParamList = {
+  CreateOrderList: undefined;
+  CreateOrderEdit: { draftId: string };
+};
+
 /** Bottom tab routes shown after login. */
 export type MainTabParamList = {
-  Search: undefined;
-  Cart: undefined;
+  Search: NavigatorScreenParams<SearchStackParamList> | undefined;
+  CreateOrder: NavigatorScreenParams<CreateOrderStackParamList> | undefined;
   Home: NavigatorScreenParams<HomeStackParamList> | undefined;
   Orders: NavigatorScreenParams<OrdersStackParamList> | undefined;
   Profile: undefined;
@@ -72,6 +78,13 @@ export type SearchStackScreenProps<
 > = CompositeScreenProps<
   NativeStackScreenProps<SearchStackParamList, RouteName>,
   MainTabScreenProps<'Search'>
+>;
+
+export type CreateOrderStackScreenProps<
+  RouteName extends keyof CreateOrderStackParamList,
+> = CompositeScreenProps<
+  NativeStackScreenProps<CreateOrderStackParamList, RouteName>,
+  MainTabScreenProps<'CreateOrder'>
 >;
 
 export type OrdersStackScreenProps<

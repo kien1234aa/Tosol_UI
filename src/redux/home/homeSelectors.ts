@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { mapOrderHomeBadgeCountsToHomeBadges } from '@/src/helpers/home/orderBadge.helpers';
-import { selectCartBadgeCount } from '@/src/redux/cart/cartSelectors';
+import { selectDraftOrderCount } from '@/src/redux/createOrderDraft';
 import { selectOrderDashboardBadgeCounts } from '@/src/redux/orders/ordersSelectors';
 import type { RootState } from '../store';
 
@@ -13,17 +13,17 @@ export const selectHomeBadges = createSelector(
 
 /** Badge trên dashboard — đồng bộ giỏ hàng + số đơn từ API. */
 export const selectHomeDashboardBadges = createSelector(
-  [selectHomeBadges, selectCartBadgeCount, selectOrderDashboardBadgeCounts],
-  (badges, cartCount, orderCounts) => {
+  [selectHomeBadges, selectDraftOrderCount, selectOrderDashboardBadgeCounts],
+  (badges, draftCount, orderCounts) => {
     const next = {
       ...badges,
       ...mapOrderHomeBadgeCountsToHomeBadges(orderCounts),
     };
 
-    if (cartCount > 0) {
-      next.orderCart = cartCount;
+    if (draftCount > 0) {
+      next.orderCreate = draftCount;
     } else {
-      delete next.orderCart;
+      delete next.orderCreate;
     }
 
     return next;

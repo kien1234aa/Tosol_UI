@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
+import { fontStyle } from '@/src/configs/theme/fonts';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
-import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
@@ -9,15 +9,17 @@ import { forgotPasswordCopy } from '@/src/configs/forgotPassword';
 import { useForgotPasswordForm, useResponsiveLayout } from '@/src/hooks';
 import { animationConfig } from '@/src/configs/theme';
 import type { RootStackScreenProps } from '@/src/navigation/types';
-import { KeyboardAwareScreen } from '@/src/components/login';
+import { AuthBackButton, KeyboardAwareScreen } from '@/src/components/login';
 import {
   ForgotPasswordFooterLinks,
   ForgotPasswordForm,
-  ForgotPasswordHeader,
   ForgotPasswordHeroImage,
 } from '@/src/components/forgotPassword';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
-import { selectIsForgotPasswordSuccess } from '@/src/redux/forgotPassword/forgotPasswordSelectors';
+import {
+  selectForgotPasswordSuccessMessage,
+  selectIsForgotPasswordSuccess,
+} from '@/src/redux/forgotPassword/forgotPasswordSelectors';
 
 type ForgotPasswordScreenProps = RootStackScreenProps<'ForgotPassword'>;
 
@@ -25,6 +27,7 @@ export function ForgotPasswordScreen({ navigation }: ForgotPasswordScreenProps) 
   const form = useForgotPasswordForm();
   const { contentMaxWidth, horizontalPadding } = useResponsiveLayout();
   const isSuccess = useAppSelector(selectIsForgotPasswordSuccess);
+  const successMessage = useAppSelector(selectForgotPasswordSuccessMessage);
 
   const handleBack = useCallback(() => {
     form.onReset();
@@ -37,61 +40,81 @@ export function ForgotPasswordScreen({ navigation }: ForgotPasswordScreenProps) 
   }, [form, navigation]);
 
   useEffect(() => {
-    if (isSuccess) {
-      form.onReset();
-      navigation.replace('Login');
+    if (!isSuccess) {
+      return;
     }
-  }, [form, isSuccess, navigation]);
+
+    Alert.alert(
+      forgotPasswordCopy.successTitle,
+      successMessage ?? forgotPasswordCopy.successMessage,
+      [
+        {
+          text: forgotPasswordCopy.loginCta,
+          onPress: handleLogin,
+        },
+      ],
+      { cancelable: false },
+    );
+  }, [handleLogin, isSuccess, successMessage]);
 
   const { stagger, screenEntry } = animationConfig;
 
   return (
-    <Box className="flex-1 bg-background-50">
-      <ForgotPasswordHeader
-        title={forgotPasswordCopy.title}
-        onBack={handleBack}
-      />
+    <KeyboardAwareScreen
+      contentContainerStyle={{ paddingHorizontal: horizontalPadding }}>
+      <Center className="w-full">
+        <VStack
+          className="w-full items-center gap-6"
+          space="lg"
+          style={[styles.content, { maxWidth: contentMaxWidth.form }]}>
+          <Animated.View
+            entering={FadeInDown.duration(screenEntry)}
+            style={styles.fullWidth}>
+            <AuthBackButton
+              onPress={handleBack}
+              accessibilityLabel={forgotPasswordCopy.backLabel}
+            />
+          </Animated.View>
 
-      <KeyboardAwareScreen
-        edges={['bottom', 'left', 'right']}
-        contentContainerStyle={{ paddingHorizontal: horizontalPadding }}>
-        <Center className="w-full">
-          <VStack
-            className="w-full items-center gap-6"
-            space="lg"
-            style={[styles.content, { maxWidth: contentMaxWidth }]}>
-            <Animated.View
-              entering={FadeInDown.duration(screenEntry)}
-              style={styles.fullWidthCenter}>
-              <ForgotPasswordHeroImage />
-            </Animated.View>
+          <Animated.View
+            entering={FadeInDown.duration(screenEntry).delay(stagger)}
+            style={styles.fullWidthCenter}>
+            <ForgotPasswordHeroImage />
+          </Animated.View>
 
-            <Animated.View
-              entering={FadeInDown.duration(screenEntry).delay(stagger)}
-              style={styles.fullWidthCenter}>
+          <Animated.View
+            entering={FadeInDown.duration(screenEntry).delay(stagger * 2)}
+            style={styles.fullWidthCenter}>
+            <VStack className="w-full items-center gap-2" space="xs">
               <Text
-                size="md"
-                className="px-2 text-center text-typography-900"
+                size="lg"
+                className="text-center font-semibold text-typography-900"
+                style={styles.title}>
+                {forgotPasswordCopy.title}
+              </Text>
+              <Text
+                size="sm"
+                className="px-2 text-center text-typography-500"
                 style={styles.subtitle}>
                 {forgotPasswordCopy.subtitle}
               </Text>
-            </Animated.View>
+            </VStack>
+          </Animated.View>
 
-            <Animated.View
-              entering={FadeInDown.duration(screenEntry).delay(stagger * 2)}
-              style={styles.fullWidth}>
-              <ForgotPasswordForm form={form} />
-            </Animated.View>
+          <Animated.View
+            entering={FadeInDown.duration(screenEntry).delay(stagger * 3)}
+            style={styles.fullWidth}>
+            <ForgotPasswordForm form={form} />
+          </Animated.View>
 
-            <Animated.View
-              entering={FadeIn.duration(screenEntry).delay(stagger * 3)}
-              style={styles.fullWidth}>
-              <ForgotPasswordFooterLinks onLogin={handleLogin} />
-            </Animated.View>
-          </VStack>
-        </Center>
-      </KeyboardAwareScreen>
-    </Box>
+          <Animated.View
+            entering={FadeIn.duration(screenEntry).delay(stagger * 4)}
+            style={styles.fullWidth}>
+            <ForgotPasswordFooterLinks onLogin={handleLogin} />
+          </Animated.View>
+        </VStack>
+      </Center>
+    </KeyboardAwareScreen>
   );
 }
 
@@ -107,7 +130,8 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  title: fontStyle('semibold'),
   subtitle: {
-    lineHeight: 22,
+    lineHeight: 20,
   },
 });

@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Button, ButtonSpinner, ButtonText } from '@/src/uikits/button';
+import { HStack } from '@/src/uikits/hstack';
+import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { authCopy } from '@/src/configs';
@@ -9,14 +11,16 @@ import { usePressScale } from '@/src/hooks';
 import { lightTokens } from '@/src/configs/theme';
 import type { UseLoginFormResult } from '@/src/hooks/login';
 import { AuthTextField } from './AuthTextField';
+import { AuthServerMessage } from './AuthServerMessage';
 import { PasswordField } from './PasswordField';
 import { RememberMeCheckbox } from './RememberMeCheckbox';
 
 interface LoginFormProps {
   form: UseLoginFormResult;
+  onForgotPassword?: () => void;
 }
 
-function LoginFormComponent({ form }: LoginFormProps) {
+function LoginFormComponent({ form, onForgotPassword }: LoginFormProps) {
   const { animatedStyle, onPressIn, onPressOut } = usePressScale();
 
   return (
@@ -38,16 +42,30 @@ function LoginFormComponent({ form }: LoginFormProps) {
         error={form.errors.password}
       />
 
-      <RememberMeCheckbox
-        label={authCopy.rememberMe}
-        isChecked={form.rememberMe}
-        onChange={form.onToggleRememberMe}
-      />
+      <HStack className="w-full items-center justify-between">
+        <RememberMeCheckbox
+          label={authCopy.rememberMe}
+          isChecked={form.rememberMe}
+          onChange={form.onToggleRememberMe}
+        />
+
+        {onForgotPassword ? (
+          <Pressable
+            onPress={onForgotPassword}
+            accessibilityRole="button"
+            accessibilityLabel={authCopy.forgotPasswordCta}>
+            <Text
+              size="sm"
+              className="font-medium"
+              style={styles.forgotPasswordLink}>
+              {authCopy.forgotPasswordCta}
+            </Text>
+          </Pressable>
+        ) : null}
+      </HStack>
 
       {form.serverError ? (
-        <Text className="text-error-500" size="sm">
-          {form.serverError}
-        </Text>
+        <AuthServerMessage message={form.serverError} />
       ) : null}
 
       <Animated.View style={animatedStyle}>
@@ -78,6 +96,9 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.tertiary500,
     borderRadius: 16,
     height: 56,
+  },
+  forgotPasswordLink: {
+    color: lightTokens.tertiary500,
   },
 });
 

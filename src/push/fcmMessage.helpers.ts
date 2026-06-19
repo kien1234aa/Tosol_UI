@@ -1,4 +1,5 @@
 import type { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import type { NotificationActionPayload } from '@/src/types/notifications/notifications.types';
 
 const FCM_META_KEYS = new Set([
   'action_url',
@@ -9,6 +10,9 @@ const FCM_META_KEYS = new Set([
   'deepLink',
   'url',
   'target',
+  'notification_id',
+  'notificationId',
+  'type',
   'title',
   'body',
   'message',
@@ -36,15 +40,18 @@ function readDataString(
   return '';
 }
 
+/** @deprecated Use FcmNotificationPayload / extractFcmNotificationPayload */
 export interface FcmNotificationText {
   title: string;
   body: string;
   actionUrl: string | null;
 }
 
-export function extractFcmNotificationText(
+export type FcmNotificationPayload = NotificationActionPayload;
+
+export function extractFcmNotificationPayload(
   remoteMessage: FirebaseMessagingTypes.RemoteMessage,
-): FcmNotificationText | null {
+): FcmNotificationPayload | null {
   const raw = (remoteMessage.data ?? {}) as Record<string, string | object>;
 
   const title =
@@ -65,15 +72,36 @@ export function extractFcmNotificationText(
       'url',
       'target',
     ) || null;
+  const notificationId =
+    readDataString(raw, 'notification_id', 'notificationId', 'id') || null;
+  const type = readDataString(raw, 'type') || null;
 
   if (!title && !body) {
     return null;
   }
 
   return {
+    notificationId,
+    type,
+    actionUrl,
     title: title || 'Tosol',
     body,
-    actionUrl,
+  };
+}
+
+export function extractFcmNotificationText(
+  remoteMessage: FirebaseMessagingTypes.RemoteMessage,
+): FcmNotificationText | null {
+  const payload = extractFcmNotificationPayload(remoteMessage);
+
+  if (payload == null) {
+    return null;
+  }
+
+  return {
+    title: payload.title,
+    body: payload.body,
+    actionUrl: payload.actionUrl,
   };
 }
 
@@ -84,5 +112,17 @@ export function resolveActionUrlFromFcmMessage(
     return null;
   }
 
-  return extractFcmNotificationText(remoteMessage)?.actionUrl ?? null;
+  return extractFcmNotificationPayload(remoteMessage)?.actionUrl ?? null;
 }
+
+export function resolveNotificationPayloadFromFcmMessage(
+  remoteMessage: FirebaseMessagingTypes.RemoteMessage | null | undefined,
+): FcmNotificationPayload | null {
+  if (remoteMessage == null) {
+    return null;
+  }
+
+  return extractFcmNotificationPayload(remoteMessage);
+}
+
+export { FCM_META_KEYS };

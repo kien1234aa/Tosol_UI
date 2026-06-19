@@ -21,11 +21,11 @@ export interface FetchOrdersResult {
 function buildListParams(
   filters: OrderAdvancedFilters,
   page: number,
-  search: string,
+  customerId: number | null,
 ): Parameters<typeof saleOrdersService.list>[0] {
   return {
     page,
-    search: search.trim() || undefined,
+    customerId: customerId ?? undefined,
     status: filters.status || undefined,
     paymentStatus: filters.paymentStatus || undefined,
     hasIssue:
@@ -47,9 +47,9 @@ export const fetchOrdersThunk = createAsyncThunk<
   'orders/fetchOrders',
   async ({ page, append }, { getState, rejectWithValue }) => {
     try {
-      const { listFilters, listSearch } = getState().orders;
+      const { listFilters, listCustomerId } = getState().orders;
       const { data, meta } = await saleOrdersService.list(
-        buildListParams(listFilters, page, listSearch),
+        buildListParams(listFilters, page, listCustomerId),
       );
 
       return {

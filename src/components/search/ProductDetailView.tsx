@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { Package, Store } from 'lucide-react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Store } from 'lucide-react-native';
 import { productDetailCopy, searchCopy } from '@/src/configs/search';
 import {
   formatCatalogPrice,
@@ -12,7 +12,10 @@ import {
 } from '@/src/helpers/search';
 import { lightTokens } from '@/src/configs/theme';
 import {
-  buttonFlex,
+  ProductThumbnailImage,
+  productThumbnailContainerStyle,
+} from '@/src/shared/components/ui/ProductThumbnailImage';
+import {
   buttonContentCenter,
   buttonLabelStyle,
 } from '@/src/configs/theme/buttonLayout';
@@ -21,7 +24,6 @@ import type {
   SearchProduct,
 } from '@/src/types/search/search.types';
 import { Box } from '@/src/uikits/box';
-import { Center } from '@/src/uikits/center';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
@@ -53,7 +55,8 @@ interface ProductDetailContentProps {
   onIncreaseQuantity: () => void;
 }
 
-const HERO_ICON_SIZE = 56;
+const HERO_HORIZONTAL_PADDING = 32;
+const HERO_MAX_HEIGHT = 320;
 
 function InfoRow({
   label,
@@ -84,6 +87,11 @@ function ProductDetailContentComponent({
   onDecreaseQuantity,
   onIncreaseQuantity,
 }: ProductDetailContentProps) {
+  const { width: windowWidth } = useWindowDimensions();
+  const heroHeight = useMemo(() => {
+    const contentWidth = windowWidth - HERO_HORIZONTAL_PADDING;
+    return Math.min(Math.max(contentWidth, 0), HERO_MAX_HEIGHT);
+  }, [windowWidth]);
   const heroImageUrl = useMemo(
     () => getProductHeroImageUrl(product),
     [product],
@@ -111,18 +119,8 @@ function ProductDetailContentComponent({
 
   return (
     <VStack className="w-full" space="lg">
-      <Box style={styles.hero}>
-        {heroImageUrl ? (
-          <Image
-            source={{ uri: heroImageUrl }}
-            style={styles.heroImage}
-            resizeMode="cover"
-          />
-        ) : (
-          <Center style={styles.heroFallback}>
-            <Package color={lightTokens.tertiary500} size={HERO_ICON_SIZE} />
-          </Center>
-        )}
+      <Box style={[styles.hero, { height: heroHeight }]}>
+        <ProductThumbnailImage uri={heroImageUrl} />
 
         {stockStatusLabel ? (
           <View style={[styles.stockBadge, stockBadgeStyle]}>
@@ -273,14 +271,12 @@ function ProductDetailContentComponent({
 interface ProductDetailActionsProps {
   pricing: ProductDetailPricing;
   disabled?: boolean;
-  onPressAddToCart?: () => void;
   onPressBuyNow?: () => void;
 }
 
 function ProductDetailActionsComponent({
   pricing,
   disabled = false,
-  onPressAddToCart,
   onPressBuyNow,
 }: ProductDetailActionsProps) {
   return (
@@ -294,47 +290,24 @@ function ProductDetailActionsComponent({
         </Text>
       </HStack>
 
-      <HStack style={styles.actionsRow}>
-        <Pressable
-          onPress={onPressAddToCart}
-          disabled={disabled}
-          accessibilityRole="button"
-          accessibilityLabel={productDetailCopy.addToCart}
-          accessibilityState={{ disabled }}
-          style={[
-            buttonFlex,
-            styles.actionButton,
-            styles.outlineButton,
-            disabled && styles.disabledButton,
-          ]}>
-          <Text
-            size="xs"
-            className="font-semibold text-tertiary-600"
-            style={buttonLabelStyle}>
-            {productDetailCopy.addToCart}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={onPressBuyNow}
-          disabled={disabled}
-          accessibilityRole="button"
-          accessibilityLabel={productDetailCopy.buyNow}
-          accessibilityState={{ disabled }}
-          style={[
-            buttonFlex,
-            styles.actionButton,
-            styles.primaryButton,
-            disabled && styles.disabledButton,
-          ]}>
-          <Text
-            size="xs"
-            className="font-semibold text-typography-0"
-            style={buttonLabelStyle}>
-            {productDetailCopy.buyNow}
-          </Text>
-        </Pressable>
-      </HStack>
+      <Pressable
+        onPress={onPressBuyNow}
+        disabled={disabled}
+        accessibilityRole="button"
+        accessibilityLabel={productDetailCopy.createOrder}
+        accessibilityState={{ disabled }}
+        style={[
+          styles.actionButton,
+          styles.primaryButton,
+          disabled && styles.disabledButton,
+        ]}>
+        <Text
+          size="sm"
+          className="font-semibold text-typography-0"
+          style={buttonLabelStyle}>
+          {productDetailCopy.createOrder}
+        </Text>
+      </Pressable>
     </VStack>
   );
 }
@@ -342,21 +315,12 @@ function ProductDetailActionsComponent({
 const styles = StyleSheet.create({
   hero: {
     width: '100%',
-    aspectRatio: 1,
-    maxHeight: 320,
+    alignSelf: 'stretch',
     borderRadius: 16,
     backgroundColor: lightTokens.tertiary50,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-    overflow: 'hidden',
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-  },
-  heroFallback: {
-    width: '100%',
-    height: '100%',
+    ...productThumbnailContainerStyle,
   },
   stockBadge: {
     position: 'absolute',

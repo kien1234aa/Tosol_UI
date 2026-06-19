@@ -26,7 +26,7 @@ export function useStaffDetail(
   enabled: boolean,
 ): UseStaffDetailResult {
   const [staff, setStaff] = useState<StaffDetailItem | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -54,15 +54,32 @@ export function useStaffDetail(
     }
   }, [loadStaff]);
 
-  useEffect(() => {
+  const [prevEnabled, setPrevEnabled] = useState(enabled);
+  const [prevStaffUuid, setPrevStaffUuid] = useState(staffUuid);
+
+  if (enabled !== prevEnabled) {
+    setPrevEnabled(enabled);
     if (!enabled) {
       setStaff(null);
       setLoadError(null);
       setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }
+
+  if (enabled && staffUuid !== prevStaffUuid) {
+    setPrevStaffUuid(staffUuid);
+    setStaff(null);
+    setLoadError(null);
+    setIsLoading(true);
+  }
+
+  useEffect(() => {
+    if (!enabled) {
       return;
     }
 
-    setIsLoading(true);
     void loadStaff().finally(() => {
       setIsLoading(false);
     });

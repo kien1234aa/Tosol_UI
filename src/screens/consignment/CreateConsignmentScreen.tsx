@@ -16,8 +16,7 @@ import {
   lightTokens,
 } from '@/src/configs/theme';
 import { useCreateConsignment } from '@/src/hooks/consignment';
-import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
-import { addConsignmentOrders } from '@/src/redux/consignment';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
 import {
@@ -35,36 +34,31 @@ type CreateConsignmentScreenProps =
 export function CreateConsignmentScreen({
   navigation,
 }: CreateConsignmentScreenProps) {
+  const blockFeature = useFeatureInDevelopmentNotice();
   const {
     packages,
     errors,
     canAddPackage,
     canRemovePackage,
-    onAddPackage,
-    onRemovePackage,
-    onChangeField,
-    onSubmit,
-    reset,
   } = useCreateConsignment();
 
-  const dispatch = useAppDispatch();
   const handleBack = useStackGoBack(navigation, 'HomeMain');
 
   const handleSubmit = useCallback(() => {
-    onSubmit(() => {
-      dispatch(
-        addConsignmentOrders(
-          packages.map(item => ({
-            trackingCode: item.trackingCode,
-            productName: item.productName,
-            note: item.note,
-          })),
-        ),
-      );
-      reset();
-      navigation.replace('ConsignmentList');
-    });
-  }, [dispatch, navigation, onSubmit, packages, reset]);
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleAddPackage = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleRemovePackage = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleChangeField = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
 
   return (
     <Box className="flex-1 bg-background-50">
@@ -91,7 +85,7 @@ export function CreateConsignmentScreen({
                   </Text>
 
                   <RNPressable
-                    onPress={onAddPackage}
+                    onPress={handleAddPackage}
                     disabled={!canAddPackage}
                     accessibilityRole="button"
                     accessibilityLabel={consignmentCopy.addPackage}
@@ -119,8 +113,8 @@ export function CreateConsignmentScreen({
                       index={index}
                       errors={errors[draft.id]}
                       canRemove={canRemovePackage}
-                      onChangeField={onChangeField}
-                      onRemove={onRemovePackage}
+                      onChangeField={handleChangeField}
+                      onRemove={handleRemovePackage}
                     />
                   ))}
                 </VStack>

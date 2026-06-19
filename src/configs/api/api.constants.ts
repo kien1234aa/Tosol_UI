@@ -1,6 +1,11 @@
-/** Base URL for the Tosol API v2. */
-export const API_BASE_URL =
-  'https://tosol-api-v2-j4flv6af.on-forge.com/api/v1';
+/** Base URL resolved from the active API environment. */
+export { getApiBaseUrl, resolveApiEnvironment, setApiEnvironment } from './api.environment';
+export type { ApiEnvironment } from './api.environment';
+export * from './http.constants';
+
+import { getApiBaseUrl } from './api.environment';
+
+export const API_BASE_URL = getApiBaseUrl();
 
 export const productsPageSize = 50;
 
@@ -11,6 +16,8 @@ export const userDetailInclude = 'warehouses,seller';
 
 export const apiEndpoints = {
   login: '/login',
+  forgotPassword: '/forgot-password',
+  refreshToken: '/refresh-token',
   userDetail: (uuid: string) => `/users/${uuid}`,
   warehouseContext: '/warehouse-context',
   switchWarehouseContext: '/warehouse-context/switch',

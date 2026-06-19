@@ -13,13 +13,13 @@ export interface IChangePasswordService {
 
 class MockChangePasswordService implements IChangePasswordService {
   async changePassword(payload: ChangePasswordPayload): Promise<void> {
-    await new Promise<void>(resolve =>
-      setTimeout(() => resolve(), MOCK_LATENCY_MS),
-    );
-
     if (payload.currentPassword === 'wrong') {
       throw new Error('Mật khẩu hiện tại không đúng');
     }
+
+    await new Promise<void>(resolve =>
+      setTimeout(() => resolve(), MOCK_LATENCY_MS),
+    );
   }
 }
 

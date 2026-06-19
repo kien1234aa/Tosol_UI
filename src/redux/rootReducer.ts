@@ -4,7 +4,7 @@ import { forgotPasswordReducer } from './forgotPassword/forgotPasswordSlice';
 import { registerReducer } from './register/registerSlice';
 import { homeReducer } from './home/homeSlice';
 import { searchReducer } from './search/searchSlice';
-import { cartReducer } from './cart/cartSlice';
+import { createOrderDraftReducer } from './createOrderDraft/createOrderDraftSlice';
 import { ordersReducer } from './orders/ordersSlice';
 import { consignmentReducer } from './consignment/consignmentSlice';
 import { profileReducer } from './profile/profileSlice';
@@ -21,7 +21,7 @@ export const rootReducer = combineReducers({
   forgotPassword: forgotPasswordReducer,
   home: homeReducer,
   search: searchReducer,
-  cart: cartReducer,
+  createOrderDraft: createOrderDraftReducer,
   orders: ordersReducer,
   consignment: consignmentReducer,
   profile: profileReducer,

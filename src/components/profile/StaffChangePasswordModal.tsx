@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -28,12 +28,17 @@ export interface StaffChangePasswordModalProps {
   onSubmit: (payload: ChangeStaffPasswordPayload) => Promise<void>;
 }
 
-function StaffChangePasswordModalComponent({
-  visible,
+interface StaffChangePasswordFormProps {
+  isSubmitting: boolean;
+  onClose: () => void;
+  onSubmit: (payload: ChangeStaffPasswordPayload) => Promise<void>;
+}
+
+function StaffChangePasswordForm({
   isSubmitting,
   onClose,
   onSubmit,
-}: StaffChangePasswordModalProps) {
+}: StaffChangePasswordFormProps) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -46,21 +51,6 @@ function StaffChangePasswordModalComponent({
     confirmPassword?: string;
   }>({});
   const [serverError, setServerError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!visible) {
-      return;
-    }
-
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setShowCurrentPassword(false);
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
-    setErrors({});
-    setServerError(null);
-  }, [visible]);
 
   const handleSubmit = useCallback(async () => {
     const nextErrors: {
@@ -108,6 +98,102 @@ function StaffChangePasswordModalComponent({
   }, [confirmPassword, currentPassword, newPassword, onClose, onSubmit]);
 
   return (
+    <>
+      <Text size="md" className="mb-2 font-semibold text-typography-900">
+        {staffDetailCopy.changePasswordTitle}
+      </Text>
+      <Text size="sm" className="mb-4 text-typography-600">
+        {staffDetailCopy.changePasswordHint}
+      </Text>
+
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        style={styles.scroll}>
+        <VStack space="md">
+          <ChangePasswordField
+            label={staffDetailCopy.adminCurrentPasswordLabel}
+            placeholder="Nhập mật khẩu hiện tại"
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            error={errors.currentPassword}
+            showPassword={showCurrentPassword}
+            onToggleShowPassword={() =>
+              setShowCurrentPassword(current => !current)
+            }
+          />
+          <ChangePasswordField
+            label={staffDetailCopy.newPasswordLabel}
+            placeholder="Nhập mật khẩu mới"
+            value={newPassword}
+            onChangeText={setNewPassword}
+            error={errors.newPassword}
+            showPassword={showNewPassword}
+            onToggleShowPassword={() => setShowNewPassword(current => !current)}
+          />
+          <ChangePasswordField
+            label={staffDetailCopy.confirmPasswordLabel}
+            placeholder="Nhập lại mật khẩu mới"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            error={errors.confirmPassword}
+            showPassword={showConfirmPassword}
+            onToggleShowPassword={() =>
+              setShowConfirmPassword(current => !current)
+            }
+          />
+
+          {serverError ? (
+            <Text size="sm" className="text-error-500">
+              {serverError}
+            </Text>
+          ) : null}
+        </VStack>
+      </ScrollView>
+
+      <HStack className="mt-4 gap-3">
+        <Pressable
+          onPress={onClose}
+          disabled={isSubmitting}
+          style={[styles.dismissButton, buttonContentCenter]}>
+          <Text
+            size="sm"
+            className="font-semibold text-typography-700"
+            style={buttonLabelStyle}>
+            {staffDetailCopy.cancel}
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => void handleSubmit()}
+          disabled={isSubmitting}
+          style={[
+            styles.confirmButton,
+            buttonContentCenter,
+            isSubmitting && styles.confirmButtonDisabled,
+          ]}>
+          {isSubmitting ? (
+            <ActivityIndicator color={lightTokens.typography0} size="small" />
+          ) : (
+            <Text
+              size="sm"
+              className="font-semibold text-typography-0"
+              style={buttonLabelStyle}>
+              {staffDetailCopy.changePasswordSubmit}
+            </Text>
+          )}
+        </Pressable>
+      </HStack>
+    </>
+  );
+}
+
+function StaffChangePasswordModalComponent({
+  visible,
+  isSubmitting,
+  onClose,
+  onSubmit,
+}: StaffChangePasswordModalProps) {
+  return (
     <Modal
       visible={visible}
       transparent
@@ -118,92 +204,14 @@ function StaffChangePasswordModalComponent({
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <RNPressable style={styles.overlay} onPress={onClose}>
           <RNPressable style={styles.sheet} onPress={() => {}}>
-            <Text size="md" className="mb-2 font-semibold text-typography-900">
-              {staffDetailCopy.changePasswordTitle}
-            </Text>
-            <Text size="sm" className="mb-4 text-typography-600">
-              {staffDetailCopy.changePasswordHint}
-            </Text>
-
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-              style={styles.scroll}>
-              <VStack space="md">
-                <ChangePasswordField
-                  label={staffDetailCopy.adminCurrentPasswordLabel}
-                  placeholder="Nhập mật khẩu hiện tại"
-                  value={currentPassword}
-                  onChangeText={setCurrentPassword}
-                  error={errors.currentPassword}
-                  showPassword={showCurrentPassword}
-                  onToggleShowPassword={() =>
-                    setShowCurrentPassword(current => !current)
-                  }
-                />
-                <ChangePasswordField
-                  label={staffDetailCopy.newPasswordLabel}
-                  placeholder="Nhập mật khẩu mới"
-                  value={newPassword}
-                  onChangeText={setNewPassword}
-                  error={errors.newPassword}
-                  showPassword={showNewPassword}
-                  onToggleShowPassword={() =>
-                    setShowNewPassword(current => !current)
-                  }
-                />
-                <ChangePasswordField
-                  label={staffDetailCopy.confirmPasswordLabel}
-                  placeholder="Nhập lại mật khẩu mới"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  error={errors.confirmPassword}
-                  showPassword={showConfirmPassword}
-                  onToggleShowPassword={() =>
-                    setShowConfirmPassword(current => !current)
-                  }
-                />
-
-                {serverError ? (
-                  <Text size="sm" className="text-error-500">
-                    {serverError}
-                  </Text>
-                ) : null}
-              </VStack>
-            </ScrollView>
-
-            <HStack className="mt-4 gap-3">
-              <Pressable
-                onPress={onClose}
-                disabled={isSubmitting}
-                style={[styles.dismissButton, buttonContentCenter]}>
-                <Text
-                  size="sm"
-                  className="font-semibold text-typography-700"
-                  style={buttonLabelStyle}>
-                  {staffDetailCopy.cancel}
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => void handleSubmit()}
-                disabled={isSubmitting}
-                style={[
-                  styles.confirmButton,
-                  buttonContentCenter,
-                  isSubmitting && styles.confirmButtonDisabled,
-                ]}>
-                {isSubmitting ? (
-                  <ActivityIndicator color={lightTokens.typography0} size="small" />
-                ) : (
-                  <Text
-                    size="sm"
-                    className="font-semibold text-typography-0"
-                    style={buttonLabelStyle}>
-                    {staffDetailCopy.changePasswordSubmit}
-                  </Text>
-                )}
-              </Pressable>
-            </HStack>
+            {visible ? (
+              <StaffChangePasswordForm
+                key="open"
+                isSubmitting={isSubmitting}
+                onClose={onClose}
+                onSubmit={onSubmit}
+              />
+            ) : null}
           </RNPressable>
         </RNPressable>
       </KeyboardAvoidingView>

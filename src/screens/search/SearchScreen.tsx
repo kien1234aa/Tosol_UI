@@ -5,12 +5,11 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Box } from '@/src/uikits/box';
 import { VStack } from '@/src/uikits/vstack';
 import { animationConfig } from '@/src/configs/theme';
-import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
 import { useSearch } from '@/src/hooks/search';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import type { SearchStackScreenProps } from '@/src/navigation/types';
 import type { SearchProduct } from '@/src/types/search/search.types';
-import { SupportFab } from '@/src/components/home';
 import {
   ProductGridSection,
   SearchHeader,
@@ -37,6 +36,7 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
     loadMoreProducts,
   } = useSearch();
   const { stagger, screenEntry } = animationConfig;
+  const { horizontalPadding, contentMaxWidth, isTablet } = useResponsiveLayout();
 
   const handleProductPress = useCallback(
     (product: SearchProduct) => {
@@ -49,7 +49,12 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
     // Image search flow is not registered yet.
   }, []);
 
-  const noop = useCallback(() => {}, []);
+  const listFrameStyle = {
+    paddingHorizontal: horizontalPadding,
+    maxWidth: isTablet ? contentMaxWidth.screen : undefined,
+    alignSelf: isTablet ? ('center' as const) : undefined,
+    width: isTablet ? ('100%' as const) : undefined,
+  };
 
   return (
     <Box className="flex-1 bg-background-50">
@@ -75,7 +80,7 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
 
           <Animated.View
             entering={FadeInDown.duration(screenEntry).delay(stagger)}
-            style={styles.list}>
+            style={[styles.list, listFrameStyle]}>
             <ProductGridSection
               products={products}
               isLoading={isLoadingProducts}
@@ -86,8 +91,6 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
             />
           </Animated.View>
         </VStack>
-
-        <SupportFab onPress={noop} />
       </SafeAreaView>
     </Box>
   );
@@ -104,7 +107,6 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    paddingHorizontal: 16,
     paddingTop: 12,
   },
 });

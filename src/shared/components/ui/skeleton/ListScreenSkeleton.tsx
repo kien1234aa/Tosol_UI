@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ComponentType } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { ListCardSkeleton } from './ListCardSkeleton';
 import { SkeletonBone } from './SkeletonBone';
@@ -11,7 +11,7 @@ export type ListScreenSkeletonProps = {
   hasSubtitleSecondary?: boolean;
   hasDetail?: boolean;
   /** Custom row skeleton (e.g. NotificationListItemSkeleton). */
-  renderItem?: () => ReactNode;
+  ItemSkeleton?: ComponentType;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -23,7 +23,7 @@ export function ListScreenSkeleton({
   animate = true,
   hasSubtitleSecondary = false,
   hasDetail = false,
-  renderItem,
+  ItemSkeleton,
   style,
 }: ListScreenSkeletonProps) {
   return (
@@ -35,8 +35,8 @@ export function ListScreenSkeleton({
         </View>
       ) : null}
       {Array.from({ length: count }, (_, i) =>
-        renderItem ? (
-          <React.Fragment key={i}>{renderItem()}</React.Fragment>
+        ItemSkeleton ? (
+          <ItemSkeleton key={i} />
         ) : (
           <ListCardSkeleton
             key={i}

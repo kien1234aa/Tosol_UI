@@ -19,7 +19,11 @@ export function SkeletonBone({
   style,
   animate = true,
 }: SkeletonBoneProps) {
-  const pulse = useRef(new Animated.Value(0.42)).current;
+  const pulseRef = useRef<Animated.Value | null>(null);
+  if (!pulseRef.current) {
+    pulseRef.current = new Animated.Value(0.42);
+  }
+  const pulse = pulseRef.current;
 
   useEffect(() => {
     if (!animate) {

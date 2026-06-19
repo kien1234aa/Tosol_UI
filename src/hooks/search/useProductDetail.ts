@@ -43,8 +43,13 @@ export function useProductDetail(productId: string): UseProductDetailResult {
     void dispatch(fetchProductDetailThunk(productId));
   }, [dispatch, productId]);
 
-  useEffect(() => {
+  const [prevProductId, setPrevProductId] = useState(productId);
+  if (productId !== prevProductId) {
+    setPrevProductId(productId);
     setQuantity(productDetailLimits.minQuantity);
+  }
+
+  useEffect(() => {
     reload();
   }, [productId, reload]);
 

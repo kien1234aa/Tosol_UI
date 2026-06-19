@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { fontStyle } from '@/src/configs/theme/fonts';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Center } from '@/src/uikits/center';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
@@ -13,7 +13,6 @@ import type { RootStackScreenProps } from '@/src/navigation/types';
 import { fetchNotificationsThunk } from '@/src/redux/notifications';
 import { syncFcmTokenWithBackend } from '@/src/push';
 import {
-  AuthFooterLinks,
   LoginHeroImage,
   KeyboardAwareScreen,
   LoginForm,
@@ -43,9 +42,6 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
   const handleForgotPassword = useCallback(() => {
     navigation.navigate('ForgotPassword');
   }, [navigation]);
-  const handleRegister = useCallback(() => {
-    navigation.navigate('Register');
-  }, [navigation]);
 
   const { stagger, screenEntry } = animationConfig;
 
@@ -56,7 +52,7 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
         <VStack
           className="w-full items-center gap-6"
           space="lg"
-          style={[styles.content, { maxWidth: contentMaxWidth }]}>
+          style={[styles.content, { maxWidth: contentMaxWidth.form }]}>
           <Animated.View
             entering={FadeInDown.duration(screenEntry)}
             style={styles.fullWidthCenter}>
@@ -77,16 +73,7 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
           <Animated.View
             entering={FadeInDown.duration(screenEntry).delay(stagger * 2)}
             style={styles.fullWidth}>
-            <LoginForm form={form} />
-          </Animated.View>
-
-          <Animated.View
-            entering={FadeIn.duration(screenEntry).delay(stagger * 3)}
-            style={styles.fullWidth}>
-            <AuthFooterLinks
-              onForgotPassword={handleForgotPassword}
-              onRegister={handleRegister}
-            />
+            <LoginForm form={form} onForgotPassword={handleForgotPassword} />
           </Animated.View>
         </VStack>
       </Center>

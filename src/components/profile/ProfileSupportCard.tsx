@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Phone } from 'lucide-react-native';
 import { profileCopy, profileSupportLinks } from '@/src/configs/profile';
@@ -30,34 +30,44 @@ function ProfileSupportCardComponent() {
     void openPhoneCall(profileSupportLinks.zaloPhone);
   }, []);
 
+  const zaloTrailing = useMemo(
+    () => (
+      <Pressable
+        onPress={handleOpenZalo}
+        accessibilityRole="button"
+        accessibilityLabel={profileCopy.openZalo}
+        style={styles.actionButton}>
+        <ZaloIcon />
+      </Pressable>
+    ),
+    [handleOpenZalo],
+  );
+
+  const phoneTrailing = useMemo(
+    () => (
+      <Pressable
+        onPress={handleCallSupport}
+        accessibilityRole="button"
+        accessibilityLabel={profileCopy.callSupport}
+        style={styles.actionButton}>
+        <Phone color={lightTokens.typography900} size={18} />
+      </Pressable>
+    ),
+    [handleCallSupport],
+  );
+
   return (
     <ProfileSectionCard title={profileCopy.supportSection}>
       <ProfileMenuRow
         label={profileCopy.supportStaffName}
         showChevron={false}
-        trailing={
-          <Pressable
-            onPress={handleOpenZalo}
-            accessibilityRole="button"
-            accessibilityLabel={profileCopy.openZalo}
-            style={styles.actionButton}>
-            <ZaloIcon />
-          </Pressable>
-        }
+        trailing={zaloTrailing}
       />
       <ProfileDivider />
       <ProfileMenuRow
         label={profileCopy.supportPhone}
         showChevron={false}
-        trailing={
-          <Pressable
-            onPress={handleCallSupport}
-            accessibilityRole="button"
-            accessibilityLabel={profileCopy.callSupport}
-            style={styles.actionButton}>
-            <Phone color={lightTokens.typography900} size={18} />
-          </Pressable>
-        }
+        trailing={phoneTrailing}
       />
     </ProfileSectionCard>
   );

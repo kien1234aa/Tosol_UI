@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
-import { Alert, FlatList, ListRenderItem, StyleSheet } from 'react-native';
+import { FlatList, ListRenderItem, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { awaitingPaymentCopy } from '@/src/configs/orders';
 import { mainLayout } from '@/src/configs/main';
 import { useAwaitingPayment } from '@/src/hooks/orders';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
 import type { AwaitingPaymentItem } from '@/src/types/orders/awaitingPayment.types';
@@ -22,37 +23,38 @@ type AwaitingPaymentScreenProps = HomeStackScreenProps<'AwaitingPayment'>;
 export function AwaitingPaymentScreen({
   navigation,
 }: AwaitingPaymentScreenProps) {
+  const blockFeature = useFeatureInDevelopmentNotice();
   const {
     items,
     totals,
     availableBalanceVnd,
     allSelected,
     isSelected,
-    onToggleItem,
-    onToggleSelectAll,
-    clearSelection,
   } = useAwaitingPayment();
 
   const handleBack = useStackGoBack(navigation, 'HomeMain');
 
   const handlePay = useCallback(() => {
-    if (totals.selectedCount === 0) {
-      Alert.alert(awaitingPaymentCopy.selectPrompt);
-      return;
-    }
-    Alert.alert(awaitingPaymentCopy.paySuccess);
-    clearSelection();
-  }, [clearSelection, totals.selectedCount]);
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleToggleSelectAll = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleToggleItem = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
 
   const renderItem = useCallback<ListRenderItem<AwaitingPaymentItem>>(
     ({ item }) => (
       <AwaitingPaymentCard
         item={item}
         selected={isSelected(item.id)}
-        onToggle={onToggleItem}
+        onToggle={handleToggleItem}
       />
     ),
-    [isSelected, onToggleItem],
+    [handleToggleItem, isSelected],
   );
 
   const keyExtractor = useCallback((item: AwaitingPaymentItem) => item.id, []);
@@ -73,7 +75,7 @@ export function AwaitingPaymentScreen({
               availableBalanceVnd={availableBalanceVnd}
               allSelected={allSelected}
               onPay={handlePay}
-              onToggleSelectAll={onToggleSelectAll}
+              onToggleSelectAll={handleToggleSelectAll}
             />
           </Box>
 

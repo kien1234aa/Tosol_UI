@@ -13,7 +13,8 @@ export type OrderDashboardBadgeStatus = 'idle' | 'loading' | 'success' | 'error'
 
 export interface OrdersState {
   listFilters: OrderAdvancedFilters;
-  listSearch: string;
+  listCustomerId: number | null;
+  listCustomerName: string | null;
   items: OrderListItem[];
   listStatus: OrdersListStatus;
   listError: string | null;
@@ -26,7 +27,8 @@ export interface OrdersState {
 
 const initialState: OrdersState = {
   listFilters: EMPTY_ORDER_ADVANCED_FILTERS,
-  listSearch: '',
+  listCustomerId: null,
+  listCustomerName: null,
   items: [],
   listStatus: 'idle',
   listError: null,
@@ -54,8 +56,17 @@ const ordersSlice = createSlice({
       state.listFilters = action.payload;
       resetListPagination(state);
     },
-    setOrderListSearch(state, action: PayloadAction<string>) {
-      state.listSearch = action.payload.trim();
+    setOrderListCustomerFilter(
+      state,
+      action: PayloadAction<{ customerId: number; customerName: string }>,
+    ) {
+      state.listCustomerId = action.payload.customerId;
+      state.listCustomerName = action.payload.customerName;
+      resetListPagination(state);
+    },
+    clearOrderListCustomerFilter(state) {
+      state.listCustomerId = null;
+      state.listCustomerName = null;
       resetListPagination(state);
     },
     resetOrdersState() {
@@ -98,6 +109,10 @@ const ordersSlice = createSlice({
   },
 });
 
-export const { setOrderListFilters, setOrderListSearch, resetOrdersState } =
-  ordersSlice.actions;
+export const {
+  setOrderListFilters,
+  setOrderListCustomerFilter,
+  clearOrderListCustomerFilter,
+  resetOrdersState,
+} = ordersSlice.actions;
 export const ordersReducer = ordersSlice.reducer;

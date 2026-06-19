@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,6 +13,7 @@ import { ordersCopy } from '@/src/configs/orders';
 import { EMPTY_ORDER_ADVANCED_FILTERS } from '@/src/configs/orders/orderFilters.constants';
 import { lightTokens } from '@/src/configs/theme';
 import { useOrderCancel, useOrderEdit, useOrdersList } from '@/src/hooks/orders';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import type { OrdersStackScreenProps } from '@/src/navigation/types';
 import { setOrderListFilters } from '@/src/redux/orders';
@@ -23,7 +24,7 @@ import {
   OrderEditModal,
   OrderListCard,
   OrdersListHeader,
-  OrdersSearchBar,
+  OrdersCustomerSearchBar,
 } from '@/src/components/orders';
 import { ListLoadingGate } from '@/src/shared/components/ui/ListLoadingGate';
 import { ListScreenSkeleton } from '@/src/shared/components/ui/skeleton';
@@ -36,10 +37,15 @@ type OrdersScreenProps = OrdersStackScreenProps<'OrdersMain'>;
 
 export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
   const dispatch = useAppDispatch();
+  const { horizontalPadding, contentMaxWidth, isTablet } = useResponsiveLayout();
   const {
     orders,
     listFilters,
-    searchQuery,
+    customerQuery,
+    customerResults,
+    selectedCustomerName,
+    isSearchingCustomers,
+    customerSearchError,
     isFilterOpen,
     emptyMessage,
     isLoading,
@@ -49,6 +55,8 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
     onCloseFilter,
     onApplyFilters,
     onSearchChange,
+    onSelectCustomer,
+    onClearCustomer,
     onRemoveOrder: _onRemoveOrder,
     onOrderAction: _onOrderAction,
     reloadOrders,
@@ -191,44 +199,87 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
     );
   }, [isLoadingMore]);
 
+  const listSkeleton = useMemo(
+    () => (
+      <ListScreenSkeleton
+        count={5}
+        showSectionHeader={false}
+        withLeading
+        hasDetail
+        style={[
+          styles.skeletonContent,
+          { paddingHorizontal: horizontalPadding },
+        ]}
+      />
+    ),
+    [horizontalPadding],
+  );
+
+  const listContentStyle = useMemo(
+    () => [
+      styles.content,
+      {
+        paddingHorizontal: horizontalPadding,
+        maxWidth: isTablet ? contentMaxWidth.screen : undefined,
+        alignSelf: isTablet ? ('center' as const) : undefined,
+        width: isTablet ? ('100%' as const) : undefined,
+      },
+    ],
+    [horizontalPadding, isTablet, contentMaxWidth.screen],
+  );
+
+  const emptyContentStyle = useMemo(
+    () => [
+      styles.emptyContent,
+      { paddingHorizontal: horizontalPadding },
+    ],
+    [horizontalPadding],
+  );
+
+  const refreshControl = useMemo(
+    () => (
+      <RefreshControl
+        refreshing={isLoading && orders.length > 0}
+        onRefresh={reloadOrders}
+        tintColor={lightTokens.tertiary600}
+      />
+    ),
+    [isLoading, orders.length, reloadOrders],
+  );
+
   return (
     <Box className="flex-1 bg-background-50">
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
         <OrdersListHeader onPressFilter={onOpenFilter} />
-        <OrdersSearchBar value={searchQuery} onChange={onSearchChange} />
+        <OrdersCustomerSearchBar
+          query={customerQuery}
+          selectedCustomerName={selectedCustomerName}
+          results={customerResults}
+          isSearching={isSearchingCustomers}
+          searchError={customerSearchError}
+          onChangeQuery={onSearchChange}
+          onSelectCustomer={onSelectCustomer}
+          onClearCustomer={onClearCustomer}
+        />
 
         <ListLoadingGate
           loading={isLoading}
           refreshing={isLoading && orders.length > 0}
           itemCount={orders.length}
           options={{ canShowSkeleton: !loadError }}
-          skeleton={
-            <ListScreenSkeleton
-              count={5}
-              showSectionHeader={false}
-              withLeading
-              hasDetail
-              style={styles.skeletonContent}
-            />
-          }>
+          skeleton={listSkeleton}>
           <FlatList
             data={orders}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={
-              orders.length === 0 ? styles.emptyContent : styles.content
+              orders.length === 0 ? emptyContentStyle : listContentStyle
             }
             ItemSeparatorComponent={ListSeparator}
             ListEmptyComponent={listEmptyComponent}
             ListFooterComponent={listFooterComponent}
-            refreshControl={
-              <RefreshControl
-                refreshing={isLoading && orders.length > 0}
-                onRefresh={reloadOrders}
-                tintColor={lightTokens.tertiary600}
-              />
-            }
+            refreshControl={refreshControl}
             onEndReached={handleEndReached}
             onEndReachedThreshold={0.4}
           />
@@ -276,17 +327,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: mainLayout.tabContentBottomPadding,
   },
   emptyContent: {
     flexGrow: 1,
-    paddingHorizontal: 16,
   },
   skeletonContent: {
     flex: 1,
-    paddingHorizontal: 16,
     paddingTop: 12,
   },
   separator: {

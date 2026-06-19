@@ -11,6 +11,7 @@ import {
   ConsignmentDetailSummary,
 } from '@/src/components/consignment';
 import { useConsignmentDetail } from '@/src/hooks/consignment';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
@@ -25,6 +26,7 @@ export function ConsignmentDetailScreen({
   navigation,
   route,
 }: ConsignmentDetailScreenProps) {
+  useFeatureInDevelopmentNotice();
   const { orderId } = route.params;
   const { order } = useConsignmentDetail(orderId);
 

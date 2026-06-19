@@ -12,15 +12,15 @@ export const homeCopy = {
   fallbackName: 'Khách',
 } as const;
 
-/** "Đơn hàng" icon grid — five evenly spaced actions. */
+/** "Đơn hàng" icon grid actions. */
 export const orderActions: HomeActionItem[] = [
-  { key: 'orderCart', label: 'Giỏ hàng' },
+  { key: 'orderCreate', label: 'Tạo đơn' },
   { key: 'orderList', label: 'Danh sách đơn' },
   { key: 'orderPayment', label: 'Chờ thanh toán' },
   { key: 'orderReady', label: 'Sẵn sàng giao' },
 ];
 
-/** "Kiện hàng" icon grid — four evenly spaced actions. */
+/** "Kiện hàng" icon grid actions. */
 export const packageActions: HomeActionItem[] = [
   { key: 'packageCreate', label: 'Tạo đơn' },
   { key: 'packageList', label: 'Danh sách đơn' },
@@ -36,9 +36,3 @@ export const quickActions: QuickActionItem[] = [
   { key: 'complaints', label: 'Danh sách khiếu nại' },
   { key: 'deliveryRequest', label: 'Yêu cầu giao hàng' },
 ];
-
-/** Number of columns each icon grid renders across. */
-export const homeGridColumns = {
-  orders: 4,
-  packages: 4,
-} as const;

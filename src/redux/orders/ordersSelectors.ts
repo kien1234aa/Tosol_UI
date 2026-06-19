@@ -8,9 +8,19 @@ export const selectOrderListFilters = createSelector(
   state => state.listFilters,
 );
 
-export const selectOrderListSearch = createSelector(
+export const selectOrderListCustomerId = createSelector(
   selectOrdersState,
-  state => state.listSearch,
+  state => state.listCustomerId,
+);
+
+export const selectOrderListCustomerName = createSelector(
+  selectOrdersState,
+  state => state.listCustomerName,
+);
+
+export const selectHasOrderListCustomerFilter = createSelector(
+  selectOrderListCustomerId,
+  customerId => customerId != null,
 );
 
 export const selectOrderItems = createSelector(

@@ -3,19 +3,9 @@ import { AuthHeroImage } from '@/src/components/login/AuthHeroImage';
 
 const heroSource = require('@/assets/images/mascot_forgot_password.png');
 
-interface ForgotPasswordHeroImageProps {
-  className?: string;
-}
-
-function ForgotPasswordHeroImageComponent({
-  className,
-}: ForgotPasswordHeroImageProps) {
+function ForgotPasswordHeroImageComponent() {
   return (
-    <AuthHeroImage
-      source={heroSource}
-      alt="Forgot password illustration"
-      className={className}
-    />
+    <AuthHeroImage source={heroSource} alt="Forgot password illustration" />
   );
 }
 

@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { Package } from 'lucide-react-native';
+import { StyleSheet } from 'react-native';
 import {
   orderDetailCopy,
   ordersCopy,
@@ -8,7 +7,6 @@ import {
   saleOrderPaymentStatusLabels,
   saleOrderShippingPayerLabels,
 } from '@/src/configs/orders';
-import { mainLayout } from '@/src/configs/main';
 import {
   formatOrderDate,
   formatOrderLabel,
@@ -27,8 +25,11 @@ import type {
   OrderDetailProduct,
   OrderDetailShipping as OrderDetailShippingInfo,
 } from '@/src/types/orders/orders.types';
+import {
+  ProductThumbnailImage,
+  productThumbnailContainerStyle,
+} from '@/src/shared/components/ui/ProductThumbnailImage';
 import { Box } from '@/src/uikits/box';
-import { Center } from '@/src/uikits/center';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
@@ -174,24 +175,14 @@ interface OrderDetailProductRowProps {
   product: OrderDetailProduct;
 }
 
-const PRODUCT_ICON_SIZE = 24;
-
 function OrderDetailProductRowComponent({
   product,
 }: OrderDetailProductRowProps) {
   return (
     <HStack className="w-full items-start gap-3">
-      {product.thumbnailUrl ? (
-        <Image
-          source={{ uri: product.thumbnailUrl }}
-          style={styles.productImage}
-          resizeMode="cover"
-        />
-      ) : (
-        <Center style={styles.productThumbnail}>
-          <Package color={lightTokens.tertiary500} size={PRODUCT_ICON_SIZE} />
-        </Center>
-      )}
+      <Box style={styles.productThumbnail}>
+        <ProductThumbnailImage uri={product.thumbnailUrl} />
+      </Box>
 
       <VStack className="min-w-0 flex-1" space="xs">
         <Text
@@ -513,22 +504,16 @@ const styles = StyleSheet.create({
     backgroundColor: lightTokens.tertiary50,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-  },
-  productImage: {
-    width: 64,
-    height: 64,
-    borderRadius: 12,
-    backgroundColor: lightTokens.background100,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: lightTokens.outline100,
+    ...productThumbnailContainerStyle,
   },
   footer: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: mainLayout.tabStackFooterPaddingBottom,
+    width: '100%',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
     backgroundColor: lightTokens.background0,
-    borderTopWidth: 1,
-    borderTopColor: lightTokens.outline100,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: lightTokens.outline100,
   },
   outlineButton: {
     borderWidth: StyleSheet.hairlineWidth,

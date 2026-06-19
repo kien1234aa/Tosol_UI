@@ -4,7 +4,7 @@ export { ForgotPasswordScreen } from './forgotPassword';
 export { SplashScreen } from './splash';
 export { HomeScreen } from './home';
 export { SearchScreen } from './search';
-export { CartScreen } from './cart';
+export { CreateOrderScreen } from './createOrder';
 export { OrdersScreen } from './orders';
 export { ProfileScreen } from './profile';
 export { NotificationsScreen } from './notifications';

@@ -1,6 +1,7 @@
 import { getJson, postJson } from '@/src/apis/http';
 import { apiEndpoints, userDetailInclude } from '@/src/configs/api';
 import { normalizeWarehouseId } from '@/src/configs/warehouse';
+import { computeTokenExpiresAt } from '@/src/helpers/api/session.helpers';
 import type {
   AuthSession,
   AuthUser,
@@ -55,6 +56,7 @@ function mapLoginResponse(data: LoginApiData): AuthSession {
     token: data.token,
     tokenType: data.token_type,
     expiresIn: data.expires_in,
+    tokenExpiresAt: computeTokenExpiresAt(data.expires_in),
   };
 }
 

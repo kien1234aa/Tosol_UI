@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import {
   isRegisterFormValid,
   validateRegisterForm,
@@ -115,27 +116,8 @@ export function useRegisterForm(): UseRegisterFormResult {
   }, [dispatch]);
 
   const onSubmit = useCallback(() => {
-    setTouched(true);
-    const validationErrors = validateRegisterForm(
-      username,
-      email,
-      password,
-      confirmPassword,
-    );
-
-    if (!isRegisterFormValid(validationErrors)) {
-      return;
-    }
-
-    dispatch(
-      registerThunk({
-        username,
-        email,
-        password,
-        confirmPassword,
-      }),
-    );
-  }, [dispatch, username, email, password, confirmPassword]);
+    showFeatureInDevelopmentAlert();
+  }, []);
 
   return {
     username,

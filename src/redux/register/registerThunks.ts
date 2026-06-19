@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { registerService } from '@/src/apis/register/register.api';
+import { toApiFailurePayload } from '@/src/helpers/api/apiError.helpers';
 import type {
   RegisterCredentials,
   RegisterResult,
@@ -13,8 +14,8 @@ export const registerThunk = createAsyncThunk<
   try {
     return await registerService.register(credentials);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : 'Đăng ký thất bại';
-    return rejectWithValue(message);
+    return rejectWithValue(
+      toApiFailurePayload(error, 'Đăng ký thất bại').message,
+    );
   }
 });

@@ -3,9 +3,13 @@ import { FlatList, ListRenderItem, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mainLayout } from '@/src/configs/main';
 import { useConsignmentList } from '@/src/hooks/consignment';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
-import type { ConsignmentOrderItem } from '@/src/types/consignment/consignment.types';
+import type {
+  ConsignmentOrderItem,
+  ConsignmentStatusFilter,
+} from '@/src/types/consignment/consignment.types';
 import {
   ConsignmentFilterSheet,
   ConsignmentListHeader,
@@ -20,29 +24,45 @@ type ConsignmentListScreenProps = HomeStackScreenProps<'ConsignmentList'>;
 export function ConsignmentListScreen({
   navigation,
 }: ConsignmentListScreenProps) {
+  const blockFeature = useFeatureInDevelopmentNotice();
   const {
     orders,
     statusFilter,
     isFilterOpen,
     filterOptions,
     emptyMessage,
-    onOpenFilter,
     onCloseFilter,
-    onSelectFilter,
-    onRemoveOrder,
   } = useConsignmentList();
 
   const handleBack = useStackGoBack(navigation, 'HomeMain');
 
   const handleAdd = useCallback(() => {
-    navigation.navigate('CreateConsignment');
-  }, [navigation]);
+    blockFeature();
+  }, [blockFeature]);
 
   const handleView = useCallback(
-    (orderId: string) => {
-      navigation.navigate('ConsignmentDetail', { orderId });
+    (_orderId: string) => {
+      blockFeature();
     },
-    [navigation],
+    [blockFeature],
+  );
+
+  const handleOpenFilter = useCallback(() => {
+    blockFeature();
+  }, [blockFeature]);
+
+  const handleRemoveOrder = useCallback(
+    (_orderId: string) => {
+      blockFeature();
+    },
+    [blockFeature],
+  );
+
+  const handleSelectFilter = useCallback(
+    (_filter: ConsignmentStatusFilter) => {
+      blockFeature();
+    },
+    [blockFeature],
   );
 
   const renderItem = useCallback<ListRenderItem<ConsignmentOrderItem>>(
@@ -50,10 +70,10 @@ export function ConsignmentListScreen({
       <ConsignmentOrderCard
         order={item}
         onView={handleView}
-        onRemove={onRemoveOrder}
+        onRemove={handleRemoveOrder}
       />
     ),
-    [handleView, onRemoveOrder],
+    [handleRemoveOrder, handleView],
   );
 
   const keyExtractor = useCallback(
@@ -66,7 +86,7 @@ export function ConsignmentListScreen({
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
         <ConsignmentListHeader
           onPressBack={handleBack}
-          onPressFilter={onOpenFilter}
+          onPressFilter={handleOpenFilter}
           onPressAdd={handleAdd}
         />
 
@@ -93,7 +113,7 @@ export function ConsignmentListScreen({
           options={filterOptions}
           selectedFilter={statusFilter}
           onClose={onCloseFilter}
-          onSelect={onSelectFilter}
+          onSelect={handleSelectFilter}
         />
       </SafeAreaView>
     </Box>

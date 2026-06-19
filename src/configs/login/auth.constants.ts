@@ -4,10 +4,8 @@ export const authCopy = {
   usernamePlaceholder: 'Tên đăng nhập',
   passwordPlaceholder: 'Mật khẩu',
   rememberMe: 'Nhớ mật khẩu',
+  forgotPasswordCta: 'Quên mật khẩu?',
   submit: 'Đăng nhập',
-  forgotPassword: 'Quên mật khẩu?',
-  noAccountPrompt: 'Bạn chưa có tài khoản?',
-  registerCta: 'Đăng ký ngay!',
 } as const;
 
 /** Validation messages, kept separate so they are easy to localize/test. */

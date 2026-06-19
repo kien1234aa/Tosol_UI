@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -11,12 +11,11 @@ import { Text } from '@/src/uikits/text';
 import { mainLayout } from '@/src/configs/main';
 import { searchCopy } from '@/src/configs/search';
 import { lightTokens } from '@/src/configs/theme';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import type { SearchProduct } from '@/src/types/search/search.types';
 import { ListLoadingGate } from '@/src/shared/components/ui/ListLoadingGate';
 import { ProductGridSkeleton } from '@/src/shared/components/ui/skeleton';
 import { ProductCard } from './ProductCard';
-
-const GRID_GAP = 12;
 
 interface ProductGridSectionProps {
   products: SearchProduct[];
@@ -35,6 +34,8 @@ function ProductGridSectionComponent({
   onPressProduct,
   onEndReached,
 }: ProductGridSectionProps) {
+  const { productGridColumns, gridGap } = useResponsiveLayout();
+
   const renderItem = useCallback<ListRenderItem<SearchProduct>>(
     ({ item }) => (
       <Box style={styles.cell}>
@@ -77,20 +78,33 @@ function ProductGridSectionComponent({
     );
   }, [isLoadingMore]);
 
+  const listSkeleton = useMemo(
+    () => (
+      <ProductGridSkeleton
+        rowCount={4}
+        columnCount={productGridColumns}
+      />
+    ),
+    [productGridColumns],
+  );
+
   return (
     <ListLoadingGate
       loading={isLoading}
       refreshing={isLoading && products.length > 0}
       itemCount={products.length}
       options={{ canShowSkeleton: !error }}
-      skeleton={<ProductGridSkeleton rowCount={4} />}>
+      skeleton={listSkeleton}>
       <FlatList
+        key={`product-grid-${productGridColumns}`}
         data={products}
         style={styles.list}
-        numColumns={2}
+        numColumns={productGridColumns}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        columnWrapperStyle={products.length > 0 ? styles.row : undefined}
+        columnWrapperStyle={
+          products.length > 0 ? [styles.row, { gap: gridGap }] : undefined
+        }
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -109,11 +123,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: mainLayout.tabContentBottomPaddingLoose,
+    paddingBottom: mainLayout.tabContentBottomPadding,
   },
   row: {
-    gap: GRID_GAP,
-    marginBottom: GRID_GAP,
+    marginBottom: 12,
   },
   cell: {
     flex: 1,

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { deliveredOrdersCopy } from '@/src/configs/orders';
 import { mainLayout } from '@/src/configs/main';
 import { useDeliveredOrders } from '@/src/hooks/orders';
+import { useFeatureInDevelopmentNotice } from '@/src/hooks/common';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { OrdersStackScreenProps } from '@/src/navigation/types';
 import type { DeliveredOrderItem } from '@/src/types/orders/deliveredOrders.types';
@@ -19,6 +20,7 @@ type DeliveredOrdersScreenProps = OrdersStackScreenProps<'DeliveredOrders'>;
 export function DeliveredOrdersScreen({
   navigation,
 }: DeliveredOrdersScreenProps) {
+  useFeatureInDevelopmentNotice();
   const { items } = useDeliveredOrders();
 
   const handleBack = useStackGoBack(navigation, 'OrdersMain');

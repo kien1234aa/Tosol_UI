@@ -1,13 +1,27 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { productDetailCopy } from '@/src/configs/search';
-import { tabBarLayout } from '@/src/configs/main';
+import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
-import { useAddToCart } from '@/src/hooks/cart';
+import {
+  buildAddDraftProductPayload,
+  validateAddDraftProduct,
+} from '@/src/helpers/createOrder/draftProduct.helpers';
+import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
+import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { useProductDetail } from '@/src/hooks/search';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { SearchStackScreenProps } from '@/src/navigation/types';
+import {
+  addDraftProduct,
+  ensureDraftWithProduct,
+  makeSelectDraftGroups,
+  selectActiveDraftId,
+} from '@/src/redux/createOrderDraft';
+import { recordPreference } from '@/src/redux/preferences';
+import { store } from '@/src/redux/store';
+import { buildSearchProductPreferenceRecord } from '@/src/helpers/preferences/productPreference.helpers';
 import {
   ProductDetailActions,
   ProductDetailContent,
@@ -27,6 +41,15 @@ export function ProductDetailScreen({
   route,
 }: ProductDetailScreenProps) {
   const { productId } = route.params;
+  const dispatch = useAppDispatch();
+  const activeDraftId = useAppSelector(selectActiveDraftId);
+  const activeDraftGroups = useAppSelector(
+    useMemo(
+      () =>
+        activeDraftId ? makeSelectDraftGroups(activeDraftId) : () => [],
+      [activeDraftId],
+    ),
+  );
   const {
     product,
     quantity,
@@ -39,50 +62,50 @@ export function ProductDetailScreen({
     onIncreaseQuantity,
     reload,
   } = useProductDetail(productId);
-  const { addToCart } = useAddToCart();
-  const insets = useSafeAreaInsets();
-  const footerBottomPadding = tabBarLayout.barHeight + insets.bottom + 4;
 
   const handleBack = useStackGoBack(navigation, 'SearchMain');
-
-  const handleAddToCart = useCallback(() => {
-    if (!product) {
-      return;
-    }
-
-    const result = addToCart(product, quantity);
-
-    if (!result.success) {
-      Alert.alert('Không thể thêm vào giỏ hàng', result.message);
-      return;
-    }
-
-    Alert.alert(productDetailCopy.addedToCart, undefined, [
-      {
-        text: productDetailCopy.back,
-        style: 'cancel',
-      },
-      {
-        text: 'Xem giỏ hàng',
-        onPress: () => navigation.getParent()?.navigate('Cart'),
-      },
-    ]);
-  }, [addToCart, navigation, product, quantity]);
 
   const handleBuyNow = useCallback(() => {
     if (!product) {
       return;
     }
 
-    const result = addToCart(product, quantity);
+    const payload = buildAddDraftProductPayload(product, quantity);
+    const validationGroups = activeDraftId ? activeDraftGroups : [];
+    const result = validateAddDraftProduct(validationGroups, payload, quantity);
 
     if (!result.success) {
-      Alert.alert('Không thể mua ngay', result.message);
+      Alert.alert('Không thể lên đơn', result.message);
       return;
     }
 
-    navigation.getParent()?.navigate('Cart');
-  }, [addToCart, navigation, product, quantity]);
+    if (activeDraftId) {
+      dispatch(addDraftProduct({ draftId: activeDraftId, payload }));
+    } else {
+      dispatch(ensureDraftWithProduct(payload));
+    }
+
+    dispatch(recordPreference(buildSearchProductPreferenceRecord(product)));
+
+    const draftId =
+      activeDraftId ?? store.getState().createOrderDraft.activeDraftId;
+
+    if (!draftId) {
+      return;
+    }
+
+    navigation.getParent()?.navigate('CreateOrder', {
+      screen: 'CreateOrderEdit',
+      params: { draftId },
+    });
+  }, [
+    activeDraftGroups,
+    activeDraftId,
+    dispatch,
+    navigation,
+    product,
+    quantity,
+  ]);
 
   const showContent = product && pricing;
   const isOutOfStock = product?.isOutOfStock ?? false;
@@ -118,35 +141,28 @@ export function ProductDetailScreen({
           ) : null}
 
           {showContent ? (
-            <Box style={styles.body}>
-              <ScrollView
-                style={styles.scroll}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.content}
-                keyboardShouldPersistTaps="handled">
-                <ProductDetailContent
-                  product={product}
-                  quantity={quantity}
-                  canDecreaseQuantity={canDecreaseQuantity}
-                  canIncreaseQuantity={canIncreaseQuantity}
-                  onDecreaseQuantity={onDecreaseQuantity}
-                  onIncreaseQuantity={onIncreaseQuantity}
-                />
-              </ScrollView>
+            <ScrollView
+              style={styles.scroll}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.content}
+              keyboardShouldPersistTaps="handled">
+              <ProductDetailContent
+                product={product}
+                quantity={quantity}
+                canDecreaseQuantity={canDecreaseQuantity}
+                canIncreaseQuantity={canIncreaseQuantity}
+                onDecreaseQuantity={onDecreaseQuantity}
+                onIncreaseQuantity={onIncreaseQuantity}
+              />
 
-              <Box
-                style={[
-                  styles.footer,
-                  { paddingBottom: footerBottomPadding },
-                ]}>
+              <Box style={styles.inlineActions}>
                 <ProductDetailActions
                   pricing={pricing}
                   disabled={isOutOfStock}
-                  onPressAddToCart={handleAddToCart}
                   onPressBuyNow={handleBuyNow}
                 />
               </Box>
-            </Box>
+            </ScrollView>
           ) : null}
         </VStack>
       </SafeAreaView>
@@ -158,24 +174,20 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  body: {
-    flex: 1,
-  },
   scroll: {
     flex: 1,
   },
   content: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 16,
+    paddingBottom: mainLayout.tabContentBottomPadding,
   },
   skeletonContent: {
     paddingHorizontal: 0,
   },
-  footer: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    backgroundColor: lightTokens.background0,
+  inlineActions: {
+    marginTop: 16,
+    paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: lightTokens.outline100,
   },

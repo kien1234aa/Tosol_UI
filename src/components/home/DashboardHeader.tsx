@@ -10,6 +10,7 @@ import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 import { homeCopy } from '@/src/configs/home';
 import { lightTokens } from '@/src/configs/theme';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 
 interface DashboardHeaderProps {
   name: string;
@@ -17,10 +18,6 @@ interface DashboardHeaderProps {
   onPressAvatar?: () => void;
   onPressNotifications?: () => void;
 }
-
-const AVATAR_SIZE = 48;
-const NOTIFICATION_SIZE = 40;
-const BELL_ICON_SIZE = 20;
 
 function getInitials(name: string): string {
   const trimmed = name.trim();
@@ -36,17 +33,38 @@ function DashboardHeaderComponent({
   onPressAvatar,
   onPressNotifications,
 }: DashboardHeaderProps) {
+  const { scale } = useResponsiveLayout();
+  const avatarSize = scale(48);
+  const notificationSize = scale(40);
+  const bellIconSize = scale(20);
+  const badgeSize = scale(18);
   const initials = getInitials(name);
 
   return (
-    <Box style={styles.container}>
+    <Box
+      style={[
+        styles.container,
+        {
+          borderRadius: scale(16),
+          paddingHorizontal: scale(16),
+          paddingVertical: scale(14),
+        },
+      ]}>
       <HStack className="w-full items-center justify-between">
         <HStack className="min-w-0 flex-1 items-center gap-3">
           <Pressable
             onPress={onPressAvatar}
             accessibilityRole="button"
             accessibilityLabel="Hồ sơ">
-            <Center style={styles.avatar}>
+            <Center
+              style={[
+                styles.avatar,
+                {
+                  width: avatarSize,
+                  height: avatarSize,
+                  borderRadius: avatarSize / 2,
+                },
+              ]}>
               <Text
                 size="sm"
                 className="font-bold text-typography-0"
@@ -74,10 +92,26 @@ function DashboardHeaderComponent({
           onPress={onPressNotifications}
           accessibilityRole="button"
           accessibilityLabel="Thông báo"
-          style={styles.notificationButton}>
-          <Bell color={lightTokens.typography900} size={BELL_ICON_SIZE} />
+          style={[
+            styles.notificationButton,
+            {
+              width: notificationSize,
+              height: notificationSize,
+              borderRadius: notificationSize / 2,
+              marginLeft: scale(12),
+            },
+          ]}>
+          <Bell color={lightTokens.typography900} size={bellIconSize} />
           {unreadCount > 0 ? (
-            <Box style={styles.badge}>
+            <Box
+              style={[
+                styles.badge,
+                {
+                  minWidth: badgeSize,
+                  height: badgeSize,
+                  borderRadius: badgeSize / 2,
+                },
+              ]}>
               <Text size="2xs" className="font-bold text-typography-0">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </Text>
@@ -92,17 +126,11 @@ function DashboardHeaderComponent({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
     backgroundColor: lightTokens.tertiary50,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
   },
   avatar: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
     backgroundColor: lightTokens.tertiary500,
     borderWidth: 2,
     borderColor: lightTokens.background0,
@@ -112,12 +140,8 @@ const styles = StyleSheet.create({
   },
   name: fontStyle('semibold'),
   notificationButton: {
-    width: NOTIFICATION_SIZE,
-    height: NOTIFICATION_SIZE,
-    borderRadius: NOTIFICATION_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 12,
     backgroundColor: lightTokens.background0,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
@@ -127,9 +151,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -2,
     right: -2,
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',

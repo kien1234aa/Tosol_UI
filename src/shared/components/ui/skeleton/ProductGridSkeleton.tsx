@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { lightTokens } from '@/src/configs/theme';
+import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import { SkeletonBone } from './SkeletonBone';
-
-const GRID_GAP = 12;
 
 export type ProductGridSkeletonProps = {
   rowCount?: number;
+  columnCount?: number;
   animate?: boolean;
 };
 
@@ -32,24 +32,26 @@ function ProductCardSkeleton({ animate = true }: { animate?: boolean }) {
   );
 }
 
-/** Matches ProductCard in 2-column grid. */
+/** Matches ProductCard in a responsive multi-column grid. */
 export function ProductGridSkeleton({
   rowCount = 4,
+  columnCount,
   animate = true,
 }: ProductGridSkeletonProps) {
-  const totalItems = rowCount * 2;
+  const { productGridColumns, gridGap } = useResponsiveLayout();
+  const columns = columnCount ?? productGridColumns;
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { gap: gridGap }]}>
       <SkeletonBone width={120} height={20} borderRadius={6} animate={animate} />
       {Array.from({ length: rowCount }, (_, rowIndex) => (
-        <View key={rowIndex} style={styles.row}>
-          <ProductCardSkeleton animate={animate} />
-          {rowIndex * 2 + 1 < totalItems ? (
-            <ProductCardSkeleton animate={animate} />
-          ) : (
-            <View style={styles.cell} />
-          )}
+        <View key={rowIndex} style={[styles.row, { gap: gridGap }]}>
+          {Array.from({ length: columns }, (_, colIndex) => (
+            <ProductCardSkeleton
+              key={`${rowIndex}-${colIndex}`}
+              animate={animate}
+            />
+          ))}
         </View>
       ))}
     </View>
@@ -58,12 +60,10 @@ export function ProductGridSkeleton({
 
 const styles = StyleSheet.create({
   root: {
-    gap: GRID_GAP,
     paddingBottom: 8,
   },
   row: {
     flexDirection: 'row',
-    gap: GRID_GAP,
   },
   cell: {
     flex: 1,

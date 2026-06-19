@@ -23,7 +23,7 @@ export type WaveTabDef = {
   label?: string;
   accessibilityLabel?: string;
   renderIcon: (args: WaveTabIconArgs) => React.ReactNode;
-  renderScreen: () => React.ReactNode;
+  Screen: React.ComponentType;
 };
 
 export type WaveBottomTabNavigatorProps = {
@@ -92,6 +92,13 @@ function WaveBottomTabNavigatorComponent({
       tabBarInactiveTintColor: colors.inactiveTint,
       tabBarActiveBackgroundColor: colors.activeBackground,
       tabBarShowLabel: false,
+      tabBarItemStyle: {
+        backgroundColor: 'transparent',
+      },
+      tabBarStyle: {
+        backgroundColor: 'transparent',
+        elevation: 0,
+      },
     }),
     [colors.activeBackground, colors.activeTint, colors.inactiveTint],
   );
@@ -132,9 +139,9 @@ function WaveBottomTabNavigatorComponent({
                   color: color ?? colors.inactiveTint,
                   size: focused ? 26 : 24,
                 }),
-            }}>
-            {() => <>{tab.renderScreen()}</>}
-          </Tab.Screen>
+            }}
+            component={tab.Screen}
+          />
         );
       })}
     </Tab.Navigator>

@@ -1,28 +1,32 @@
 import React, { memo, useCallback, useState } from 'react';
 import {
-  Image,
   Modal,
   Pressable as RNPressable,
   StyleSheet,
   View,
 } from 'react-native';
-import {
-  ChevronDown,
-  Package,
-  Trash2,
-} from 'lucide-react-native';
+import { ChevronDown, Trash2 } from 'lucide-react-native';
 import { ordersCopy } from '@/src/configs/orders';
-import { formatOrderDate, formatOrderPrice, canCancelSaleOrder, canEditSaleOrder } from '@/src/helpers/orders';
+import {
+  formatOrderDate,
+  formatOrderPrice,
+  canCancelSaleOrder,
+  canEditSaleOrder,
+} from '@/src/helpers/orders';
 import { lightTokens } from '@/src/configs/theme';
 import { buttonContentCenter } from '@/src/configs/theme/buttonLayout';
 import type { OrderListItem } from '@/src/types/orders/orders.types';
+import {
+  ProductThumbnailImage,
+  productThumbnailContainerStyle,
+} from '@/src/shared/components/ui/ProductThumbnailImage';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
-import { OrderStatusBadge } from './OrderStatusBadge';
+import { OrderStatusBadge, PaymentStatusBadge } from './OrderStatusBadge';
 
 interface OrderListCardProps {
   order: OrderListItem;
@@ -36,8 +40,6 @@ interface DetailRowProps {
   value: string;
   emphasize?: boolean;
 }
-
-const THUMBNAIL_ICON_SIZE = 28;
 
 function DetailRow({ label, value, emphasize = false }: DetailRowProps) {
   return (
@@ -98,10 +100,13 @@ function OrderListCardComponent({
     <>
       <Box style={styles.card}>
         <HStack style={styles.cardHeader}>
-          <Text size="sm" className="font-semibold text-typography-900">
+          <Text size="sm" className="flex-1 font-semibold text-typography-900">
             {ordersCopy.orderNumberLabel} {order.orderNumber}
           </Text>
-          <OrderStatusBadge status={order.status} />
+          <VStack space="xs" className="items-end">
+            <OrderStatusBadge status={order.status} />
+            <PaymentStatusBadge status={order.paymentStatus} />
+          </VStack>
         </HStack>
 
         <RNPressable
@@ -111,20 +116,7 @@ function OrderListCardComponent({
           style={styles.bodyPressable}>
           <HStack style={styles.body}>
             <Box style={styles.thumbnailWrap}>
-              {order.thumbnailUrl ? (
-                <Image
-                  source={{ uri: order.thumbnailUrl }}
-                  style={styles.thumbnailImage}
-                  resizeMode="cover"
-                />
-              ) : (
-                <Center style={styles.thumbnail}>
-                  <Package
-                    color={lightTokens.tertiary500}
-                    size={THUMBNAIL_ICON_SIZE}
-                  />
-                </Center>
-              )}
+              <ProductThumbnailImage uri={order.thumbnailUrl} />
               <Center style={styles.quantityBadge}>
                 <Text size="xs" className="font-bold text-typography-0">
                   {order.productQuantity}
@@ -133,37 +125,24 @@ function OrderListCardComponent({
             </Box>
 
             <VStack style={styles.details} space="xs">
-              <Text
-                size="sm"
-                numberOfLines={2}
-                className="font-medium leading-5 text-typography-900">
-                {order.productName}
-              </Text>
-              <DetailRow
-                label={ordersCopy.customerLabel}
-                value={order.customerName}
-              />
-              <DetailRow
-                label={ordersCopy.shopLabel}
-                value={order.shopName}
-              />
-              <DetailRow
-                label={ordersCopy.createdAtLabel}
-                value={formatOrderDate(order.createdAt)}
-              />
-              <DetailRow
-                label={ordersCopy.totalCostLabel}
-                value={formatOrderPrice(order.totalCostVnd)}
-                emphasize
-              />
-              <DetailRow
-                label={ordersCopy.paidLabel}
-                value={formatOrderPrice(order.paidVnd)}
-              />
-              <DetailRow
-                label={ordersCopy.packageCountLabel}
-                value={String(order.packageCount)}
-              />
+            <DetailRow
+              label={ordersCopy.customerLabel}
+              value={order.customerName}
+            />
+            <DetailRow label={ordersCopy.shopLabel} value={order.shopName} />
+            <DetailRow
+              label={ordersCopy.createdAtLabel}
+              value={formatOrderDate(order.createdAt)}
+            />
+            <DetailRow
+              label={ordersCopy.totalCostLabel}
+              value={formatOrderPrice(order.totalCostVnd)}
+              emphasize
+            />
+            <DetailRow
+              label={ordersCopy.paidLabel}
+              value={formatOrderPrice(order.paidVnd)}
+            />
             </VStack>
           </HStack>
         </RNPressable>
@@ -256,7 +235,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     width: '100%',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     marginBottom: 12,
     gap: 8,
@@ -291,23 +270,11 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     flexShrink: 0,
-    position: 'relative',
-  },
-  thumbnail: {
-    width: 72,
-    height: 72,
     borderRadius: 10,
     backgroundColor: lightTokens.tertiary50,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightTokens.outline100,
-  },
-  thumbnailImage: {
-    width: 72,
-    height: 72,
-    borderRadius: 10,
-    backgroundColor: lightTokens.background100,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: lightTokens.outline100,
+    ...productThumbnailContainerStyle,
   },
   quantityBadge: {
     position: 'absolute',

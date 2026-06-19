@@ -8,9 +8,11 @@ export interface AuthState {
   token: string | null;
   tokenType: string | null;
   expiresIn: number | null;
+  tokenExpiresAt: number | null;
   rememberMe: boolean;
   isSwitchingWarehouse: boolean;
   error: string | null;
+  fieldErrors: Record<string, string> | null;
 }
 
 const initialState: AuthState = {
@@ -19,9 +21,11 @@ const initialState: AuthState = {
   token: null,
   tokenType: null,
   expiresIn: null,
+  tokenExpiresAt: null,
   rememberMe: false,
   isSwitchingWarehouse: false,
   error: null,
+  fieldErrors: null,
 };
 
 const authSlice = createSlice({
@@ -33,6 +37,7 @@ const authSlice = createSlice({
     },
     clearAuthError(state) {
       state.error = null;
+      state.fieldErrors = null;
     },
     setCurrentWarehouseId(state, action: PayloadAction<number | null>) {
       if (state.user) {
@@ -48,6 +53,7 @@ const authSlice = createSlice({
       .addCase(loginThunk.pending, state => {
         state.status = 'loading';
         state.error = null;
+        state.fieldErrors = null;
       })
       .addCase(
         loginThunk.fulfilled,
@@ -57,7 +63,9 @@ const authSlice = createSlice({
           state.token = action.payload.token;
           state.tokenType = action.payload.tokenType;
           state.expiresIn = action.payload.expiresIn;
+          state.tokenExpiresAt = action.payload.tokenExpiresAt;
           state.error = null;
+          state.fieldErrors = null;
         },
       )
       .addCase(restoreSessionThunk.pending, state => {
@@ -70,6 +78,7 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.tokenType = action.payload.tokenType;
         state.expiresIn = action.payload.expiresIn;
+        state.tokenExpiresAt = action.payload.tokenExpiresAt;
         state.rememberMe = action.payload.rememberMe;
         state.error = null;
       })
@@ -79,11 +88,18 @@ const authSlice = createSlice({
         state.token = null;
         state.tokenType = null;
         state.expiresIn = null;
+        state.tokenExpiresAt = null;
         state.error = null;
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.status = 'error';
-        state.error = action.payload ?? 'Đăng nhập thất bại';
+        const fieldErrors = action.payload?.fieldErrors ?? null;
+        const hasFieldErrors =
+          fieldErrors != null && Object.keys(fieldErrors).length > 0;
+        state.error = hasFieldErrors
+          ? null
+          : (action.payload?.message ?? 'Đăng nhập thất bại');
+        state.fieldErrors = fieldErrors;
       })
       .addCase(switchWarehouseThunk.pending, state => {
         state.isSwitchingWarehouse = true;

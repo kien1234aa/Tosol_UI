@@ -1,5 +1,6 @@
-export { AuthFooterLinks } from './AuthFooterLinks';
+export { AuthBackButton } from './AuthBackButton';
 export { AuthHeroImage } from './AuthHeroImage';
+export { AuthServerMessage } from './AuthServerMessage';
 export { AuthTextField } from './AuthTextField';
 export { LoginHeroImage } from './LoginHeroImage';
 export { KeyboardAwareScreen } from './KeyboardAwareScreen';

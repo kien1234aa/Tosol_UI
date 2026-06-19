@@ -3,20 +3,8 @@ import { AuthHeroImage } from './AuthHeroImage';
 
 const heroSource = require('@/assets/images/mascot_login.png');
 
-interface LoginHeroImageProps {
-  className?: string;
-}
-
-function LoginHeroImageComponent({
-  className,
-}: LoginHeroImageProps) {
-  return (
-    <AuthHeroImage
-      source={heroSource}
-      alt="Login illustration"
-      className={className}
-    />
-  );
+function LoginHeroImageComponent() {
+  return <AuthHeroImage source={heroSource} alt="Login illustration" />;
 }
 
 export const LoginHeroImage = memo(LoginHeroImageComponent);

@@ -7,7 +7,7 @@ function buildDeviceTokenPayload(token: string): DeviceTokenRegisterPayload {
   return {
     token,
     device_type: Platform.OS === 'ios' ? 'ios' : 'android',
-    device_name: `Tosol UI ${Platform.OS}/${String(Platform.Version)}`,
+    device_name: `TOSOL ${Platform.OS}/${String(Platform.Version)}`,
   };
 }
 
