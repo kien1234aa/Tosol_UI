@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import { EyeIcon, EyeOffIcon } from '@/src/uikits/icon';
 import { lightTokens } from '@/src/configs/theme';
 import {
@@ -10,6 +10,8 @@ import { Input, InputField, InputIcon, InputSlot } from '@/src/uikits/input';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 
+export type ChangePasswordFieldRef = React.ComponentRef<typeof InputField>;
+
 interface ChangePasswordFieldProps {
   label: string;
   placeholder: string;
@@ -18,19 +20,31 @@ interface ChangePasswordFieldProps {
   error?: string;
   showPassword: boolean;
   onToggleShowPassword: () => void;
+  returnKeyType?: 'done' | 'go' | 'next' | 'search' | 'send';
+  blurOnSubmit?: boolean;
+  onSubmitEditing?: () => void;
   testID?: string;
 }
 
-function ChangePasswordFieldComponent({
-  label,
-  placeholder,
-  value,
-  onChangeText,
-  error,
-  showPassword,
-  onToggleShowPassword,
-  testID,
-}: ChangePasswordFieldProps) {
+const ChangePasswordFieldComponent = forwardRef<
+  ChangePasswordFieldRef,
+  ChangePasswordFieldProps
+>(function ChangePasswordFieldComponent(
+  {
+    label,
+    placeholder,
+    value,
+    onChangeText,
+    error,
+    showPassword,
+    onToggleShowPassword,
+    returnKeyType,
+    blurOnSubmit,
+    onSubmitEditing,
+    testID,
+  },
+  ref,
+) {
   const isInvalid = Boolean(error);
 
   const handleToggle = useCallback(() => {
@@ -49,12 +63,16 @@ function ChangePasswordFieldComponent({
           isInvalid={isInvalid}
           className="min-h-11 rounded-xl border border-outline-200 bg-background-0 data-[focus=true]:border-tertiary-500">
           <InputField
+            ref={ref}
             placeholder={placeholder}
             value={value}
             onChangeText={onChangeText}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
             autoCorrect={false}
+            returnKeyType={returnKeyType}
+            blurOnSubmit={blurOnSubmit}
+            onSubmitEditing={onSubmitEditing}
             testID={testID}
             placeholderTextColor={lightTokens.typography500}
             className="text-typography-900"
@@ -77,6 +95,6 @@ function ChangePasswordFieldComponent({
       ) : null}
     </FormControl>
   );
-}
+});
 
 export const ChangePasswordField = memo(ChangePasswordFieldComponent);

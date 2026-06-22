@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -6,7 +6,6 @@ import {
   RefreshControl,
   StyleSheet,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mainLayout } from '@/src/configs/main';
 import { ordersCopy } from '@/src/configs/orders';
@@ -38,6 +37,23 @@ type OrdersScreenProps = OrdersStackScreenProps<'OrdersMain'>;
 export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
   const dispatch = useAppDispatch();
   const { horizontalPadding, contentMaxWidth, isTablet } = useResponsiveLayout();
+
+  useLayoutEffect(() => {
+    const status = route.params?.status?.trim();
+
+    if (!status) {
+      return;
+    }
+
+    dispatch(
+      setOrderListFilters({
+        ...EMPTY_ORDER_ADVANCED_FILTERS,
+        status,
+      }),
+    );
+    navigation.setParams({ status: undefined });
+  }, [dispatch, navigation, route.params?.status]);
+
   const {
     orders,
     listFilters,
@@ -86,24 +102,6 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
     onChangeNote: onChangeEditNote,
     confirmEdit,
   } = useOrderEdit({ onSuccess: reloadOrders });
-
-  useFocusEffect(
-    useCallback(() => {
-      const status = route.params?.status?.trim();
-
-      if (!status) {
-        return;
-      }
-
-      dispatch(
-        setOrderListFilters({
-          ...EMPTY_ORDER_ADVANCED_FILTERS,
-          status,
-        }),
-      );
-      navigation.setParams({ status: undefined });
-    }, [dispatch, navigation, route.params?.status]),
-  );
 
   const handleRemoveOrder = useCallback(
     (orderId: string) => {
@@ -273,6 +271,8 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
             contentContainerStyle={
               orders.length === 0 ? emptyContentStyle : listContentStyle
             }

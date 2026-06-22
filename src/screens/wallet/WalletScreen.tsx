@@ -1,9 +1,7 @@
 import React, { useCallback } from 'react';
 import {
   FlatList,
-  KeyboardAvoidingView,
   ListRenderItem,
-  Platform,
   Pressable as RNPressable,
   ScrollView,
   StyleSheet,
@@ -24,6 +22,7 @@ import {
   WalletTransactionCard,
 } from '@/src/components/wallet';
 import { StackHeader } from '@/src/components/main';
+import { FormKeyboardAvoidingView } from '@/src/shared/components/ui/FormKeyboardAvoidingView';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
 import { Text } from '@/src/uikits/text';
@@ -107,12 +106,11 @@ export function WalletScreen({ navigation }: WalletScreenProps) {
           </Box>
 
           {activeTab === 'form' ? (
-            <KeyboardAvoidingView
-              style={styles.flex}
-              behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            <FormKeyboardAvoidingView extraOffset={56}>
               <ScrollView
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
                 contentContainerStyle={styles.formContent}>
                 <WalletForm
                   mode={mode}
@@ -122,7 +120,7 @@ export function WalletScreen({ navigation }: WalletScreenProps) {
                   onSecondary={handleSecondary}
                 />
               </ScrollView>
-            </KeyboardAvoidingView>
+            </FormKeyboardAvoidingView>
           ) : (
             <FlatList
               data={transactions}

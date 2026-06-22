@@ -25,6 +25,7 @@ export {
   selectHasMoreSearchProducts,
   selectIsLoadingSearchProducts,
   selectIsLoadingMoreSearchProducts,
+  selectSearchProductsHasCache,
   selectProductDetail,
   selectProductDetailStatus,
   selectProductDetailError,

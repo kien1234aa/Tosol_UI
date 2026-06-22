@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Alert } from 'react-native';
 import { isSameWarehouseSelection, isAllWarehouses } from '@/src/configs/warehouse';
 import {
@@ -7,6 +7,7 @@ import {
 } from '@/src/configs/preferences/preferences.constants';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
+import { useTabInitialLoad } from '@/src/hooks/common/useTabInitialLoad';
 import {
   selectAuthWarehouses,
   selectCurrentWarehouseId,
@@ -22,6 +23,8 @@ import {
   selectIsLoadingSearchProducts,
   selectSearchCurrentPage,
   selectSearchProductsError,
+  selectSearchProductsHasCache,
+  selectSearchProductsStatus,
   selectSearchQuery,
   setSearchQuery,
 } from '@/src/redux/search';
@@ -61,6 +64,8 @@ export function useSearch(): UseSearchResult {
   const selectedWarehouseLabel = useAppSelector(selectSelectedWarehouseLabel);
   const isSwitchingWarehouse = useAppSelector(selectIsSwitchingWarehouse);
   const products = useAppSelector(selectFilteredSearchProducts);
+  const productsStatus = useAppSelector(selectSearchProductsStatus);
+  const hasProductsCache = useAppSelector(selectSearchProductsHasCache);
   const isLoadingProducts = useAppSelector(selectIsLoadingSearchProducts);
   const isLoadingMoreProducts = useAppSelector(selectIsLoadingMoreSearchProducts);
   const hasMoreProducts = useAppSelector(selectHasMoreSearchProducts);
@@ -80,8 +85,17 @@ export function useSearch(): UseSearchResult {
     null,
   );
 
-  const reloadProducts = useCallback(() => {
+  const warehouseKey = useMemo(
+    () => String(selectedWarehouseId ?? 'all'),
+    [selectedWarehouseId],
+  );
+
+  const loadProducts = useCallback(() => {
     void dispatch(fetchProductsThunk({ page: 1, append: false }));
+  }, [dispatch]);
+
+  const reloadProducts = useCallback(() => {
+    void dispatch(fetchProductsThunk({ page: 1, append: false, force: true }));
   }, [dispatch]);
 
   const loadMoreProducts = useCallback(() => {
@@ -100,9 +114,12 @@ export function useSearch(): UseSearchResult {
     isLoadingProducts,
   ]);
 
-  useEffect(() => {
-    reloadProducts();
-  }, [reloadProducts, selectedWarehouseId]);
+  useTabInitialLoad({
+    hasCache: hasProductsCache,
+    hasError: productsStatus === 'error',
+    load: loadProducts,
+    reloadKey: warehouseKey,
+  });
 
   const setQuery = useCallback(
     (value: string) => {

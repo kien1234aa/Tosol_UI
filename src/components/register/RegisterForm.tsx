@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { Button, ButtonSpinner, ButtonText } from '@/src/uikits/button';
@@ -7,7 +7,8 @@ import { registerCopy } from '@/src/configs/register';
 import { usePressScale } from '@/src/hooks';
 import { lightTokens } from '@/src/configs/theme';
 import type { UseRegisterFormResult } from '@/src/hooks/register';
-import { AuthTextField } from '@/src/components/login/AuthTextField';
+import { focusInputRef } from '@/src/shared/utils/focusInputRef';
+import { AuthTextField, type AuthTextFieldRef } from '@/src/components/login/AuthTextField';
 import { AuthServerMessage } from '@/src/components/login/AuthServerMessage';
 import { PasswordField } from '@/src/components/login/PasswordField';
 
@@ -17,6 +18,9 @@ interface RegisterFormProps {
 
 function RegisterFormComponent({ form }: RegisterFormProps) {
   const { animatedStyle, onPressIn, onPressOut } = usePressScale();
+  const emailRef = useRef<AuthTextFieldRef>(null);
+  const passwordRef = useRef<AuthTextFieldRef>(null);
+  const confirmPasswordRef = useRef<AuthTextFieldRef>(null);
 
   return (
     <VStack className="w-full gap-4" space="md">
@@ -25,36 +29,50 @@ function RegisterFormComponent({ form }: RegisterFormProps) {
         value={form.username}
         onChangeText={form.onChangeUsername}
         error={form.errors.username}
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onSubmitEditing={() => focusInputRef(emailRef)}
         testID="register-username-input"
       />
 
       <AuthTextField
+        ref={emailRef}
         placeholder={registerCopy.emailPlaceholder}
         value={form.email}
         onChangeText={form.onChangeEmail}
         error={form.errors.email}
         keyboardType="email-address"
         autoCapitalize="none"
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onSubmitEditing={() => focusInputRef(passwordRef)}
         testID="register-email-input"
       />
 
       <PasswordField
+        ref={passwordRef}
         placeholder={registerCopy.passwordPlaceholder}
         value={form.password}
         onChangeText={form.onChangePassword}
         showPassword={form.showPassword}
         onToggleShowPassword={form.onToggleShowPassword}
         error={form.errors.password}
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onSubmitEditing={() => focusInputRef(confirmPasswordRef)}
         testID="register-password-input"
       />
 
       <PasswordField
+        ref={confirmPasswordRef}
         placeholder={registerCopy.confirmPasswordPlaceholder}
         value={form.confirmPassword}
         onChangeText={form.onChangeConfirmPassword}
         showPassword={form.showConfirmPassword}
         onToggleShowPassword={form.onToggleShowConfirmPassword}
         error={form.errors.confirmPassword}
+        returnKeyType="done"
+        onSubmitEditing={form.onSubmit}
         testID="register-confirm-password-input"
       />
 

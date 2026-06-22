@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 import { lightTokens } from '@/src/configs/theme';
+import { DismissKeyboardView } from '@/src/shared/components/ui/DismissKeyboardView';
 
 interface KeyboardAwareScreenProps {
   children: ReactNode;
@@ -37,9 +38,10 @@ function KeyboardAwareScreenComponent({
           style={styles.flex}
           contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           showsVerticalScrollIndicator={false}
           bounces={false}>
-          {children}
+          <DismissKeyboardView style={styles.flex}>{children}</DismissKeyboardView>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

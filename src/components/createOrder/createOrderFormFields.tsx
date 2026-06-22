@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, TextInput } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, TextInput, type KeyboardTypeOptions } from 'react-native';
 import { createOrderCopy } from '@/src/configs/createOrder/createOrder.constants';
 import { lightTokens } from '@/src/configs/theme';
 import { fonts } from '@/src/configs/theme/fonts';
@@ -56,7 +56,7 @@ interface CreateOrderTextInputProps {
   placeholder?: string;
   leadingIcon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
-  keyboardType?: 'default' | 'phone-pad';
+  keyboardType?: KeyboardTypeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   autoCorrect?: boolean;
 }
@@ -103,7 +103,8 @@ interface CreateOrderTextFieldProps {
   value: string;
   onChangeText: (value: string) => void;
   leadingIcon: React.ReactNode;
-  keyboardType?: 'default' | 'phone-pad';
+  keyboardType?: KeyboardTypeOptions;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   placeholder?: string;
 }
 
@@ -114,6 +115,7 @@ function CreateOrderTextFieldComponent({
   onChangeText,
   leadingIcon,
   keyboardType = 'default',
+  autoCapitalize,
   placeholder,
 }: CreateOrderTextFieldProps) {
   return (
@@ -125,6 +127,7 @@ function CreateOrderTextFieldComponent({
         placeholder={placeholder}
         leadingIcon={leadingIcon}
         keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
       />
     </FormControl>
   );

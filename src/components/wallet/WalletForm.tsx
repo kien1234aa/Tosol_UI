@@ -45,6 +45,7 @@ function WalletFormComponent({
           value={amount}
           onChangeText={onChangeAmount}
           keyboardType="number-pad"
+          returnKeyType="done"
           autoCorrect={false}
           placeholderTextColor={lightTokens.typography500}
           className="text-typography-900"

@@ -7,4 +7,5 @@ export {
   useListStaleWhileRevalidate,
   type ListStaleWhileRevalidateOptions,
 } from './useListStaleWhileRevalidate';
+export { useTabInitialLoad } from './useTabInitialLoad';
 export { useFeatureInDevelopmentNotice } from './useFeatureInDevelopmentNotice';

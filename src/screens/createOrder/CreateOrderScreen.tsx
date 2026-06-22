@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -31,6 +29,7 @@ import {
   CreateOrderProductsSection,
 } from '@/src/components/createOrder';
 import { StackHeader } from '@/src/components/main';
+import { FormKeyboardAvoidingView } from '@/src/shared/components/ui/FormKeyboardAvoidingView';
 import { Box } from '@/src/uikits/box';
 import { VStack } from '@/src/uikits/vstack';
 
@@ -122,12 +121,11 @@ export function CreateOrderScreen({
           uppercase={false}
         />
 
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <FormKeyboardAvoidingView>
           <ScrollView
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
             contentContainerStyle={[
               styles.content,
               {
@@ -282,7 +280,7 @@ export function CreateOrderScreen({
               />
             </VStack>
           </ScrollView>
-        </KeyboardAvoidingView>
+        </FormKeyboardAvoidingView>
       </SafeAreaView>
 
       <CreateCustomerModal

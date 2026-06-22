@@ -65,6 +65,11 @@ export const selectIsLoadingMoreOrders = createSelector(
   status => status === 'loadingMore',
 );
 
+export const selectOrdersListHasCache = createSelector(
+  [selectOrdersListStatus, selectOrdersCurrentPage],
+  (status, currentPage) => status === 'success' && currentPage > 0,
+);
+
 export const selectOrderById = createSelector(
   [selectOrderItems, (_state: RootState, orderId: string) => orderId],
   (items, orderId) => items.find(order => order.id === orderId),

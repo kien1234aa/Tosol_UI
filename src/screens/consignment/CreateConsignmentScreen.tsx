@@ -1,7 +1,5 @@
 import React, { useCallback } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
   Pressable as RNPressable,
   ScrollView,
   StyleSheet,
@@ -23,6 +21,7 @@ import {
   ConsignmentPackageCard,
 } from '@/src/components/consignment';
 import { StackHeader } from '@/src/components/main';
+import { FormKeyboardAvoidingView } from '@/src/shared/components/ui/FormKeyboardAvoidingView';
 import { Box } from '@/src/uikits/box';
 import { HStack } from '@/src/uikits/hstack';
 import { Text } from '@/src/uikits/text';
@@ -71,12 +70,11 @@ export function CreateConsignmentScreen({
             uppercase={false}
           />
 
-          <KeyboardAvoidingView
-            style={styles.flex}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <FormKeyboardAvoidingView>
             <ScrollView
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
               contentContainerStyle={styles.content}>
               <Box style={styles.sectionCard}>
                 <HStack style={styles.sectionHeader}>
@@ -133,7 +131,7 @@ export function CreateConsignmentScreen({
                 </Text>
               </RNPressable>
             </ScrollView>
-          </KeyboardAvoidingView>
+          </FormKeyboardAvoidingView>
         </VStack>
       </SafeAreaView>
     </Box>

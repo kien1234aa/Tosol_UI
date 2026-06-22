@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useContext, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, useColorScheme, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -8,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { BottomTabBarHeightCallbackContext } from '@react-navigation/bottom-tabs';
 import { BottomFabBar } from 'rn-wave-bottom-bar';
 import {
   tabBarColors,
@@ -35,13 +36,21 @@ const HIDDEN_LIBRARY_FAB_STYLE = {
 
 function bubbleShadowStyle(palette: typeof tabBarColors | typeof tabBarColorsDark) {
   return Platform.select({
-    android: { elevation: 10 },
+    // Keep elevation on the anchor, not on the icon layer (avoids white shine dots).
+    android: { elevation: 8 },
     default: {
       shadowColor: palette.glassShadow,
       shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.45,
       shadowRadius: 16,
     },
+  });
+}
+
+function bubbleSurfaceStyle(palette: typeof tabBarColors | typeof tabBarColorsDark) {
+  return Platform.select({
+    android: { elevation: 0 },
+    default: {},
   });
 }
 
@@ -55,6 +64,7 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
   const palette = scheme === 'dark' ? tabBarColorsDark : tabBarColors;
   const { state, descriptors } = props;
   const insets = useSafeAreaInsets();
+  const onTabBarHeightChange = useContext(BottomTabBarHeightCallbackContext);
   const [width, setWidth] = useState(0);
   const translateX = useSharedValue(0);
   const bubbleScale = useSharedValue(1);
@@ -91,8 +101,16 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
     size: tabBarLayout.focusedIconSize,
   });
 
+  const tabBarHeight =
+    tabBarLayout.barHeight + tabBarLayout.bubbleOverflow + insets.bottom;
+
+  useEffect(() => {
+    onTabBarHeightChange?.(tabBarHeight);
+  }, [onTabBarHeightChange, tabBarHeight]);
+
   return (
     <View
+      collapsable={false}
       style={[styles.wrapper, { minHeight: tabBarLayout.barHeight + insets.bottom }]}
       onLayout={event => setWidth(event.nativeEvent.layout.width)}>
       <View
@@ -118,22 +136,18 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
       {width > 0 ? (
         <Animated.View
           pointerEvents="none"
-          style={[
-            styles.floatingBubble,
-            bubbleShadowStyle(palette),
-            {
-              backgroundColor: palette.bubbleBackground,
-              borderColor: palette.bubbleBorder,
-            },
-            bubbleStyle,
-          ]}>
+          style={[styles.bubbleAnchor, bubbleShadowStyle(palette), bubbleStyle]}>
           <View
             style={[
-              styles.glassHighlight,
-              { backgroundColor: palette.glassHighlight },
-            ]}
-          />
-          {activeIcon}
+              styles.floatingBubble,
+              bubbleSurfaceStyle(palette),
+              {
+                backgroundColor: palette.bubbleBackground,
+                borderColor: palette.bubbleBorder,
+              },
+            ]}>
+            <View style={styles.bubbleIcon}>{activeIcon}</View>
+          </View>
         </Animated.View>
       ) : null}
     </View>
@@ -143,33 +157,36 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
 const styles = StyleSheet.create({
   wrapper: {
     overflow: 'visible',
-
+    width: '100%',
   },
   glassBackdrop: {
     ...StyleSheet.absoluteFillObject,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
-  floatingBubble: {
+  bubbleAnchor: {
     position: 'absolute',
     top: -BUBBLE_FLOAT,
     left: 0,
     width: BUBBLE_SIZE,
     height: BUBBLE_SIZE,
     borderRadius: BUBBLE_SIZE / 2,
+    zIndex: 100,
+    overflow: 'visible',
+  },
+  floatingBubble: {
+    width: BUBBLE_SIZE,
+    height: BUBBLE_SIZE,
+    borderRadius: BUBBLE_SIZE / 2,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 100,
     overflow: 'hidden',
   },
-  glassHighlight: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: BUBBLE_SIZE * 0.42,
-    borderTopLeftRadius: BUBBLE_SIZE / 2,
-    borderTopRightRadius: BUBBLE_SIZE / 2,
+  bubbleIcon: {
+    zIndex: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
 });
 

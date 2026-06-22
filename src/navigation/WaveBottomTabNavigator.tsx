@@ -93,10 +93,9 @@ function WaveBottomTabNavigatorComponent({
   const screenOptions = useMemo(
     () => ({
       headerShown: false,
-      lazy: false,
+      lazy: true,
       freezeOnBlur: true,
       popToTopOnBlur: false,
-      animation: 'shift' as const,
       tabBarActiveTintColor: colors.activeTint,
       tabBarInactiveTintColor: colors.inactiveTint,
       tabBarActiveBackgroundColor: colors.activeBackground,
@@ -106,6 +105,7 @@ function WaveBottomTabNavigatorComponent({
       },
       tabBarStyle: {
         backgroundColor: 'transparent',
+        borderTopWidth: 0,
         elevation: 0,
       },
     }),

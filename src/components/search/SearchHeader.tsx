@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { Keyboard, StyleSheet, TextInput } from 'react-native';
 import { Camera } from 'lucide-react-native';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -55,6 +55,10 @@ function SearchHeaderComponent({
     onPressImageSearch?.();
   }, [onPressImageSearch]);
 
+  const handleSubmitSearch = useCallback(() => {
+    Keyboard.dismiss();
+  }, []);
+
   return (
     <Box
       style={[
@@ -97,6 +101,7 @@ function SearchHeaderComponent({
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="search"
+            onSubmitEditing={handleSubmitSearch}
             style={[
               styles.input,
               { fontSize: scale(15), paddingLeft: scale(12) },

@@ -26,6 +26,8 @@ function ForgotPasswordFormComponent({ form }: ForgotPasswordFormProps) {
         error={form.errors.email}
         keyboardType="email-address"
         autoCapitalize="none"
+        returnKeyType="done"
+        onSubmitEditing={form.onSubmit}
         testID="forgot-password-email-input"
       />
 

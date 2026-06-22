@@ -139,6 +139,8 @@ function CreateCustomerModalComponent({
                   value={form.email}
                   onChangeText={onChangeEmail}
                   placeholder={createCustomerCopy.emailPlaceholder}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                   leadingIcon={
                     <Mail color={lightTokens.tertiary600} size={18} />
                   }

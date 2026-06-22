@@ -6,6 +6,7 @@ import { countActiveOrderFilters } from '@/src/configs/orders/orderFilters.const
 import { ordersCopy } from '@/src/configs/orders';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
+import { useTabInitialLoad } from '@/src/hooks/common/useTabInitialLoad';
 import {
   clearOrderListCustomerFilter,
   fetchOrdersThunk,
@@ -19,6 +20,8 @@ import {
   selectOrderListFilters,
   selectOrdersCurrentPage,
   selectOrdersListError,
+  selectOrdersListHasCache,
+  selectOrdersListStatus,
   setOrderListCustomerFilter,
   setOrderListFilters,
 } from '@/src/redux/orders';
@@ -66,6 +69,8 @@ export function useOrdersList(): UseOrdersListResult {
   const isLoadingMore = useAppSelector(selectIsLoadingMoreOrders);
   const hasMore = useAppSelector(selectHasMoreOrders);
   const loadError = useAppSelector(selectOrdersListError);
+  const listStatus = useAppSelector(selectOrdersListStatus);
+  const hasCache = useAppSelector(selectOrdersListHasCache);
   const currentPage = useAppSelector(selectOrdersCurrentPage);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [customerQuery, setCustomerQuery] = useState('');
@@ -73,6 +78,11 @@ export function useOrdersList(): UseOrdersListResult {
   const [isSearchingCustomers, setIsSearchingCustomers] = useState(false);
   const [customerSearchError, setCustomerSearchError] = useState<string | null>(null);
   const customerSearchRequestId = useRef(0);
+
+  const listQueryKey = useMemo(
+    () => JSON.stringify({ filters: listFilters, customerId: listCustomerId }),
+    [listCustomerId, listFilters],
+  );
 
   const activeFilterCount = useMemo(
     () => countActiveOrderFilters(listFilters),
@@ -85,8 +95,12 @@ export function useOrdersList(): UseOrdersListResult {
       ? ordersCopy.emptyOrders
       : ordersCopy.emptyFilteredOrders;
 
-  const reloadOrders = useCallback(() => {
+  const loadOrders = useCallback(() => {
     void dispatch(fetchOrdersThunk({ page: 1, append: false }));
+  }, [dispatch]);
+
+  const reloadOrders = useCallback(() => {
+    void dispatch(fetchOrdersThunk({ page: 1, append: false, force: true }));
   }, [dispatch]);
 
   const loadMoreOrders = useCallback(() => {
@@ -102,9 +116,12 @@ export function useOrdersList(): UseOrdersListResult {
     );
   }, [currentPage, dispatch, hasMore, isLoading, isLoadingMore]);
 
-  useEffect(() => {
-    reloadOrders();
-  }, [listFilters, listCustomerId, reloadOrders]);
+  useTabInitialLoad({
+    hasCache,
+    hasError: listStatus === 'error',
+    load: loadOrders,
+    reloadKey: listQueryKey,
+  });
 
   useEffect(() => {
     if (listCustomerName) {

@@ -21,6 +21,7 @@ function HomeTabLogoComponent({ size = tabBarLayout.homeLogoSize }: HomeTabLogoP
 const styles = StyleSheet.create({
   logo: {
     alignSelf: 'center',
+    backgroundColor: 'transparent',
   },
 });
 

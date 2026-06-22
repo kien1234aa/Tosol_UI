@@ -11,6 +11,7 @@ import type { RootState } from '../rootReducer';
 export interface FetchProductsPayload {
   page: number;
   append: boolean;
+  force?: boolean;
 }
 
 export interface FetchProductsResult {
@@ -43,10 +44,20 @@ export const fetchProductsThunk = createAsyncThunk<
     }
   },
   {
-    condition: ({ page, append }, { getState }) => {
+    condition: ({ page, append, force }, { getState }) => {
       const { productsStatus, currentPage, lastPage } = getState().search;
 
       if (productsStatus === 'loading' || productsStatus === 'loadingMore') {
+        return false;
+      }
+
+      if (
+        !force &&
+        !append &&
+        page === 1 &&
+        productsStatus === 'success' &&
+        currentPage > 0
+      ) {
         return false;
       }
 

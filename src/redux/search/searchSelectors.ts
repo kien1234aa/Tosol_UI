@@ -56,6 +56,11 @@ export const selectIsLoadingMoreSearchProducts = createSelector(
   status => status === 'loadingMore',
 );
 
+export const selectSearchProductsHasCache = createSelector(
+  [selectSearchProductsStatus, selectSearchCurrentPage],
+  (status, currentPage) => status === 'success' && currentPage > 0,
+);
+
 export const selectProductDetail = createSelector(
   selectSearchState,
   state => state.productDetail,

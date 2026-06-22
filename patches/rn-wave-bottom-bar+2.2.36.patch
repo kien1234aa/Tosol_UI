@@ -88,7 +88,7 @@ index f1d127f..3e56753 100644
        options
      } = descriptors[route.key];
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
-index 27c9f3b..c259496 100644
+index 27c9f3b..18dcb70 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
 @@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
@@ -99,7 +99,7 @@ index 27c9f3b..c259496 100644
  var _tabBarButton = require("../styles/tab.bar.button.styles");
  function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
  function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-@@ -23,105 +22,46 @@ const BarButton = /*#__PURE__*/(0, _react.memo)(_ref => {
+@@ -23,105 +22,49 @@ const BarButton = /*#__PURE__*/(0, _react.memo)(_ref => {
      onPress,
      onLongPress,
      inactiveTintColor,
@@ -162,14 +162,19 @@ index 27c9f3b..c259496 100644
 +  }, options.tabBarIcon ? options.tabBarIcon({
 +    focused: false,
      color: inactiveTintColor || 'white',
-     size: 28
+-    size: 28
 -  }) : /*#__PURE__*/_react.default.createElement(_reactNative.View, null), options.tabBarLabel && /*#__PURE__*/_react.default.createElement(_reactNativeReanimated.default.Text, {
++    size: 22
 +  }) : null, options.tabBarLabel && /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
      style: [{
        marginTop: 2,
-       color: inactiveTintColor
+-      color: inactiveTintColor
 -    }, textAnimatedStyle, options.tabBarLabelStyle]
 -  }, options.tabBarLabel)))));
++      fontSize: 11,
++      fontWeight: '500',
++      color: inactiveTintColor,
++      includeFontPadding: false
 +    }, options.tabBarLabelStyle]
 +  }, options.tabBarLabel))));
  });
@@ -454,7 +459,7 @@ index e97bc3c..23080b3 100644
        options
      } = descriptors[route.key];
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
-index c84e9c6..d2eb0ec 100644
+index c84e9c6..9e24e8d 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
 @@ -1,12 +1,13 @@
@@ -474,7 +479,7 @@ index c84e9c6..d2eb0ec 100644
  export const BarButton = /*#__PURE__*/memo(_ref => {
    let {
      isFocused,
-@@ -14,102 +15,47 @@ export const BarButton = /*#__PURE__*/memo(_ref => {
+@@ -14,102 +15,50 @@ export const BarButton = /*#__PURE__*/memo(_ref => {
      onPress,
      onLongPress,
      inactiveTintColor,
@@ -539,12 +544,13 @@ index c84e9c6..d2eb0ec 100644
 +  }, options.tabBarIcon ? options.tabBarIcon({
 +    focused: false,
      color: inactiveTintColor || 'white',
-     size: 28
+-    size: 28
 -  }) : /*#__PURE__*/React.createElement(View, null), options.tabBarLabel && /*#__PURE__*/React.createElement(RNReanimated.Text, {
++    size: 22
 +  }) : null, options.tabBarLabel && /*#__PURE__*/React.createElement(Text, {
      style: [{
        marginTop: 2,
-       color: inactiveTintColor
+-      color: inactiveTintColor
 -    }, textAnimatedStyle, options.tabBarLabelStyle]
 -  }, options.tabBarLabel)))));
 -});
@@ -596,6 +602,10 @@ index c84e9c6..d2eb0ec 100644
 -    color: 'white',
 -    size: 28
 -  }) : null)));
++      fontSize: 11,
++      fontWeight: '500',
++      color: inactiveTintColor,
++      includeFontPadding: false
 +    }, options.tabBarLabelStyle]
 +  }, options.tabBarLabel))));
  });

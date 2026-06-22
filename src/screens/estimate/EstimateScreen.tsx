@@ -1,7 +1,5 @@
 import React, { useCallback } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
   Pressable as RNPressable,
   ScrollView,
   StyleSheet,
@@ -25,6 +23,7 @@ import {
   EstimateTabs,
 } from '@/src/components/estimate';
 import { StackHeader } from '@/src/components/main';
+import { FormKeyboardAvoidingView } from '@/src/shared/components/ui/FormKeyboardAvoidingView';
 import { Box } from '@/src/uikits/box';
 import { HStack } from '@/src/uikits/hstack';
 import { Text } from '@/src/uikits/text';
@@ -70,12 +69,11 @@ export function EstimateScreen({ navigation }: EstimateScreenProps) {
             <EstimateTabs mode={mode} onChange={handleModeChange} />
           </Box>
 
-          <KeyboardAvoidingView
-            style={styles.flex}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <FormKeyboardAvoidingView extraOffset={56}>
             <ScrollView
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
               contentContainerStyle={styles.content}>
               <VStack className="w-full" space="md">
                 {isBuyForMe ? (
@@ -135,7 +133,7 @@ export function EstimateScreen({ navigation }: EstimateScreenProps) {
                 {result ? <EstimateResultCard result={result} /> : null}
               </VStack>
             </ScrollView>
-          </KeyboardAvoidingView>
+          </FormKeyboardAvoidingView>
         </VStack>
       </SafeAreaView>
     </Box>

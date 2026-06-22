@@ -22,6 +22,7 @@ export {
   selectHasMoreOrders,
   selectIsLoadingOrders,
   selectIsLoadingMoreOrders,
+  selectOrdersListHasCache,
   selectOrderById,
   selectOrderDashboardBadgeCounts,
 } from './ordersSelectors';

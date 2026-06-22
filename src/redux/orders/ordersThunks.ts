@@ -8,6 +8,7 @@ import type { RootState } from '../rootReducer';
 export interface FetchOrdersPayload {
   page: number;
   append: boolean;
+  force?: boolean;
 }
 
 export interface FetchOrdersResult {
@@ -66,10 +67,20 @@ export const fetchOrdersThunk = createAsyncThunk<
     }
   },
   {
-    condition: ({ page, append }, { getState }) => {
+    condition: ({ page, append, force }, { getState }) => {
       const { listStatus, currentPage, lastPage } = getState().orders;
 
       if (listStatus === 'loading' || listStatus === 'loadingMore') {
+        return false;
+      }
+
+      if (
+        !force &&
+        !append &&
+        page === 1 &&
+        listStatus === 'success' &&
+        currentPage > 0
+      ) {
         return false;
       }
 

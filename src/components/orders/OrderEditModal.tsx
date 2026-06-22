@@ -1,7 +1,9 @@
 import React, { memo } from 'react';
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable as RNPressable,
   StyleSheet,
 } from 'react-native';
@@ -44,8 +46,11 @@ function OrderEditModalComponent({
       transparent
       animationType="fade"
       onRequestClose={onClose}>
-      <RNPressable style={styles.overlay} onPress={onClose}>
-        <RNPressable style={styles.sheet} onPress={() => {}}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <RNPressable style={styles.overlay} onPress={onClose}>
+          <RNPressable style={styles.sheet} onPress={() => {}}>
           <VStack space="md">
             <Text size="md" className="font-semibold text-typography-900">
               {ordersCopy.editModalTitle}
@@ -76,6 +81,7 @@ function OrderEditModalComponent({
                   multiline
                   numberOfLines={4}
                   textAlignVertical="top"
+                  returnKeyType="done"
                   className="px-3 py-3 text-sm text-typography-900"
                 />
               </Input>
@@ -123,13 +129,17 @@ function OrderEditModalComponent({
               </Pressable>
             </Box>
           </VStack>
+          </RNPressable>
         </RNPressable>
-      </RNPressable>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.35)',

@@ -1,6 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import {
   ActivityIndicator,
+  Keyboard,
   StyleSheet,
   TextInput,
   View,
@@ -53,6 +54,10 @@ function OrdersCustomerSearchBarComponent({
   const handleClearQuery = useCallback(() => {
     onChangeQuery('');
   }, [onChangeQuery]);
+
+  const handleSubmitSearch = useCallback(() => {
+    Keyboard.dismiss();
+  }, []);
 
   const handleSelect = useCallback(
     (customer: CustomerSearchResult) => {
@@ -110,6 +115,7 @@ function OrdersCustomerSearchBarComponent({
               autoCapitalize="none"
               autoCorrect={false}
               returnKeyType="search"
+              onSubmitEditing={handleSubmitSearch}
               clearButtonMode="never"
               style={[styles.input, { fontSize: scale(15) }]}
             />
