@@ -30,6 +30,7 @@
     "react-native": "0.81.4",
     "react-native-css-interop": "^0.2.5",
     "react-native-gesture-handler": "^2.22.0",
+    "react-native-haptic-feedback": "^3.0.0",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.6.0",
@@ -37,7 +38,7 @@
     "react-native-worklets": "^0.5.2",
     "react-redux": "^9.2.0",
     "react-stately": "^3.47.0",
-    "rn-wave-bottom-bar": "^2.2.36",
+    "rn-wave-bottom-bar": "2.2.36",
     "tailwind-variants": "^0.1.20",
     "tailwindcss": "^3.4.19"
   },

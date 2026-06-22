@@ -1,15 +1,20 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, useColorScheme, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withSpring,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BottomFabBar } from 'rn-wave-bottom-bar';
-import { tabBarColors, tabBarLayout } from '@/src/configs/main';
-import { lightTokens } from '@/src/configs/theme';
+import {
+  tabBarColors,
+  tabBarColorsDark,
+  tabBarLayout,
+} from '@/src/configs/main';
+import { getBubbleTranslateX } from './waveTabBar/getBubbleTranslateX';
 
 const { bubbleSize: BUBBLE_SIZE, bubbleFloatOffset: BUBBLE_FLOAT } = tabBarLayout;
 
@@ -28,27 +33,31 @@ const HIDDEN_LIBRARY_FAB_STYLE = {
   borderWidth: 0,
 };
 
-const BUBBLE_PLATFORM_STYLE = Platform.select({
-  android: {
-    elevation: 0,
-    shadowOpacity: 0,
-    shadowRadius: 0,
-  },
-  default: {
-    elevation: 8,
-    shadowColor: lightTokens.tertiary600,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.14,
-    shadowRadius: 10,
-  },
-});
+function bubbleShadowStyle(palette: typeof tabBarColors | typeof tabBarColorsDark) {
+  return Platform.select({
+    android: { elevation: 10 },
+    default: {
+      shadowColor: palette.glassShadow,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.45,
+      shadowRadius: 16,
+    },
+  });
+}
 
-/** BottomFabBar + bong bóng icon trượt theo tab đang focus. */
+/**
+ * `rn-wave-bottom-bar` wave + floating glass bubble that slides to the active tab.
+ * The library handles the wave notch animation; we render the active icon in a
+ * frosted-glass bubble with a spring pop on each tab change.
+ */
 function WaveTabBarComponent(props: BottomTabBarProps) {
+  const scheme = useColorScheme();
+  const palette = scheme === 'dark' ? tabBarColorsDark : tabBarColors;
   const { state, descriptors } = props;
   const insets = useSafeAreaInsets();
   const [width, setWidth] = useState(0);
   const translateX = useSharedValue(0);
+  const bubbleScale = useSharedValue(1);
   const tabCount = state.routes.length;
 
   const activeRoute = state.routes[state.index];
@@ -59,20 +68,26 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
       return;
     }
 
-    const tabWidth = width / tabCount;
-    const x = tabWidth * state.index + (tabWidth - BUBBLE_SIZE) / 2;
+    const x = getBubbleTranslateX(width, tabCount, state.index);
     translateX.value = withSpring(x, tabBarLayout.spring);
-  }, [state.index, width, tabCount, translateX]);
+    bubbleScale.value = withSequence(
+      withSpring(1.14, tabBarLayout.bubblePopSpring),
+      withSpring(1, tabBarLayout.spring),
+    );
+  }, [bubbleScale, state.index, tabCount, translateX, width]);
 
   const bubbleStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
+    transform: [
+      { translateX: translateX.value },
+      { scale: bubbleScale.value },
+    ],
   }));
 
   const focusedButtonStyle = useMemo(() => HIDDEN_LIBRARY_FAB_STYLE, []);
 
   const activeIcon = activeOptions.tabBarIcon?.({
     focused: true,
-    color: tabBarColors.activeBubbleIcon,
+    color: palette.activeBubbleIcon,
     size: tabBarLayout.focusedIconSize,
   });
 
@@ -80,6 +95,17 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
     <View
       style={[styles.wrapper, { minHeight: tabBarLayout.barHeight + insets.bottom }]}
       onLayout={event => setWidth(event.nativeEvent.layout.width)}>
+      <View
+        pointerEvents="none"
+        style={[
+          styles.glassBackdrop,
+          {
+            borderTopColor: palette.borderTop,
+            backgroundColor: palette.waveBackground,
+          },
+        ]}
+      />
+
       <BottomFabBar
         mode="default"
         isRtl={false}
@@ -94,13 +120,19 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
           pointerEvents="none"
           style={[
             styles.floatingBubble,
-            BUBBLE_PLATFORM_STYLE,
+            bubbleShadowStyle(palette),
             {
-              backgroundColor: tabBarColors.bubbleBackground,
-              borderColor: tabBarColors.bubbleBorder,
+              backgroundColor: palette.bubbleBackground,
+              borderColor: palette.bubbleBorder,
             },
             bubbleStyle,
           ]}>
+          <View
+            style={[
+              styles.glassHighlight,
+              { backgroundColor: palette.glassHighlight },
+            ]}
+          />
           {activeIcon}
         </Animated.View>
       ) : null}
@@ -111,6 +143,11 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
 const styles = StyleSheet.create({
   wrapper: {
     overflow: 'visible',
+
+  },
+  glassBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   floatingBubble: {
     position: 'absolute',
@@ -119,10 +156,20 @@ const styles = StyleSheet.create({
     width: BUBBLE_SIZE,
     height: BUBBLE_SIZE,
     borderRadius: BUBBLE_SIZE / 2,
-    borderWidth: 2,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 100,
+    overflow: 'hidden',
+  },
+  glassHighlight: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: BUBBLE_SIZE * 0.42,
+    borderTopLeftRadius: BUBBLE_SIZE / 2,
+    borderTopRightRadius: BUBBLE_SIZE / 2,
   },
 });
 

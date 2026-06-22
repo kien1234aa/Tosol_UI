@@ -13,39 +13,52 @@ export type WaveBottomTabColors = {
 export const tabBarLayout = {
   barHeight: 52,
   bubbleSize: 52,
-  bubbleFloatOffset: 18,
-  bubbleOverflow: 20,
+  /** Bubble center sits on bar top — half above, half in the notch. */
+  waveNotchWidth: 52,
+  bubbleFloatOffset: 26,
+  bubbleOverflow: 26,
   iconSize: 22,
   focusedIconSize: 24,
   homeLogoSize: 30,
   spring: {
-    damping: 23,
-    mass: 0.3,
-    stiffness: 300,
+    damping: 18,
+    mass: 0.22,
+    stiffness: 480,
+  } as const,
+  bubblePopSpring: {
+    damping: 12,
+    mass: 0.28,
+    stiffness: 560,
   } as const,
   pressSpring: animationConfig.pressSpring,
 } as const;
 
 export const tabBarColors = {
-  waveBackground: lightTokens.background0,
+  /** Wave bar + notch — matches StackHeader (`tertiary-50`). */
+  waveBackground: lightTokens.tertiary50,
   inactiveContent: lightTokens.typography500,
   activeBubbleIcon: lightTokens.tertiary600,
   activeLabel: lightTokens.typography900,
   fabBackground: lightTokens.tertiary600,
-  bubbleBackground: lightTokens.background0,
-  bubbleBorder: lightTokens.tertiary200,
+  /** Bright white floating bubble — semi-transparent glass. */
+  bubbleBackground: 'rgba(255, 255, 255, 0.55)',
+  bubbleBorder: 'rgba(255, 255, 255, 0.45)',
+  glassHighlight: 'rgba(255, 255, 255, 0.35)',
+  glassShadow: 'rgba(34, 95, 112, 0.18)',
   borderTop: lightTokens.outline100,
 } as const;
 
 export const tabBarColorsDark = {
-  waveBackground: darkTokens.background0,
+  waveBackground: lightTokens.tertiary100,
   inactiveContent: lightTokens.typography500,
   activeBubbleIcon: lightTokens.tertiary100,
   activeLabel: lightTokens.typography0,
   fabBackground: lightTokens.tertiary500,
-  bubbleBackground: darkTokens.backgroundMuted,
-  bubbleBorder: darkTokens.outline200,
-  borderTop: darkTokens.outline200,
+  bubbleBackground: 'rgba(255, 255, 255, 0.42)',
+  bubbleBorder: 'rgba(255, 255, 255, 0.28)',
+  glassHighlight: 'rgba(255, 255, 255, 0.18)',
+  glassShadow: 'rgba(0, 0, 0, 0.35)',
+  borderTop: lightTokens.tertiary200,
 } as const;
 
 export type TabBarColors = typeof tabBarColors;

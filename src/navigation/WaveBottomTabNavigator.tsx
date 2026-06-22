@@ -5,7 +5,8 @@ import {
 } from '@react-navigation/bottom-tabs';
 import { WaveTabBar } from '@/src/components/main/WaveTabBar';
 import { useTabHaptics } from '@/src/hooks/common/useTabHaptics';
-import { type WaveBottomTabColors } from '@/src/configs/main';
+import { tabBarLayout, type WaveBottomTabColors } from '@/src/configs/main';
+import { isMainTabBarVisibleForRoute } from './mainTabBarVisibility';
 
 const Tab = createBottomTabNavigator();
 
@@ -78,6 +79,12 @@ function WaveBottomTabNavigatorComponent({
       if (tabBarHidden) {
         return null;
       }
+
+      const activeRoute = props.state.routes[props.state.index];
+      if (!isMainTabBarVisibleForRoute(activeRoute)) {
+        return null;
+      }
+
       return <WaveTabBar {...props} />;
     },
     [tabBarHidden],
@@ -87,8 +94,9 @@ function WaveBottomTabNavigatorComponent({
     () => ({
       headerShown: false,
       lazy: false,
-      freezeOnBlur: false,
-      popToTopOnBlur: true,
+      freezeOnBlur: true,
+      popToTopOnBlur: false,
+      animation: 'shift' as const,
       tabBarActiveTintColor: colors.activeTint,
       tabBarInactiveTintColor: colors.inactiveTint,
       tabBarActiveBackgroundColor: colors.activeBackground,
@@ -138,7 +146,7 @@ function WaveBottomTabNavigatorComponent({
                 tab.renderIcon({
                   focused,
                   color: color ?? colors.inactiveTint,
-                  size: focused ? 26 : 24,
+                  size: focused ? 26 : tabBarLayout.iconSize,
                 }),
             }}
             component={tab.Screen}

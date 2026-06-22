@@ -1,8 +1,8 @@
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
-index f1d127f..2355de4 100644
+index f1d127f..3e56753 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
-@@ -10,7 +10,7 @@ var _reactNativeReanimated = _interopRequireWildcard(require("react-native-reani
+@@ -10,13 +10,13 @@ var _reactNativeReanimated = _interopRequireWildcard(require("react-native-reani
  var _reactNativeSafeAreaContext = require("react-native-safe-area-context");
  var _reactNativeSvg = require("react-native-svg");
  var _bottomTab = require("../styles/bottom.tab.styles");
@@ -11,7 +11,14 @@ index f1d127f..2355de4 100644
  var _tab = require("./tab.shape");
  var _tabSquare = require("./tab.square.shape");
  function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-@@ -92,9 +92,7 @@ const FabTabBar = _ref => {
+ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+ const ReanimatedSvg = _reactNativeReanimated.default.createAnimatedComponent(_reactNativeSvg.Svg);
+-const tabWidth = 110;
++const tabWidth = 52;
+ const defaultSpringConfig = {
+   damping: 30,
+   mass: 0.7,
+@@ -92,65 +92,14 @@ const FabTabBar = _ref => {
        marginBottom: bottom,
        height: _bottomTab.TAB_BAR_HEIGHT,
        flexDirection: isRtl ? 'row-reverse' : 'row'
@@ -22,10 +29,11 @@ index f1d127f..2355de4 100644
    }, bottom > 0 && /*#__PURE__*/_react.default.createElement(_reactNative.View, {
      style: [{
        height: bottom,
-@@ -102,43 +100,6 @@ const FabTabBar = _ref => {
+-      backgroundColor: Object.values(descriptors)[state.index].options.tabBarActiveBackgroundColor,
++      backgroundColor: 'transparent',
        bottom: bottom * -1
      }, _bottomTab.style.bottomFill]
-   }), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+-  }), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
 -    style: [_bottomTab.style.fabButtonsContainer, {
 -      flexDirection: isRtl ? 'row-reverse' : 'row'
 -    }]
@@ -63,22 +71,22 @@ index f1d127f..2355de4 100644
 -      inactiveTintColor: options.tabBarInactiveTintColor
 -    });
 -  })), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-     style: [_reactNative.StyleSheet.absoluteFill, _bottomTab.style.barShapeWrapper]
-   }, /*#__PURE__*/_react.default.createElement(ReanimatedSvg, {
-     width: width * 2.5,
-@@ -162,7 +123,11 @@ const FabTabBar = _ref => {
-         canPreventDefault: true
-       });
-       if (!isFocused && !event.defaultPrevented) {
--        navigation.navigate(route.name);
-+        navigation.dispatch({
-+          type: 'NAVIGATE',
-+          payload: { name: route.name },
-+          target: state.key,
-+        });
-       }
-     };
-     const onLongPress = () => {
+-    style: [_reactNative.StyleSheet.absoluteFill, _bottomTab.style.barShapeWrapper]
+-  }, /*#__PURE__*/_react.default.createElement(ReanimatedSvg, {
+-    width: width * 2.5,
+-    height: height + bottom,
+-    style: [{
+-      width: '100%',
+-      backgroundColor: 'transparent'
+-    }, animatedStyles]
+-  }, /*#__PURE__*/_react.default.createElement(_reactNativeSvg.Path, {
+-    d: d,
+-    fill: Object.values(descriptors)[state.index].options.tabBarActiveBackgroundColor || '#FF5252'
+-  }))), state.routes.map((route, index) => {
++  }), state.routes.map((route, index) => {
+     const {
+       options
+     } = descriptors[route.key];
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
 index 27c9f3b..c259496 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
@@ -222,10 +230,20 @@ index 27c9f3b..c259496 100644
 -//# sourceMappingURL=tab.bar.button.js.map
 \ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.shape.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.shape.js
-index 4395c9e..5a55cf9 100644
+index 4395c9e..d6b6429 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.shape.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.shape.js
-@@ -12,7 +12,7 @@ const getTabShape = (width, height, tabWidth, tabHeight) => {
+@@ -7,16 +7,24 @@ exports.getTabShape = void 0;
+ var shape = _interopRequireWildcard(require("d3-shape"));
+ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
++
++/** Semicircular notch — radius matches tabWidth / 2 (bubble diameter). */
+ const getTabShape = (width, height, tabWidth, tabHeight) => {
++  const radius = tabWidth / 2;
++  const notchEnd = width + tabWidth;
++
+   const left = shape.line().x(d => d.x).y(d => d.y)([{
      x: 0,
      y: 0
    }, {
@@ -233,33 +251,53 @@ index 4395c9e..5a55cf9 100644
 +    x: width,
      y: 0
    }]);
++
++  const tab = `M ${width} 0 A ${radius} ${radius} 0 0 1 ${notchEnd} 0`;
++
    const right = shape.line().x(d => d.x).y(d => d.y)([{
-@@ -35,17 +35,17 @@ const getTabShape = (width, height, tabWidth, tabHeight) => {
-     x: width,
+-    x: width + tabWidth,
++    x: notchEnd,
      y: 0
    }, {
+     x: width * 2.1,
+@@ -26,32 +34,13 @@ const getTabShape = (width, height, tabWidth, tabHeight) => {
+     y: height
+   }, {
+     x: 0,
+-    y: height + 0
++    y: height
+   }, {
+     x: 0,
+     y: 0
+   }]);
+-  const tab = shape.line().x(d => d.x).y(d => d.y).curve(shape.curveBasis)([{
+-    x: width,
+-    y: 0
+-  }, {
 -    x: width + 18,
 -    y: 6
-+    x: width + 16,
-+    y: 4
-   }, {
+-  }, {
 -    x: width + 25,
 -    y: tabHeight - 12
-+    x: width + 22,
-+    y: tabHeight - 6
-   }, {
+-  }, {
 -    x: width + tabWidth - 25,
 -    y: tabHeight - 12
-+    x: width + tabWidth - 22,
-+    y: tabHeight - 6
-   }, {
+-  }, {
 -    x: width + tabWidth - 18,
 -    y: 6
-+    x: width + tabWidth - 16,
-+    y: 4
-   }, {
-     x: width + tabWidth,
-     y: 0
+-  }, {
+-    x: width + tabWidth,
+-    y: 0
+-  }]);
+-  const d = `${left} ${tab} ${right}`;
+-  return d;
++
++  return `${left} ${tab} ${right}`;
+ };
++
+ exports.getTabShape = getTabShape;
+-//# sourceMappingURL=tab.shape.js.map
+\ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
 index dcfdb5b..a4230c4 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
@@ -329,10 +367,10 @@ index 8c0355c..0123953 100644
 -//# sourceMappingURL=tab.bar.button.styles.js.map
 \ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
-index e97bc3c..f78ecff 100644
+index e97bc3c..23080b3 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
-@@ -4,7 +4,7 @@ import RNReanimated, { useAnimatedStyle, useSharedValue, withSpring } from 'reac
+@@ -4,11 +4,11 @@ import RNReanimated, { useAnimatedStyle, useSharedValue, withSpring } from 'reac
  import { useSafeAreaInsets } from 'react-native-safe-area-context';
  import { Path, Svg } from 'react-native-svg';
  import { style, TAB_BAR_HEIGHT } from '../styles/bottom.tab.styles';
@@ -341,7 +379,12 @@ index e97bc3c..f78ecff 100644
  import { getTabShape } from './tab.shape';
  import { getSquareTabShape } from './tab.square.shape';
  const ReanimatedSvg = RNReanimated.createAnimatedComponent(Svg);
-@@ -83,9 +83,7 @@ export const FabTabBar = _ref => {
+-const tabWidth = 110;
++const tabWidth = 52;
+ export const defaultSpringConfig = {
+   damping: 30,
+   mass: 0.7,
+@@ -83,65 +83,14 @@ export const FabTabBar = _ref => {
        marginBottom: bottom,
        height: TAB_BAR_HEIGHT,
        flexDirection: isRtl ? 'row-reverse' : 'row'
@@ -352,10 +395,11 @@ index e97bc3c..f78ecff 100644
    }, bottom > 0 && /*#__PURE__*/React.createElement(View, {
      style: [{
        height: bottom,
-@@ -93,43 +91,6 @@ export const FabTabBar = _ref => {
+-      backgroundColor: Object.values(descriptors)[state.index].options.tabBarActiveBackgroundColor,
++      backgroundColor: 'transparent',
        bottom: bottom * -1
      }, style.bottomFill]
-   }), /*#__PURE__*/React.createElement(View, {
+-  }), /*#__PURE__*/React.createElement(View, {
 -    style: [style.fabButtonsContainer, {
 -      flexDirection: isRtl ? 'row-reverse' : 'row'
 -    }]
@@ -393,22 +437,22 @@ index e97bc3c..f78ecff 100644
 -      inactiveTintColor: options.tabBarInactiveTintColor
 -    });
 -  })), /*#__PURE__*/React.createElement(View, {
-     style: [StyleSheet.absoluteFill, style.barShapeWrapper]
-   }, /*#__PURE__*/React.createElement(ReanimatedSvg, {
-     width: width * 2.5,
-@@ -153,7 +114,11 @@ export const FabTabBar = _ref => {
-         canPreventDefault: true
-       });
-       if (!isFocused && !event.defaultPrevented) {
--        navigation.navigate(route.name);
-+        navigation.dispatch({
-+          type: 'NAVIGATE',
-+          payload: { name: route.name },
-+          target: state.key,
-+        });
-       }
-     };
-     const onLongPress = () => {
+-    style: [StyleSheet.absoluteFill, style.barShapeWrapper]
+-  }, /*#__PURE__*/React.createElement(ReanimatedSvg, {
+-    width: width * 2.5,
+-    height: height + bottom,
+-    style: [{
+-      width: '100%',
+-      backgroundColor: 'transparent'
+-    }, animatedStyles]
+-  }, /*#__PURE__*/React.createElement(Path, {
+-    d: d,
+-    fill: Object.values(descriptors)[state.index].options.tabBarActiveBackgroundColor || '#FF5252'
+-  }))), state.routes.map((route, index) => {
++  }), state.routes.map((route, index) => {
+     const {
+       options
+     } = descriptors[route.key];
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
 index c84e9c6..d2eb0ec 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
@@ -562,44 +606,80 @@ index c84e9c6..d2eb0ec 100644
 -//# sourceMappingURL=tab.bar.button.js.map
 \ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.shape.js b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.shape.js
-index 1d974c8..fb9df79 100644
+index 1d974c8..06870fe 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.shape.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.shape.js
-@@ -4,7 +4,7 @@ export const getTabShape = (width, height, tabWidth, tabHeight) => {
-     x: 0,
-     y: 0
-   }, {
+@@ -1,48 +1,24 @@
+ import * as shape from 'd3-shape';
++
++/** Semicircular notch — radius matches tabWidth / 2 (bubble diameter). */
+ export const getTabShape = (width, height, tabWidth, tabHeight) => {
+-  const left = shape.line().x(d => d.x).y(d => d.y)([{
+-    x: 0,
+-    y: 0
+-  }, {
 -    x: width + tabWidth,
-+    x: width,
-     y: 0
-   }]);
-   const right = shape.line().x(d => d.x).y(d => d.y)([{
-@@ -27,17 +27,17 @@ export const getTabShape = (width, height, tabWidth, tabHeight) => {
-     x: width,
-     y: 0
-   }, {
+-    y: 0
+-  }]);
+-  const right = shape.line().x(d => d.x).y(d => d.y)([{
+-    x: width + tabWidth,
+-    y: 0
+-  }, {
+-    x: width * 2.1,
+-    y: 0
+-  }, {
+-    x: width * 2.1,
+-    y: height
+-  }, {
+-    x: 0,
+-    y: height + 0
+-  }, {
+-    x: 0,
+-    y: 0
+-  }]);
+-  const tab = shape.line().x(d => d.x).y(d => d.y).curve(shape.curveBasis)([{
+-    x: width,
+-    y: 0
+-  }, {
 -    x: width + 18,
 -    y: 6
-+    x: width + 16,
-+    y: 4
-   }, {
+-  }, {
 -    x: width + 25,
 -    y: tabHeight - 12
-+    x: width + 22,
-+    y: tabHeight - 6
-   }, {
+-  }, {
 -    x: width + tabWidth - 25,
 -    y: tabHeight - 12
-+    x: width + tabWidth - 22,
-+    y: tabHeight - 6
-   }, {
+-  }, {
 -    x: width + tabWidth - 18,
 -    y: 6
-+    x: width + tabWidth - 16,
-+    y: 4
-   }, {
-     x: width + tabWidth,
-     y: 0
+-  }, {
+-    x: width + tabWidth,
+-    y: 0
+-  }]);
+-  const d = `${left} ${tab} ${right}`;
+-  return d;
++  const radius = tabWidth / 2;
++  const notchEnd = width + tabWidth;
++
++  const left = shape.line().x(d => d.x).y(d => d.y)([
++    { x: 0, y: 0 },
++    { x: width, y: 0 },
++  ]);
++
++  const tab = `M ${width} 0 A ${radius} ${radius} 0 0 1 ${notchEnd} 0`;
++
++  const right = shape.line().x(d => d.x).y(d => d.y)([
++    { x: notchEnd, y: 0 },
++    { x: width * 2.1, y: 0 },
++    { x: width * 2.1, y: height },
++    { x: 0, y: height },
++    { x: 0, y: 0 },
++  ]);
++
++  return `${left} ${tab} ${right}`;
+ };
+-//# sourceMappingURL=tab.shape.js.map
+\ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js b/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
 index 42497e9..a8d441f 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js

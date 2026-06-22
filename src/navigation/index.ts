@@ -1,16 +1,15 @@
 export { RootNavigator } from './RootNavigator';
 export { MainTabNavigator } from './MainTabNavigator';
-export {
-  WaveBottomTabNavigator,
-  type WaveBottomTabColors,
-  type WaveBottomTabNavigatorProps,
-  type WaveTabDef,
-  type WaveTabIconArgs,
-} from './WaveBottomTabNavigator';
+export { WaveBottomTabNavigator } from './WaveBottomTabNavigator';
 export { SearchStackNavigator } from './SearchStackNavigator';
 export { OrdersStackNavigator } from './OrdersStackNavigator';
 export { ProfileStackNavigator } from './ProfileStackNavigator';
 export { useStackGoBack } from './useStackGoBack';
+export {
+  isMainTabBarVisibleForRoute,
+  mainTabBarHiddenRoutes,
+} from './mainTabBarVisibility';
+export type { WaveBottomTabColors } from '@/src/configs/main';
 export type {
   MainTabParamList,
   MainTabScreenProps,
