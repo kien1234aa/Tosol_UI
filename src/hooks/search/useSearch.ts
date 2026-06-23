@@ -1,5 +1,7 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert } from 'react-native';
+import { sellerWarehousesService } from '@/src/apis/sellers/sellerWarehouses.api';
+import { searchCopy } from '@/src/configs/search';
 import { isSameWarehouseSelection, isAllWarehouses } from '@/src/configs/warehouse';
 import {
   preferenceKeys,
@@ -8,13 +10,16 @@ import {
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { useTabInitialLoad } from '@/src/hooks/common/useTabInitialLoad';
+import { normalizeAuthWarehouses } from '@/src/helpers/login/auth.helpers';
 import {
   selectAuthWarehouses,
+  selectAuthSeller,
   selectCurrentWarehouseId,
   selectIsSwitchingWarehouse,
-  selectSelectedWarehouseLabel,
+  fetchCurrentUserThunk,
   switchWarehouseThunk,
 } from '@/src/redux/login';
+import { store } from '@/src/redux';
 import {
   fetchProductsThunk,
   selectFilteredSearchProducts,
@@ -59,9 +64,27 @@ export interface UseSearchResult {
 export function useSearch(): UseSearchResult {
   const dispatch = useAppDispatch();
   const query = useAppSelector(selectSearchQuery);
-  const warehouses = useAppSelector(selectAuthWarehouses);
+  const authWarehouses = useAppSelector(selectAuthWarehouses);
+  const seller = useAppSelector(selectAuthSeller);
+  const [fallbackWarehouses, setFallbackWarehouses] = useState<AuthWarehouse[]>([]);
+  const [isLoadingWarehouses, setIsLoadingWarehouses] = useState(false);
+  const warehouses =
+    authWarehouses.length > 0 ? authWarehouses : fallbackWarehouses;
   const selectedWarehouseId = useAppSelector(selectCurrentWarehouseId);
-  const selectedWarehouseLabel = useAppSelector(selectSelectedWarehouseLabel);
+  const selectedWarehouseLabel = useMemo(() => {
+    if (warehouses.length === 0) {
+      return searchCopy.warehousePlaceholder;
+    }
+
+    if (isAllWarehouses(selectedWarehouseId)) {
+      return searchCopy.allWarehousesLabel;
+    }
+
+    return (
+      warehouses.find(warehouse => warehouse.id === selectedWarehouseId)?.name ??
+      searchCopy.allWarehousesLabel
+    );
+  }, [selectedWarehouseId, warehouses]);
   const isSwitchingWarehouse = useAppSelector(selectIsSwitchingWarehouse);
   const products = useAppSelector(selectFilteredSearchProducts);
   const productsStatus = useAppSelector(selectSearchProductsStatus);
@@ -84,6 +107,62 @@ export function useSearch(): UseSearchResult {
   const searchQueryRecordTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+
+  useEffect(() => {
+    if (authWarehouses.length > 0) {
+      setFallbackWarehouses([]);
+      setIsLoadingWarehouses(false);
+      return;
+    }
+
+    let cancelled = false;
+    setIsLoadingWarehouses(true);
+
+    const loadWarehouses = async () => {
+      await dispatch(fetchCurrentUserThunk());
+
+      if (cancelled) {
+        return;
+      }
+
+      const refreshedWarehouses = normalizeAuthWarehouses(
+        store.getState().auth.user?.warehouses,
+      );
+
+      if (refreshedWarehouses.length > 0) {
+        setFallbackWarehouses([]);
+        setIsLoadingWarehouses(false);
+        return;
+      }
+
+      const sellerCode = seller?.code?.trim();
+      if (!sellerCode) {
+        setIsLoadingWarehouses(false);
+        return;
+      }
+
+      try {
+        const items = await sellerWarehousesService.listBySellerCode(sellerCode);
+        if (!cancelled) {
+          setFallbackWarehouses(items as AuthWarehouse[]);
+        }
+      } catch {
+        if (!cancelled) {
+          setFallbackWarehouses([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingWarehouses(false);
+        }
+      }
+    };
+
+    void loadWarehouses();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authWarehouses.length, dispatch, seller?.code]);
 
   const warehouseKey = useMemo(
     () => String(selectedWarehouseId ?? 'all'),
@@ -202,7 +281,7 @@ export function useSearch(): UseSearchResult {
     warehouses,
     selectedWarehouseId,
     selectedWarehouseLabel,
-    isSwitchingWarehouse,
+    isSwitchingWarehouse: isSwitchingWarehouse || isLoadingWarehouses,
     products,
     isLoadingProducts,
     isLoadingMoreProducts,

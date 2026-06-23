@@ -22,8 +22,10 @@ export const apiEndpoints = {
   warehouseContext: '/warehouse-context',
   switchWarehouseContext: '/warehouse-context/switch',
   products: '/products',
+  productSuggestions: '/products/suggestions',
   shops: '/shops',
   customers: '/customers',
+  customerDetail: (customerId: number) => `/customers/${customerId}`,
   sellerWarehouses: (sellerCode: string) => `/sellers/${sellerCode}/warehouses`,
   warehouseShippingPartners: (warehouseCode: string) =>
     `/warehouses/${warehouseCode}/shipping-partners`,

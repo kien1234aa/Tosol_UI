@@ -16,12 +16,8 @@ import {
 import { lightTokens } from '@/src/configs/theme';
 import { buttonContentCenter } from '@/src/configs/theme/buttonLayout';
 import type { OrderListItem } from '@/src/types/orders/orders.types';
-import {
-  ProductThumbnailImage,
-  productThumbnailContainerStyle,
-} from '@/src/shared/components/ui/ProductThumbnailImage';
+import { ProductThumbnailWithQuantityBadge } from '@/src/shared/components/ui/ProductThumbnailImage';
 import { Box } from '@/src/uikits/box';
-import { Center } from '@/src/uikits/center';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
 import { Text } from '@/src/uikits/text';
@@ -115,14 +111,12 @@ function OrderListCardComponent({
           accessibilityLabel={ordersCopy.viewDetail}
           style={styles.bodyPressable}>
           <HStack style={styles.body}>
-            <Box style={styles.thumbnailWrap}>
-              <ProductThumbnailImage uri={order.thumbnailUrl} />
-              <Center style={styles.quantityBadge}>
-                <Text size="xs" className="font-bold text-typography-0">
-                  {order.productQuantity}
-                </Text>
-              </Center>
-            </Box>
+            <ProductThumbnailWithQuantityBadge
+              uri={order.thumbnailUrl}
+              quantity={order.productQuantity}
+              size={72}
+              borderRadius={10}
+            />
 
             <VStack style={styles.details} space="xs">
             <DetailRow
@@ -265,28 +259,6 @@ const styles = StyleSheet.create({
   detailValue: {
     flex: 1,
     textAlign: 'right',
-  },
-  thumbnailWrap: {
-    width: 72,
-    height: 72,
-    flexShrink: 0,
-    borderRadius: 10,
-    backgroundColor: lightTokens.tertiary50,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: lightTokens.outline100,
-    ...productThumbnailContainerStyle,
-  },
-  quantityBadge: {
-    position: 'absolute',
-    right: -4,
-    bottom: -4,
-    minWidth: 22,
-    height: 22,
-    borderRadius: 11,
-    paddingHorizontal: 4,
-    backgroundColor: lightTokens.tertiary500,
-    borderWidth: 1.5,
-    borderColor: lightTokens.background0,
   },
   footer: {
     width: '100%',

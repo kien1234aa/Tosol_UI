@@ -1,3 +1,4 @@
+import { labelFromCustomerLocationField, normalizeCustomerPhone } from '@/src/helpers/createOrder/createOrder.helpers';
 import type {
   CreateOrderFormState,
   CreateOrderSelectOption,
@@ -8,40 +9,6 @@ import type {
   WarehouseShippingPartnerApiItem,
   ShopApiItem,
 } from '@/src/types/orders/createOrder.types';
-
-function labelFromCustomerLocationField(value: unknown): string {
-  if (value == null) {
-    return '';
-  }
-  if (typeof value === 'string') {
-    return value.trim();
-  }
-  if (typeof value === 'number') {
-    return String(value);
-  }
-  if (typeof value === 'object') {
-    const record = value as Record<string, unknown>;
-    const tryStr = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
-    const keys = [
-      'name',
-      'province_name',
-      'district_name',
-      'ward_name',
-      'full_name',
-      'title',
-      'label',
-    ] as const;
-
-    for (const key of keys) {
-      const label = tryStr(record[key]);
-      if (label.length > 0) {
-        return label;
-      }
-    }
-  }
-
-  return '';
-}
 
 export const createOrderCopy = {
   title: 'Tạo đơn hàng',
@@ -212,7 +179,7 @@ export function mapCustomerToSearchResult(
   return {
     id: customer.id,
     name: customer.name,
-    phone: customer.phone,
+    phone: normalizeCustomerPhone(customer.phone),
     address: customer.address?.trim() || '',
     fullAddress: customer.full_address?.trim() || '',
     email: customer.email,

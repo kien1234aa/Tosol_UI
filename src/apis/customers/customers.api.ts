@@ -1,4 +1,4 @@
-import { getJsonPaginated, postJson } from '@/src/apis/http';
+import { getJson, getJsonPaginated, postJson } from '@/src/apis/http';
 import {
   apiEndpoints,
   customerSearchMinLength,
@@ -9,7 +9,14 @@ import type { CustomerApiItem } from '@/src/types/orders/createOrder.types';
 
 export interface ICustomersService {
   search(query: string, perPage?: number): Promise<CustomerApiItem[]>;
+  getById(customerId: number): Promise<CustomerApiItem>;
   create(payload: CreateCustomerPayload): Promise<CustomerApiItem>;
+}
+
+export async function getCustomerById(
+  customerId: number,
+): Promise<CustomerApiItem> {
+  return getJson<CustomerApiItem>(apiEndpoints.customerDetail(customerId));
 }
 
 class HttpCustomersService implements ICustomersService {
@@ -32,6 +39,10 @@ class HttpCustomersService implements ICustomersService {
     );
 
     return data;
+  }
+
+  async getById(customerId: number): Promise<CustomerApiItem> {
+    return getCustomerById(customerId);
   }
 
   async create(payload: CreateCustomerPayload): Promise<CustomerApiItem> {

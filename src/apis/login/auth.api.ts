@@ -1,6 +1,7 @@
 import { getJson, postJson } from '@/src/apis/http';
 import { apiEndpoints, userDetailInclude } from '@/src/configs/api';
 import { normalizeWarehouseId } from '@/src/configs/warehouse';
+import { normalizeAuthWarehouses } from '@/src/helpers/login/auth.helpers';
 import { computeTokenExpiresAt } from '@/src/helpers/api/session.helpers';
 import type {
   AuthSession,
@@ -28,6 +29,8 @@ function mapApiUserToAuthUser(
   user: UserApiItem,
   fallback?: Pick<AuthUser, 'currentWarehouseId' | 'hasMultipleWarehouses'>,
 ): AuthUser {
+  const warehouses = normalizeAuthWarehouses(user.warehouses);
+
   return {
     id: String(user.id),
     uuid: user.uuid,
@@ -41,12 +44,14 @@ function mapApiUserToAuthUser(
     isActive: user.is_active,
     lastLoginAt: user.last_login_at,
     seller: user.seller,
-    warehouses: user.warehouses ?? [],
+    warehouses,
     currentWarehouseId: normalizeWarehouseId(
       user.current_warehouse_id ?? fallback?.currentWarehouseId ?? null,
     ),
     hasMultipleWarehouses:
-      user.has_multiple_warehouses ?? fallback?.hasMultipleWarehouses ?? false,
+      user.has_multiple_warehouses ??
+      fallback?.hasMultipleWarehouses ??
+      warehouses.length > 1,
   };
 }
 

@@ -12,6 +12,7 @@ import { lightTokens } from '@/src/configs/theme';
 import { OrderCancelReasonModal } from '@/src/components/orders/OrderCancelReasonModal';
 import {
   OrderDetailActions,
+  OrderDetailChildOrders,
   OrderDetailCostBreakdown,
   OrderDetailHeader,
   OrderDetailIssue,
@@ -99,6 +100,7 @@ function OrderDetailBody({
       refreshControl={refreshControl}>
       <VStack className="w-full" space="md">
         <OrderDetailSummary order={order} />
+        <OrderDetailChildOrders childOrders={order.childOrders} />
         <OrderDetailProducts products={order.products} />
         {order.shipping ? (
           <OrderDetailShipping shipping={order.shipping} />

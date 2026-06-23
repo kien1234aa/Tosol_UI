@@ -4,10 +4,20 @@ import type {
 } from '@/src/types/orders/saleOrder.types';
 import type {
   OrderDetail,
+  OrderDetailChildOrder,
+  OrderDetailChildOrderKind,
   OrderDetailProduct,
   OrderDetailShipping,
   OrderListItem,
 } from '@/src/types/orders/orders.types';
+import {
+  outboundOrderStatusLabels,
+  packingBoxStatusLabels,
+  packingOrderStatusLabels,
+  returnOrderStatusLabels,
+  shipmentStatusLabels,
+} from '@/src/configs/orders';
+import { formatOrderStatusLabel } from '@/src/helpers/orders/orders.helpers';
 
 function parseMoney(value: string | number | null | undefined): number {
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -143,6 +153,88 @@ function resolveTrackingNumber(order: SaleOrderDetailApi): string | null {
   return null;
 }
 
+function childOrderStatusLabel(
+  kind: OrderDetailChildOrderKind,
+  status: string | null | undefined,
+): string {
+  switch (kind) {
+    case 'packing':
+      return formatOrderStatusLabel(status, packingOrderStatusLabels);
+    case 'outbound':
+      return formatOrderStatusLabel(status, outboundOrderStatusLabels);
+    case 'return':
+      return formatOrderStatusLabel(status, returnOrderStatusLabels);
+    case 'box':
+      return formatOrderStatusLabel(status, packingBoxStatusLabels);
+    default:
+      return formatOrderStatusLabel(status, packingOrderStatusLabels);
+  }
+}
+
+function mapSaleOrderChildOrders(
+  order: SaleOrderDetailApi,
+): OrderDetailChildOrder[] {
+  const childOrders: OrderDetailChildOrder[] = [];
+
+  const packingOrder = order.packing_order;
+  if (packingOrder?.order_number?.trim()) {
+    childOrders.push({
+      id: `packing-${packingOrder.id}`,
+      kind: 'packing',
+      orderNumber: packingOrder.order_number.trim(),
+      status: packingOrder.status?.trim() || '',
+      statusLabel: childOrderStatusLabel('packing', packingOrder.status),
+    });
+
+    for (const box of packingOrder.boxes ?? []) {
+      const boxCode = box.box_code?.trim();
+      if (!boxCode) {
+        continue;
+      }
+
+      childOrders.push({
+        id: `box-${box.id}`,
+        kind: 'box',
+        orderNumber: boxCode,
+        status: box.status?.trim() || '',
+        statusLabel: childOrderStatusLabel('box', box.status),
+      });
+    }
+  }
+
+  for (const outboundOrder of order.outbound_orders ?? []) {
+    const orderNumber = outboundOrder.order_number?.trim();
+    if (!orderNumber) {
+      continue;
+    }
+
+    childOrders.push({
+      id: `outbound-${outboundOrder.id}`,
+      kind: 'outbound',
+      orderNumber,
+      status: outboundOrder.status?.trim() || '',
+      statusLabel: childOrderStatusLabel('outbound', outboundOrder.status),
+    });
+  }
+
+  for (const returnOrder of order.return_orders ?? []) {
+    const orderNumber = returnOrder.order_number?.trim();
+    if (!orderNumber) {
+      continue;
+    }
+
+    childOrders.push({
+      id: `return-${returnOrder.id}`,
+      kind: 'return',
+      orderNumber,
+      status: returnOrder.status?.trim() || '',
+      statusLabel: childOrderStatusLabel('return', returnOrder.status),
+    });
+  }
+
+  return childOrders;
+}
+
 function mapSaleOrderShipment(
   order: SaleOrderDetailApi,
 ): OrderDetailShipping | null {
@@ -160,6 +252,8 @@ function mapSaleOrderShipment(
     .map(part => part?.trim())
     .filter(Boolean);
 
+  const shipmentStatus = shipment.status?.trim() || null;
+
   return {
     recipientName: shipment.recipient_name?.trim() || '—',
     recipientPhone: shipment.recipient_phone?.trim() || '—',
@@ -170,6 +264,10 @@ function mapSaleOrderShipment(
     collectCod: Boolean(shipment.collect_cod ?? order.collect_cod),
     codAmountVnd: parseMoney(shipment.cod_amount ?? order.cod_amount),
     shippingPayer: order.shipping_payer?.trim() || '—',
+    shipmentStatus,
+    shipmentStatusLabel: shipmentStatus
+      ? formatOrderStatusLabel(shipmentStatus, shipmentStatusLabels)
+      : null,
   };
 }
 
@@ -198,6 +296,7 @@ export function mapSaleOrderDetailToOrderDetail(
       order.customer?.address?.trim() ||
       '—',
     packingOrderNumber: order.packing_order?.order_number?.trim() || null,
+    childOrders: mapSaleOrderChildOrders(order),
     products: mapSaleOrderItemsToDetailProducts(items),
     shipping,
     costs: {

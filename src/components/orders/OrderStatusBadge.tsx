@@ -38,6 +38,10 @@ const STATUS_STYLES: Record<string, { backgroundColor: string; color: string }> 
     backgroundColor: '#E8F7EE',
     color: '#15803D',
   },
+  shipped: {
+    backgroundColor: '#E8F4FD',
+    color: '#0369A1',
+  },
   delivered: {
     backgroundColor: '#E8F7EE',
     color: '#15803D',
@@ -55,7 +59,7 @@ const DEFAULT_STATUS_STYLE = {
 
 function OrderStatusBadgeComponent({ status }: OrderStatusBadgeProps) {
   const palette = STATUS_STYLES[status] ?? DEFAULT_STATUS_STYLE;
-  const label = saleOrderStatusLabels[status] ?? status;
+  const label = formatOrderLabel(saleOrderStatusLabels, status);
 
   return (
     <Box style={[styles.badge, { backgroundColor: palette.backgroundColor }]}>

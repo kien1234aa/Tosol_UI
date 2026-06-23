@@ -10,16 +10,23 @@ export type WaveBottomTabColors = {
 };
 
 /** Layout + theme tokens for `rn-wave-bottom-bar`. */
+const bubbleSize = 52;
+const bubbleNotchMargin = 10;
+
 export const tabBarLayout = {
-  barHeight: 52,
-  bubbleSize: 52,
+  barHeight: 56,
+  bubbleSize,
+  /** Khoảng hở mỗi bên giữa bong bóng và mép vết lõm. */
+  bubbleNotchMargin,
+  /** Rộng vết lõm = bubble + margin hai bên. Bán kính = width / 2. */
+  waveNotchWidth: bubbleSize + bubbleNotchMargin * 2,
   /** Bubble center sits on bar top — half above, half in the notch. */
-  waveNotchWidth: 52,
-  bubbleFloatOffset: 26,
+  bubbleFloatOffset: bubbleSize / 2,
   bubbleOverflow: 26,
-  iconSize: 22,
-  focusedIconSize: 24,
-  homeLogoSize: 30,
+  iconSize: 24,
+  focusedIconSize: 26,
+  homeLogoSize: 32,
+  labelFontSize: 12,
   spring: {
     damping: 18,
     mass: 0.22,
@@ -34,8 +41,8 @@ export const tabBarLayout = {
 } as const;
 
 export const tabBarColors = {
-  /** Wave bar + notch — matches StackHeader (`tertiary-50`). */
-  waveBackground: lightTokens.tertiary50,
+  /** Wave bar + notch — một bậc đậm hơn tertiary-50 để tab nổi rõ hơn. */
+  waveBackground: lightTokens.tertiary100,
   inactiveContent: lightTokens.typography500,
   activeBubbleIcon: lightTokens.tertiary600,
   activeLabel: lightTokens.typography900,
@@ -49,7 +56,7 @@ export const tabBarColors = {
 } as const;
 
 export const tabBarColorsDark = {
-  waveBackground: lightTokens.tertiary100,
+  waveBackground: lightTokens.tertiary200,
   inactiveContent: lightTokens.typography500,
   activeBubbleIcon: lightTokens.tertiary100,
   activeLabel: lightTokens.typography0,

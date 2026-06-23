@@ -6,14 +6,30 @@ const LOGO = require('@/assets/images/logo.png');
 
 type HomeTabLogoProps = {
   size?: number;
+  /** Phủ kín vòng tròn bong bóng (tab Home đang active). */
+  coverBubble?: boolean;
 };
 
-function HomeTabLogoComponent({ size = tabBarLayout.homeLogoSize }: HomeTabLogoProps) {
+function HomeTabLogoComponent({
+  size,
+  coverBubble = false,
+}: HomeTabLogoProps) {
+  const resolvedSize =
+    size ??
+    (coverBubble ? tabBarLayout.bubbleSize : tabBarLayout.homeLogoSize);
+
   return (
     <Image
       source={LOGO}
-      style={[styles.logo, { width: size, height: size }]}
-      resizeMode="contain"
+      style={[
+        styles.logo,
+        {
+          width: resolvedSize,
+          height: resolvedSize,
+          borderRadius: coverBubble ? resolvedSize / 2 : 0,
+        },
+      ]}
+      resizeMode={coverBubble ? 'cover' : 'contain'}
     />
   );
 }

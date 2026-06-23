@@ -164,14 +164,14 @@ index 27c9f3b..18dcb70 100644
      color: inactiveTintColor || 'white',
 -    size: 28
 -  }) : /*#__PURE__*/_react.default.createElement(_reactNative.View, null), options.tabBarLabel && /*#__PURE__*/_react.default.createElement(_reactNativeReanimated.default.Text, {
-+    size: 22
++    size: 24
 +  }) : null, options.tabBarLabel && /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
      style: [{
        marginTop: 2,
 -      color: inactiveTintColor
 -    }, textAnimatedStyle, options.tabBarLabelStyle]
 -  }, options.tabBarLabel)))));
-+      fontSize: 11,
++      fontSize: 12,
 +      fontWeight: '500',
 +      color: inactiveTintColor,
 +      includeFontPadding: false
@@ -312,7 +312,7 @@ index dcfdb5b..a4230c4 100644
  exports.style = exports.TAB_BAR_HEIGHT = void 0;
  var _reactNative = require("react-native");
 -const TAB_BAR_HEIGHT = 64;
-+const TAB_BAR_HEIGHT = 52;
++const TAB_BAR_HEIGHT = 56;
  exports.TAB_BAR_HEIGHT = TAB_BAR_HEIGHT;
  const style = _reactNative.StyleSheet.create({
    barShapeWrapper: {
@@ -546,7 +546,7 @@ index c84e9c6..9e24e8d 100644
      color: inactiveTintColor || 'white',
 -    size: 28
 -  }) : /*#__PURE__*/React.createElement(View, null), options.tabBarLabel && /*#__PURE__*/React.createElement(RNReanimated.Text, {
-+    size: 22
++    size: 24
 +  }) : null, options.tabBarLabel && /*#__PURE__*/React.createElement(Text, {
      style: [{
        marginTop: 2,
@@ -602,7 +602,7 @@ index c84e9c6..9e24e8d 100644
 -    color: 'white',
 -    size: 28
 -  }) : null)));
-+      fontSize: 11,
++      fontSize: 12,
 +      fontWeight: '500',
 +      color: inactiveTintColor,
 +      includeFontPadding: false
@@ -697,7 +697,7 @@ index 42497e9..a8d441f 100644
 @@ -1,8 +1,8 @@
  import { StyleSheet } from 'react-native';
 -export const TAB_BAR_HEIGHT = 64;
-+export const TAB_BAR_HEIGHT = 52;
++export const TAB_BAR_HEIGHT = 56;
  export const style = StyleSheet.create({
    barShapeWrapper: {
 -    elevation: 11,

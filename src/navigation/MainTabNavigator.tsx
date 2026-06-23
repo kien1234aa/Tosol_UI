@@ -58,8 +58,11 @@ export function MainTabNavigator() {
         label: mainTabCopy.home,
         renderIcon: ({ focused, size }: { focused: boolean; size: number }) => (
           <HomeTabLogo
+            coverBubble={focused}
             size={
-              focused ? tabBarLayout.homeLogoSize : size ?? tabBarLayout.iconSize
+              focused
+                ? tabBarLayout.bubbleSize
+                : size ?? tabBarLayout.iconSize
             }
           />
         ),

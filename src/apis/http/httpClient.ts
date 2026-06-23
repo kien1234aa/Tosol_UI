@@ -85,17 +85,22 @@ function shouldAttachAuth(path: string, options?: InternalRequestOptions): boole
   return !isPublicPath(path);
 }
 
+function isFormDataBody(body: unknown): body is FormData {
+  return typeof FormData !== 'undefined' && body instanceof FormData;
+}
+
 function buildAuthHeaders(
   path: string,
   options?: InternalRequestOptions,
   hasBody = false,
+  body?: unknown,
 ): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/json',
     'X-API-Version': API_VERSION,
   };
 
-  if (hasBody) {
+  if (hasBody && !isFormDataBody(body)) {
     headers['Content-Type'] = 'application/json';
   }
 
@@ -265,8 +270,12 @@ async function performRequest(context: RequestContext): Promise<Response> {
     url,
     {
       method,
-      headers: buildAuthHeaders(path, options, hasBody),
-      body: hasBody ? JSON.stringify(body) : undefined,
+      headers: buildAuthHeaders(path, options, hasBody, body),
+      body: hasBody
+        ? isFormDataBody(body)
+          ? body
+          : JSON.stringify(body)
+        : undefined,
       signal: options?.signal,
     },
     timeoutMs,
@@ -407,6 +416,21 @@ export async function postJson<T>(
   });
 }
 
+export async function postFormData<T>(
+  path: string,
+  body: FormData,
+  options?: HttpRequestOptions,
+): Promise<T> {
+  return executeRequest<T>({
+    method: 'POST',
+    path,
+    body,
+    options,
+    expectData: true,
+    expectMeta: false,
+  });
+}
+
 export async function postJsonAction(
   path: string,
   body: unknown,
@@ -445,6 +469,36 @@ export async function patchJson<T>(
 ): Promise<T> {
   return executeRequest<T>({
     method: 'PATCH',
+    path,
+    body,
+    options,
+    expectData: true,
+    expectMeta: false,
+  });
+}
+
+export async function putJson<T>(
+  path: string,
+  body: unknown,
+  options?: HttpRequestOptions,
+): Promise<T> {
+  return executeRequest<T>({
+    method: 'PUT',
+    path,
+    body,
+    options,
+    expectData: true,
+    expectMeta: false,
+  });
+}
+
+export async function putFormData<T>(
+  path: string,
+  body: FormData,
+  options?: HttpRequestOptions,
+): Promise<T> {
+  return executeRequest<T>({
+    method: 'PUT',
     path,
     body,
     options,

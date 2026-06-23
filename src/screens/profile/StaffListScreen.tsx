@@ -11,7 +11,7 @@ import { Users } from 'lucide-react-native';
 import { staffCopy } from '@/src/configs/profile';
 import { mainLayout } from '@/src/configs/main';
 import { lightTokens } from '@/src/configs/theme';
-import { ProfileStackHeader, StaffListCard } from '@/src/components/profile';
+import { ProfileListStatCard, ProfileStackHeader, StaffListCard } from '@/src/components/profile';
 import { useStaffList } from '@/src/hooks/profile';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { selectIsAdminUser } from '@/src/redux/login';
@@ -22,7 +22,6 @@ import { ListLoadingGate } from '@/src/shared/components/ui/ListLoadingGate';
 import { ListScreenSkeleton } from '@/src/shared/components/ui/skeleton';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
-import { HStack } from '@/src/uikits/hstack';
 import { Text } from '@/src/uikits/text';
 import { VStack } from '@/src/uikits/vstack';
 
@@ -100,17 +99,11 @@ export function StaffListScreen({ navigation }: StaffListScreenProps) {
             onPressBack={handleBack}
           />
 
-          <HStack className="items-center justify-between px-4 pb-3">
-            <HStack className="items-center gap-2">
-              <Users color={lightTokens.tertiary600} size={18} />
-              <Text size="sm" className="font-medium text-typography-700">
-                {staffCopy.totalLabel}
-              </Text>
-            </HStack>
-            <Text size="sm" className="font-semibold text-tertiary-600">
-              {total}
-            </Text>
-          </HStack>
+          <ProfileListStatCard
+            icon={Users}
+            label={staffCopy.totalLabel}
+            value={total}
+          />
 
           <ListLoadingGate
             loading={isLoading}

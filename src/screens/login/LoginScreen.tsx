@@ -19,6 +19,7 @@ import {
 } from '@/src/components/login';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { selectIsAuthenticated } from '@/src/redux/login/authSelectors';
+import { fetchCurrentUserThunk } from '@/src/redux/login';
 
 type LoginScreenProps = RootStackScreenProps<'Login'>;
 
@@ -29,14 +30,32 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const afterLogin = async () => {
+      await dispatch(fetchCurrentUserThunk());
+
+      if (cancelled) {
+        return;
+      }
+
       void dispatch(fetchNotificationsThunk({ page: 1, append: false }));
       void syncFcmTokenWithBackend();
       navigation.reset({
         index: 0,
         routes: [{ name: 'Main' }],
       });
-    }
+    };
+
+    void afterLogin();
+
+    return () => {
+      cancelled = true;
+    };
   }, [dispatch, isAuthenticated, navigation]);
 
   const handleForgotPassword = useCallback(() => {

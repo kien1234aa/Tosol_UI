@@ -48,6 +48,25 @@ function resetListPagination(state: OrdersState): void {
   state.listStatus = 'idle';
 }
 
+function mergeOrderListItems(
+  existing: OrderListItem[],
+  incoming: OrderListItem[],
+  append: boolean,
+): OrderListItem[] {
+  const merged = append ? [...existing, ...incoming] : incoming;
+  const seen = new Set<string>();
+
+  return merged.filter(item => {
+    const key = item.orderNumber || item.uuid;
+    if (!key || seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
 const ordersSlice = createSlice({
   name: 'orders',
   initialState,
@@ -86,9 +105,13 @@ const ordersSlice = createSlice({
         state.total = action.payload.total;
 
         if (action.payload.append) {
-          state.items = [...state.items, ...action.payload.orders];
+          state.items = mergeOrderListItems(
+            state.items,
+            action.payload.orders,
+            true,
+          );
         } else {
-          state.items = action.payload.orders;
+          state.items = mergeOrderListItems([], action.payload.orders, false);
         }
       })
       .addCase(fetchOrdersThunk.rejected, (state, action) => {

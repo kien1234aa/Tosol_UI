@@ -17,7 +17,19 @@ export function formatOrderLabel(
   labels: Record<string, string>,
   value: string,
 ): string {
-  return labels[value] ?? value;
+  const trimmed = value?.trim();
+  if (!trimmed) {
+    return '—';
+  }
+
+  return labels[trimmed] ?? labels[trimmed.toLowerCase()] ?? trimmed;
+}
+
+export function formatOrderStatusLabel(
+  status: string | null | undefined,
+  labels: Record<string, string>,
+): string {
+  return formatOrderLabel(labels, status ?? '');
 }
 
 export function formatYesNo(value: boolean): string {

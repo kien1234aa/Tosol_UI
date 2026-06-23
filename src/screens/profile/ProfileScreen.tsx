@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { profileCopy } from '@/src/configs/profile';
+import { productsCopy } from '@/src/configs/products';
 import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import { mainLayout } from '@/src/configs/main';
 import {
@@ -65,6 +66,14 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
 
   const handleStaffList = useCallback(() => {
     navigation.navigate('StaffList');
+  }, [navigation]);
+
+  const handleProductList = useCallback(() => {
+    navigation.navigate('ProductList');
+  }, [navigation]);
+
+  const handleCreateProduct = useCallback(() => {
+    navigation.navigate('CreateProduct');
   }, [navigation]);
 
   const handleNotifications = useCallback(() => {
@@ -144,6 +153,18 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
                 />
               </ProfileSectionCard>
             ) : null}
+
+            <ProfileSectionCard title={productsCopy.sectionTitle}>
+              <ProfileMenuRow
+                label={productsCopy.productList}
+                onPress={handleProductList}
+              />
+              <ProfileDivider />
+              <ProfileMenuRow
+                label={productsCopy.createProduct}
+                onPress={handleCreateProduct}
+              />
+            </ProfileSectionCard>
 
             <ProfileSectionCard title={profileCopy.deliverySection}>
               <ProfileMenuRow

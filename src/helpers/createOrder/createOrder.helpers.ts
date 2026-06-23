@@ -381,16 +381,37 @@ export function getEstimatePartnerId(
   );
 }
 
+/** Chuẩn hóa SĐT khách từ API / preferences (string hoặc number). */
+export function normalizeCustomerPhone(value: unknown): string {
+  if (value == null) {
+    return '';
+  }
+
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return String(Math.trunc(value));
+  }
+
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+
+  return '';
+}
+
 /** Chuỗi từ field province/district/ward của API (string hoặc object có `name`). */
 export function labelFromCustomerLocationField(value: unknown): string {
   if (value == null) {
     return '';
   }
   if (typeof value === 'string') {
-    return value.trim();
+    const trimmed = value.trim();
+    if (/^\d+$/.test(trimmed)) {
+      return '';
+    }
+    return trimmed;
   }
   if (typeof value === 'number') {
-    return String(value);
+    return '';
   }
   if (typeof value === 'object') {
     const record = value as Record<string, unknown>;
@@ -416,26 +437,125 @@ export function labelFromCustomerLocationField(value: unknown): string {
   return '';
 }
 
-/** Suy tỉnh/quận/phường từ `full_address` dạng "…, phường, quận, tỉnh". */
+const LOCATION_ADMIN_PREFIXES = [
+  /^tinh\s+/,
+  /^thanh pho\s+/,
+  /^tp\.?\s+/,
+  /^quan\s+/,
+  /^huyen\s+/,
+  /^thi xa\s+/,
+  /^phuong\s+/,
+  /^xa\s+/,
+  /^thi tran\s+/,
+];
+
+/** So khớp tên địa danh (API khách ↔ Best Express). */
+export function normalizeLocationCompareKey(value: string): string {
+  let key = value
+    .trim()
+    .replace(/\s+/g, ' ')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+  for (const prefix of LOCATION_ADMIN_PREFIXES) {
+    key = key.replace(prefix, '');
+  }
+
+  return key.trim();
+}
+
+const WARD_ADMIN_PREFIXES = [/^phuong\s+/, /^xa\s+/, /^thi tran\s+/];
+const DISTRICT_ADMIN_PREFIXES = [
+  /^quan\s+/,
+  /^huyen\s+/,
+  /^thi xa\s+/,
+];
+
+function normalizeLocationSegmentKey(value: string): string {
+  return value
+    .trim()
+    .replace(/\s+/g, ' ')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function looksLikeWardAdminUnit(segment: string): boolean {
+  const key = normalizeLocationSegmentKey(segment);
+  return WARD_ADMIN_PREFIXES.some(prefix => prefix.test(key));
+}
+
+function looksLikeDistrictAdminUnit(segment: string): boolean {
+  const key = normalizeLocationSegmentKey(segment);
+  return DISTRICT_ADMIN_PREFIXES.some(prefix => prefix.test(key));
+}
+
+/** Suy tỉnh/quận/phường từ `full_address`. Hỗ trợ cả "đường, quận, tỉnh" (3 phần) và "đường, phường, quận, tỉnh" (4+ phần). */
 export function inferLocationLabelsFromFullAddress(fullRaw: string): {
   provinceLabel: string;
   districtLabel: string;
   wardLabel: string;
 } {
+  const empty = { provinceLabel: '', districtLabel: '', wardLabel: '' };
   const parts = fullRaw
     .split(',')
     .map(segment => segment.trim())
     .filter(segment => segment.length > 0);
 
-  if (parts.length < 3) {
-    return { provinceLabel: '', districtLabel: '', wardLabel: '' };
+  if (parts.length < 2) {
+    return empty;
   }
 
-  return {
-    provinceLabel: parts[parts.length - 1] ?? '',
-    districtLabel: parts[parts.length - 2] ?? '',
-    wardLabel: parts[parts.length - 3] ?? '',
-  };
+  const provinceLabel = parts[parts.length - 1] ?? '';
+
+  if (parts.length === 2) {
+    return { provinceLabel, districtLabel: '', wardLabel: '' };
+  }
+
+  const districtCandidate = parts[parts.length - 2] ?? '';
+  const wardCandidate = parts[parts.length - 3] ?? '';
+
+  if (parts.length === 3) {
+    if (looksLikeDistrictAdminUnit(districtCandidate)) {
+      return { provinceLabel, districtLabel: districtCandidate, wardLabel: '' };
+    }
+
+    if (looksLikeWardAdminUnit(districtCandidate)) {
+      return {
+        provinceLabel,
+        districtLabel: '',
+        wardLabel: districtCandidate,
+      };
+    }
+
+    return { provinceLabel, districtLabel: districtCandidate, wardLabel: '' };
+  }
+
+  if (
+    looksLikeWardAdminUnit(wardCandidate) &&
+    looksLikeDistrictAdminUnit(districtCandidate)
+  ) {
+    return {
+      provinceLabel,
+      districtLabel: districtCandidate,
+      wardLabel: wardCandidate,
+    };
+  }
+
+  if (looksLikeDistrictAdminUnit(districtCandidate)) {
+    return { provinceLabel, districtLabel: districtCandidate, wardLabel: '' };
+  }
+
+  if (looksLikeWardAdminUnit(wardCandidate)) {
+    return {
+      provinceLabel,
+      districtLabel: districtCandidate,
+      wardLabel: wardCandidate,
+    };
+  }
+
+  return { provinceLabel, districtLabel: districtCandidate, wardLabel: '' };
 }
 
 /** Tỉnh / quận / phường để khớp Best Express (ưu tiên field API, fallback full_address). */
@@ -449,24 +569,20 @@ export function resolveCustomerLocationLabelsForOrder(
   let districtLabel = customer.districtLabel.trim();
   let wardLabel = customer.wardLabel.trim();
 
-  if (!provinceLabel && !districtLabel && !wardLabel) {
-    const inferred = inferLocationLabelsFromFullAddress(customer.fullAddress.trim());
+  const inferred = inferLocationLabelsFromFullAddress(customer.fullAddress.trim());
+  if (!provinceLabel) {
     provinceLabel = inferred.provinceLabel;
+  }
+  if (!districtLabel) {
     districtLabel = inferred.districtLabel;
+  }
+  if (!wardLabel) {
     wardLabel = inferred.wardLabel;
+  } else if (!looksLikeWardAdminUnit(wardLabel)) {
+    wardLabel = inferred.wardLabel || '';
   }
 
   return { provinceLabel, districtLabel, wardLabel };
-}
-
-/** So khớp tên địa danh (API khách ↔ Best Express). */
-export function normalizeLocationCompareKey(value: string): string {
-  return value
-    .trim()
-    .replace(/\s+/g, ' ')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
 }
 
 export function bestExpressRowByLabel<T extends { name: string }>(
@@ -483,10 +599,57 @@ export function bestExpressRowByLabel<T extends { name: string }>(
     return exact;
   }
 
-  return list.find(row => {
+  const fuzzy = list.find(row => {
     const name = normalizeLocationCompareKey(row.name);
     return name.includes(target) || target.includes(name);
   });
+  if (fuzzy) {
+    return fuzzy;
+  }
+
+  const targetTokens = target.split(' ').filter(token => token.length > 1);
+  if (targetTokens.length === 0) {
+    return undefined;
+  }
+
+  return list.find(row => {
+    const name = normalizeLocationCompareKey(row.name);
+    return targetTokens.every(token => name.includes(token));
+  });
+}
+
+/** Khớp quận/huyện; fallback sang cấp lá (mô hình 2 cấp, vd. Quận Cẩm Lệ → Cẩm Lệ). */
+export function bestExpressDistrictByLabel<
+  T extends { name: string; children_count: number },
+>(districtList: T[], districtLabel: string, wardLabel = ''): T | undefined {
+  const districtTarget = districtLabel.trim();
+  const wardTarget = wardLabel.trim();
+
+  if (districtTarget) {
+    const direct = bestExpressRowByLabel(districtList, districtTarget);
+    if (direct) {
+      return direct;
+    }
+
+    const leafFromDistrict = districtList.find(
+      district =>
+        district.children_count === 0 &&
+        bestExpressRowByLabel([district], districtTarget) != null,
+    );
+    if (leafFromDistrict) {
+      return leafFromDistrict;
+    }
+  }
+
+  if (!wardTarget) {
+    return undefined;
+  }
+
+  return districtList.find(
+    district =>
+      district.children_count === 0 &&
+      bestExpressRowByLabel([district], wardTarget) != null,
+  );
 }
 
 /** Bỏ tỉnh/quận/phường ở cuối full_address để chỉ còn đường/số nhà. */

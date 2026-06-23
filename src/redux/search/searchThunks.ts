@@ -29,7 +29,7 @@ export const fetchProductsThunk = createAsyncThunk<
   'search/fetchProducts',
   async ({ page, append }, { rejectWithValue }) => {
     try {
-      const { products, meta } = await productsService.list(page);
+      const { products, meta } = await productsService.list({ page });
 
       return {
         products: products.map(mapApiProductToSearchProduct),

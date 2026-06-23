@@ -126,8 +126,12 @@ export function mapApiProductDetailToSearchProduct(
 
   return {
     ...product,
-    imageUrl: primaryImage?.original_url ?? product.imageUrl,
-    thumbnailUrl: primaryImage?.thumbnail_url ?? product.thumbnailUrl,
+    imageUrl: primaryImage?.original_url ?? item.image_url ?? product.imageUrl,
+    thumbnailUrl:
+      primaryImage?.thumbnail_url ??
+      item.thumbnail_url ??
+      item.image_url ??
+      product.thumbnailUrl,
     seller: item.seller?.name ?? product.seller,
     sellerName: item.seller?.name,
     sellerEmail: item.seller?.email,

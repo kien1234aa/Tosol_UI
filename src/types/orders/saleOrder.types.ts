@@ -174,6 +174,7 @@ export interface SaleOrderPackingOrderBoxApi {
   id: number;
   box_code?: string | null;
   tracking_number?: string | null;
+  status?: string | null;
 }
 
 export interface SaleOrderPackingOrderApi {
@@ -181,6 +182,12 @@ export interface SaleOrderPackingOrderApi {
   order_number: string;
   status: string;
   boxes?: SaleOrderPackingOrderBoxApi[] | null;
+}
+
+export interface SaleOrderRelatedOrderApi {
+  id: number;
+  order_number: string;
+  status?: string | null;
 }
 
 export interface UpdateSaleOrderPayload {
@@ -207,6 +214,8 @@ export interface SaleOrderDetailApi extends SaleOrderApiItem {
   warehouse?: SaleOrderWarehouseApi | null;
   shipment?: SaleOrderShipmentApi | null;
   packing_order?: SaleOrderPackingOrderApi | null;
+  outbound_orders?: SaleOrderRelatedOrderApi[] | null;
+  return_orders?: SaleOrderRelatedOrderApi[] | null;
   customer?: SaleOrderCustomerApi & {
     email?: string | null;
     address?: string | null;

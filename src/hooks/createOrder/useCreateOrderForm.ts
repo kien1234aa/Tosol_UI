@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Keyboard } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { saleOrdersService } from '@/src/apis/orders/saleOrders.api';
-import { customersService } from '@/src/apis/customers/customers.api';
+import { customersService, getCustomerById } from '@/src/apis/customers/customers.api';
 import { shippingRatesService } from '@/src/apis/shipping/shippingRates.api';
 import { sellerShippingPartnersService } from '@/src/apis/shipping/sellerShippingPartners.api';
 import { sellerWarehousesService } from '@/src/apis/sellers/sellerWarehouses.api';
@@ -52,6 +52,7 @@ import {
   resolveCreateOrderWarehouseId,
   resolveCustomerLocationLabelsForOrder,
   resolveCustomerRecipientAddress,
+  normalizeCustomerPhone,
 } from '@/src/helpers/createOrder/createOrder.helpers';
 import {
   makeSelectDraftById,
@@ -201,11 +202,14 @@ export function useCreateOrderForm(
   const [selectedCustomerName, setSelectedCustomerName] = useState<string | null>(
     null,
   );
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<CustomerSearchResult | null>(null);
   const [isSearchingCustomers, setIsSearchingCustomers] = useState(false);
   const [customerSearchError, setCustomerSearchError] = useState<string | null>(
     null,
   );
   const customerSearchRequestId = useRef(0);
+  const customerDetailFetchId = useRef(0);
   const shippingPartnersRequestId = useRef(0);
   const shippingEstimateRequestId = useRef(0);
   const [shippingFeeVnd, setShippingFeeVnd] = useState(0);
@@ -214,7 +218,6 @@ export function useCreateOrderForm(
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const selectedCustomerRef = useRef<CustomerSearchResult | null>(null);
   const onCustomerCreatedRef = useRef<(customer: CustomerSearchResult) => void>(
     () => {},
   );
@@ -227,6 +230,49 @@ export function useCreateOrderForm(
   );
 
   const locations = useBestExpressLocations(isFocused, form.shopId);
+
+  useEffect(() => {
+    setForm(current => {
+      if (
+        current.provinceId === locations.provinceId &&
+        current.districtId === locations.districtId &&
+        current.wardId === locations.wardId
+      ) {
+        return current;
+      }
+
+      return {
+        ...current,
+        provinceId: locations.provinceId,
+        districtId: locations.districtId,
+        wardId: locations.wardId,
+      };
+    });
+  }, [locations.districtId, locations.provinceId, locations.wardId]);
+
+  useEffect(() => {
+    if (
+      !isFocused ||
+      selectedCustomer == null ||
+      form.shippingMethod === 'customer_pickup'
+    ) {
+      return;
+    }
+
+    const labels = resolveCustomerLocationLabelsForOrder(selectedCustomer);
+    if (!labels.provinceLabel && !labels.districtLabel && !labels.wardLabel) {
+      return;
+    }
+
+    void locations.applyCustomerLocationLabels(labels);
+  }, [
+    form.shippingMethod,
+    form.shopId,
+    isFocused,
+    locations.applyCustomerLocationLabels,
+    locations.isLoadingProvinces,
+    selectedCustomer,
+  ]);
 
   const selectPackagingWarehousePrefs = useMemo(
     () => selectPackagingWarehousePreferences(form.shopId),
@@ -283,9 +329,9 @@ export function useCreateOrderForm(
     setCustomerSearchQuery('');
     setCustomerSearchResults([]);
     setSelectedCustomerName(null);
+    setSelectedCustomer(null);
     setIsSearchingCustomers(false);
     setCustomerSearchError(null);
-    selectedCustomerRef.current = null;
   }, []);
 
   const loadOptions = useCallback(async () => {
@@ -815,26 +861,31 @@ export function useCreateOrderForm(
     ],
   );
 
-  const onChangeCustomerSearchQuery = useCallback((value: string) => {
-    setCustomerSearchQuery(value);
-    setSelectedCustomerName(null);
-    setForm(current => ({
-      ...current,
-      customerId: null,
-    }));
-  }, []);
+  const onChangeCustomerSearchQuery = useCallback(
+    (value: string) => {
+      setCustomerSearchQuery(value);
+      customerDetailFetchId.current += 1;
 
-  const onSelectCustomer = useCallback(
+      if (selectedCustomerName != null) {
+        void locations.applyCustomerLocationLabels({
+          provinceLabel: '',
+          districtLabel: '',
+          wardLabel: '',
+        });
+      }
+
+      setSelectedCustomerName(null);
+      setSelectedCustomer(null);
+      setForm(current => ({
+        ...current,
+        customerId: null,
+      }));
+    },
+    [locations.applyCustomerLocationLabels, selectedCustomerName],
+  );
+
+  const persistCustomerPreference = useCallback(
     (customer: CustomerSearchResult) => {
-      Keyboard.dismiss();
-      customerSearchRequestId.current += 1;
-      setSelectedCustomerName(customer.name);
-      setCustomerSearchQuery(customer.name);
-      setCustomerSearchResults([]);
-      setCustomerSearchError(null);
-      setIsSearchingCustomers(false);
-      selectedCustomerRef.current = customer;
-
       dispatch(
         recordPreference({
           key: preferenceKeys.customer,
@@ -844,36 +895,71 @@ export function useCreateOrderForm(
           meta: customerSearchResultToPreferenceMeta(customer),
         }),
       );
-
-      const recipientAddress = resolveCustomerRecipientAddress(customer);
-      let skipLocationSync = false;
-
-      setForm(current => {
-        skipLocationSync = current.shippingMethod === 'customer_pickup';
-        return {
-          ...current,
-          customerId: customer.id,
-          recipientName: customer.name,
-          recipientPhone: customer.phone,
-          recipientAddress,
-        };
-      });
-
-      if (skipLocationSync) {
-        return;
-      }
-
-      const labels = resolveCustomerLocationLabelsForOrder(customer);
-      void locations.applyCustomerLocationLabels(labels).then(locationIds => {
-        setForm(current => ({
-          ...current,
-          provinceId: locationIds.provinceId,
-          districtId: locationIds.districtId,
-          wardId: locationIds.wardId,
-        }));
-      });
     },
-    [dispatch, locations],
+    [dispatch],
+  );
+
+  const applyCustomerToForm = useCallback((customer: CustomerSearchResult) => {
+    const phone = normalizeCustomerPhone(customer.phone);
+
+    setForm(current => ({
+      ...current,
+      customerId: customer.id,
+      recipientName: customer.name.trim(),
+      recipientPhone: phone,
+      recipientAddress: resolveCustomerRecipientAddress(customer),
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (
+      !isFocused ||
+      selectedCustomer == null ||
+      form.shippingMethod === 'customer_pickup'
+    ) {
+      return;
+    }
+
+    applyCustomerToForm(selectedCustomer);
+  }, [
+    applyCustomerToForm,
+    form.shippingMethod,
+    isFocused,
+    selectedCustomer,
+  ]);
+
+  const onSelectCustomer = useCallback(
+    (customer: CustomerSearchResult) => {
+      Keyboard.dismiss();
+      customerSearchRequestId.current += 1;
+      customerDetailFetchId.current += 1;
+      const fetchId = customerDetailFetchId.current;
+
+      setSelectedCustomerName(customer.name);
+      setCustomerSearchQuery(customer.name);
+      setCustomerSearchResults([]);
+      setCustomerSearchError(null);
+      setIsSearchingCustomers(false);
+      setSelectedCustomer(customer);
+      applyCustomerToForm(customer);
+      persistCustomerPreference(customer);
+
+      void getCustomerById(customer.id)
+        .then(record => {
+          if (fetchId !== customerDetailFetchId.current) {
+            return;
+          }
+
+          const fullCustomer = mapCustomerToSearchResult(record);
+          setSelectedCustomer(fullCustomer);
+          applyCustomerToForm(fullCustomer);
+          persistCustomerPreference(fullCustomer);
+        })
+        .catch(() => {
+          // Giữ dữ liệu từ tìm kiếm / gần đây nếu không tải được chi tiết.
+        });
+    },
+    [applyCustomerToForm, persistCustomerPreference],
   );
 
   onCustomerCreatedRef.current = onSelectCustomer;
@@ -1072,7 +1158,7 @@ export function useCreateOrderForm(
               shopLabel: selectedShopLabel,
               warehouseLabel: selectedWarehouseLabel,
               shippingPartnerLabel: selectedShippingPartnerLabel,
-              customer: selectedCustomerRef.current,
+              customer: selectedCustomer,
               provinceLabel: locations.shipmentLocation.province,
               districtLabel: locations.shipmentLocation.district,
               wardLabel: locations.shipmentLocation.ward,
@@ -1117,6 +1203,7 @@ export function useCreateOrderForm(
     selectedShopLabel,
     selectedWarehouseLabel,
     selectedShippingPartnerLabel,
+    selectedCustomer,
     warehouseRecords,
   ]);
 

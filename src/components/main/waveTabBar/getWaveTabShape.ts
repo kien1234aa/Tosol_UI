@@ -1,17 +1,23 @@
 /**
- * Semicircular wave notch that hugs the floating bubble.
- * Bubble center sits on the bar top edge; notch radius = bubble radius.
+ * Vết lõm bán nguyệt — bo tròn vào ôm bong bóng (R = notchWidth / 2).
  */
+export function getWaveNotchCurvePath(
+  notchStartX: number,
+  notchWidth: number,
+): string {
+  const radius = notchWidth / 2;
+  const notchEnd = notchStartX + notchWidth;
+
+  return `A ${radius} ${radius} 0 0 0 ${notchEnd} 0`;
+}
+
 export function getWaveTabShape(
   barWidth: number,
   barHeight: number,
   notchWidth: number,
 ): string {
-  const radius = notchWidth / 2;
-  const notchEnd = barWidth + notchWidth;
-
   const left = `M 0 0 L ${barWidth} 0`;
-  const notch = `A ${radius} ${radius} 0 0 1 ${notchEnd} 0`;
+  const notch = getWaveNotchCurvePath(barWidth, notchWidth);
   const right = [
     `L ${barWidth * 2.1} 0`,
     `L ${barWidth * 2.1} ${barHeight}`,

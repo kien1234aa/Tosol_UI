@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { bestExpressLocationsService } from '@/src/apis/locations/bestExpressLocations.api';
 import { createOrderCopy } from '@/src/configs/createOrder/createOrder.constants';
 import {
+  bestExpressDistrictByLabel,
   bestExpressRowByLabel,
   isBestExpressWardRequired,
   resolveBestExpressShipmentLocation,
@@ -12,22 +13,6 @@ import type {
   BestExpressProvince,
   BestExpressWard,
 } from '@/src/types/orders/location.types';
-
-function findLeafDistrictByLabel(
-  districtList: BestExpressDistrict[],
-  label: string,
-): BestExpressDistrict | undefined {
-  const target = label.trim();
-  if (!target) {
-    return undefined;
-  }
-
-  return districtList.find(
-    district =>
-      district.children_count === 0 &&
-      bestExpressRowByLabel([district], target) != null,
-  );
-}
 
 function mapLocationToSelectOption(item: {
   id: number;
@@ -99,6 +84,7 @@ export function useBestExpressLocations(
   const [districtsError, setDistrictsError] = useState<string | null>(null);
   const [wardsError, setWardsError] = useState<string | null>(null);
   const locationSyncRequestId = useRef(0);
+  const isApplyingCustomerLocationRef = useRef(false);
 
   const resetLocations = useCallback(() => {
     setProvinces([]);
@@ -115,76 +101,26 @@ export function useBestExpressLocations(
     setWardsError(null);
   }, []);
 
-  const clearDistrictAndWard = useCallback(() => {
+  useEffect(() => {
+    if (!enabled) {
+      resetLocations();
+      return;
+    }
+
     setDistrictId(null);
     setWardId(null);
     setDistricts([]);
     setWards([]);
     setDistrictsError(null);
     setWardsError(null);
-  }, []);
 
-  const clearWard = useCallback(() => {
-    setWardId(null);
-    setWards([]);
-    setWardsError(null);
-  }, []);
-
-  const [prevEnabled, setPrevEnabled] = useState(enabled);
-  const [prevShopId, setPrevShopId] = useState(shopId);
-  const [prevProvinceId, setPrevProvinceId] = useState(provinceId);
-  const [prevDistrictId, setPrevDistrictId] = useState(districtId);
-
-  if (enabled !== prevEnabled) {
-    setPrevEnabled(enabled);
-    if (!enabled) {
-      resetLocations();
-    } else {
-      setPrevShopId(shopId);
-      setPrevProvinceId(provinceId);
-      setPrevDistrictId(districtId);
-      setIsLoadingProvinces(true);
-      setProvincesError(null);
-    }
-  }
-
-  if (enabled && shopId !== prevShopId) {
-    setPrevShopId(shopId);
-    clearDistrictAndWard();
     if (shopId != null) {
       setProvinceId(null);
-      setPrevProvinceId(null);
-    }
-    setIsLoadingProvinces(true);
-    setProvincesError(null);
-  }
-
-  if (enabled && provinceId !== prevProvinceId) {
-    setPrevProvinceId(provinceId);
-    if (provinceId == null) {
-      clearDistrictAndWard();
-      setIsLoadingDistricts(false);
-    } else {
-      setIsLoadingDistricts(true);
-    }
-  }
-
-  if (enabled && districtId !== prevDistrictId) {
-    setPrevDistrictId(districtId);
-    if (districtId == null) {
-      clearWard();
-      setIsLoadingWards(false);
-    } else {
-      setIsLoadingWards(true);
-    }
-  }
-
-  useEffect(() => {
-    if (!enabled) {
-      return;
     }
 
     let cancelled = false;
+    setIsLoadingProvinces(true);
+    setProvincesError(null);
 
     void bestExpressLocationsService
       .listProvinces()
@@ -212,19 +148,37 @@ export function useBestExpressLocations(
     return () => {
       cancelled = true;
     };
-  }, [enabled, shopId]);
+  }, [enabled, resetLocations, shopId]);
 
   useEffect(() => {
-    if (!enabled || provinceId == null) {
+    if (!enabled) {
+      return;
+    }
+
+    setDistricts([]);
+    setWards([]);
+    setDistrictsError(null);
+    setWardsError(null);
+
+    if (provinceId == null) {
+      setDistrictId(null);
+      setWardId(null);
+      setIsLoadingDistricts(false);
       return;
     }
 
     const province = provinces.find(item => item.id === provinceId);
     if (!province) {
+      setIsLoadingDistricts(false);
+      return;
+    }
+
+    if (isApplyingCustomerLocationRef.current) {
       return;
     }
 
     let cancelled = false;
+    setIsLoadingDistricts(true);
 
     void bestExpressLocationsService
       .listDistricts(province.address_id)
@@ -262,24 +216,37 @@ export function useBestExpressLocations(
   }, [enabled, provinceId, provinces]);
 
   useEffect(() => {
-    if (!enabled || districtId == null) {
+    if (!enabled) {
+      return;
+    }
+
+    setWards([]);
+    setWardsError(null);
+
+    if (districtId == null) {
+      setWardId(null);
+      setIsLoadingWards(false);
       return;
     }
 
     const district = districts.find(item => item.id === districtId);
     if (!district) {
-      return;
-    }
-
-    if (!isBestExpressWardRequired(district)) {
-      setWards([]);
-      setWardId(null);
-      setWardsError(null);
       setIsLoadingWards(false);
       return;
     }
 
+    if (!isBestExpressWardRequired(district)) {
+      setWardId(null);
+      setIsLoadingWards(false);
+      return;
+    }
+
+    if (isApplyingCustomerLocationRef.current) {
+      return;
+    }
+
     let cancelled = false;
+    setIsLoadingWards(true);
 
     void bestExpressLocationsService
       .listWards(district.address_id)
@@ -362,9 +329,7 @@ export function useBestExpressLocations(
 
   const selectedWardLabel = useMemo(() => {
     if (!isWardRequired && districtId != null) {
-      return (
-        selectedDistrict?.name ?? createOrderCopy.selectWard
-      );
+      return selectedDistrict?.name ?? createOrderCopy.selectWard;
     }
 
     if (wardId == null) {
@@ -390,21 +355,22 @@ export function useBestExpressLocations(
     ],
   );
 
-  const onSelectProvince = useCallback(
-    (nextProvinceId: number) => {
-      setProvinceId(nextProvinceId);
-      clearDistrictAndWard();
-    },
-    [clearDistrictAndWard],
-  );
+  const onSelectProvince = useCallback((nextProvinceId: number) => {
+    setProvinceId(nextProvinceId);
+    setDistrictId(null);
+    setWardId(null);
+    setDistricts([]);
+    setWards([]);
+    setDistrictsError(null);
+    setWardsError(null);
+  }, []);
 
-  const onSelectDistrict = useCallback(
-    (nextDistrictId: number) => {
-      setDistrictId(nextDistrictId);
-      clearWard();
-    },
-    [clearWard],
-  );
+  const onSelectDistrict = useCallback((nextDistrictId: number) => {
+    setDistrictId(nextDistrictId);
+    setWardId(null);
+    setWards([]);
+    setWardsError(null);
+  }, []);
 
   const onSelectWard = useCallback((nextWardId: number) => {
     setWardId(nextWardId);
@@ -426,10 +392,16 @@ export function useBestExpressLocations(
       const wardLabel = labels.wardLabel.trim();
 
       if (!provinceLabel && !districtLabel && !wardLabel) {
+        isApplyingCustomerLocationRef.current = false;
         setProvinceId(null);
-        clearDistrictAndWard();
+        setDistrictId(null);
+        setWardId(null);
+        setDistricts([]);
+        setWards([]);
         return emptyResult;
       }
+
+      isApplyingCustomerLocationRef.current = true;
 
       try {
         let provinceList = provinces;
@@ -445,121 +417,85 @@ export function useBestExpressLocations(
         if (!provinceRow) {
           if (!isCancelled()) {
             setProvinceId(null);
-            clearDistrictAndWard();
+            setDistrictId(null);
+            setWardId(null);
+            setDistricts([]);
+            setWards([]);
           }
           return emptyResult;
         }
+
+        let nextDistrictId: number | null = null;
+        let nextWardId: number | null = null;
+        let nextDistrictList: BestExpressDistrict[] = [];
+        let nextWardList: BestExpressWard[] = [];
+
+        if (districtLabel || wardLabel) {
+          nextDistrictList = await bestExpressLocationsService.listDistricts(
+            provinceRow.address_id,
+          );
+          if (isCancelled()) {
+            return emptyResult;
+          }
+
+          const districtRow = bestExpressDistrictByLabel(
+            nextDistrictList,
+            districtLabel,
+            wardLabel,
+          );
+
+          if (districtRow) {
+            nextDistrictId = districtRow.id;
+
+            if (isBestExpressWardRequired(districtRow) && wardLabel) {
+              nextWardList = await bestExpressLocationsService.listWards(
+                districtRow.address_id,
+              );
+              if (isCancelled()) {
+                return emptyResult;
+              }
+
+              const wardRow = bestExpressRowByLabel(nextWardList, wardLabel);
+              nextWardId = wardRow?.id ?? null;
+            }
+          }
+        }
+
+        const result: CustomerLocationIds = {
+          provinceId: provinceRow.id,
+          districtId: nextDistrictId,
+          wardId: nextWardId,
+        };
 
         if (!isCancelled()) {
           setProvinceId(provinceRow.id);
-          clearDistrictAndWard();
+          setDistricts(nextDistrictList);
+          setDistrictId(nextDistrictId);
+          setWards(nextWardList);
+          setWardId(nextWardId);
+          setDistrictsError(null);
+          setWardsError(null);
+          setIsLoadingDistricts(false);
+          setIsLoadingWards(false);
         }
 
-        if (!districtLabel && !wardLabel) {
-          return { provinceId: provinceRow.id, districtId: null, wardId: null };
-        }
-
-        const districtList = await bestExpressLocationsService.listDistricts(
-          provinceRow.address_id,
-        );
-        if (isCancelled()) {
-          return emptyResult;
-        }
-
-        if (!districtLabel && wardLabel) {
-          const leafDistrict = findLeafDistrictByLabel(districtList, wardLabel);
-          if (leafDistrict) {
-            if (!isCancelled()) {
-              setDistricts(districtList);
-              setDistrictId(leafDistrict.id);
-              clearWard();
-            }
-            return {
-              provinceId: provinceRow.id,
-              districtId: leafDistrict.id,
-              wardId: null,
-            };
-          }
-        }
-
-        const districtRow = districtLabel
-          ? bestExpressRowByLabel(districtList, districtLabel)
-          : undefined;
-
-        if (!districtRow) {
-          const leafFromWard = wardLabel
-            ? findLeafDistrictByLabel(districtList, wardLabel)
-            : undefined;
-
-          if (leafFromWard) {
-            if (!isCancelled()) {
-              setDistricts(districtList);
-              setDistrictId(leafFromWard.id);
-              clearWard();
-            }
-            return {
-              provinceId: provinceRow.id,
-              districtId: leafFromWard.id,
-              wardId: null,
-            };
-          }
-
-          if (!isCancelled()) {
-            clearWard();
-            setDistrictId(null);
-          }
-          return { provinceId: provinceRow.id, districtId: null, wardId: null };
-        }
-
-        if (!isCancelled()) {
-          setDistricts(districtList);
-          setDistrictId(districtRow.id);
-          clearWard();
-        }
-
-        if (!isBestExpressWardRequired(districtRow)) {
-          return {
-            provinceId: provinceRow.id,
-            districtId: districtRow.id,
-            wardId: null,
-          };
-        }
-
-        if (!wardLabel) {
-          return {
-            provinceId: provinceRow.id,
-            districtId: districtRow.id,
-            wardId: null,
-          };
-        }
-
-        const wardList = await bestExpressLocationsService.listWards(
-          districtRow.address_id,
-        );
-        if (isCancelled()) {
-          return emptyResult;
-        }
-
-        const wardRow = bestExpressRowByLabel(wardList, wardLabel);
-        if (!isCancelled()) {
-          setWards(wardList);
-          setWardId(wardRow?.id ?? null);
-        }
-
-        return {
-          provinceId: provinceRow.id,
-          districtId: districtRow.id,
-          wardId: wardRow?.id ?? null,
-        };
+        return result;
       } catch {
         if (!isCancelled()) {
           setProvinceId(null);
-          clearDistrictAndWard();
+          setDistrictId(null);
+          setWardId(null);
+          setDistricts([]);
+          setWards([]);
         }
         return emptyResult;
+      } finally {
+        if (requestId === locationSyncRequestId.current) {
+          isApplyingCustomerLocationRef.current = false;
+        }
       }
     },
-    [clearDistrictAndWard, clearWard, provinces],
+    [provinces],
   );
 
   return {

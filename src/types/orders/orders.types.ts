@@ -49,6 +49,22 @@ export interface OrderDetailShipping {
   collectCod: boolean;
   codAmountVnd: number;
   shippingPayer: string;
+  shipmentStatus: string | null;
+  shipmentStatusLabel: string | null;
+}
+
+export type OrderDetailChildOrderKind =
+  | 'packing'
+  | 'outbound'
+  | 'return'
+  | 'box';
+
+export interface OrderDetailChildOrder {
+  id: string;
+  kind: OrderDetailChildOrderKind;
+  orderNumber: string;
+  status: string;
+  statusLabel: string;
 }
 
 export interface OrderDetailCosts {
@@ -72,6 +88,7 @@ export interface OrderDetail extends OrderListItem {
   customerPhone: string;
   customerAddress: string;
   packingOrderNumber: string | null;
+  childOrders: OrderDetailChildOrder[];
   products: OrderDetailProduct[];
   shipping: OrderDetailShipping | null;
   costs: OrderDetailCosts;

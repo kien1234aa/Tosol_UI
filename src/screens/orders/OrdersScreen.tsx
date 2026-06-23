@@ -151,7 +151,10 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
     [handleOrderAction, handleViewOrder, handleRemoveOrder],
   );
 
-  const keyExtractor = useCallback((item: OrderListItem) => item.uuid, []);
+  const keyExtractor = useCallback(
+    (item: OrderListItem) => item.orderNumber || item.uuid,
+    [],
+  );
 
   const handleEndReached = useCallback(() => {
     loadMoreOrders();

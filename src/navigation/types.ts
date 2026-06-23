@@ -52,6 +52,10 @@ export type ProfileStackParamList = {
   ChangePassword: undefined;
   StaffList: undefined;
   StaffDetail: { staffUuid: string };
+  ProductList: undefined;
+  CreateProduct: undefined;
+  EditProduct: { productId: string };
+  ProductDetail: { productId: string };
 };
 
 /** Central route registry for the root stack navigator. */

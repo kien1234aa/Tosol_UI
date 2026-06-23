@@ -65,6 +65,12 @@ export const orderDetailCopy = {
   customerAddressLabel: 'Địa chỉ:',
   warehouseLabel: 'Kho đóng gói:',
   packingOrderLabel: 'Phiếu đóng gói:',
+  childOrdersTitle: 'Đơn hàng con',
+  childOrderPackingLabel: 'Phiếu đóng gói',
+  childOrderOutboundLabel: 'Phiếu xuất kho',
+  childOrderReturnLabel: 'Phiếu hoàn',
+  childOrderBoxLabel: 'Kiện',
+  shipmentStatusLabel: 'Trạng thái vận chuyển:',
   creatorLabel: 'Người tạo:',
   productsTitle: 'Sản phẩm',
   shippingTitle: 'Giao hàng',
@@ -93,9 +99,12 @@ export const orderDetailCopy = {
 
 export const saleOrderPaymentStatusLabels: Record<string, string> = {
   pending: 'Chờ thanh toán',
+  pending_payment: 'Chờ thanh toán',
   partial_paid: 'Thanh toán một phần',
+  partial_payment: 'Thanh toán một phần',
   paid: 'Đã thanh toán',
   voided: 'Đã huỷ',
+  disabled: 'Vô hiệu',
   pending_refund: 'Chờ hoàn tiền',
   refunded: 'Đã hoàn tiền',
 };
@@ -117,6 +126,8 @@ export const saleOrderStatusLabels: Record<string, string> = {
   confirmed: 'Đã xác nhận',
   packing: 'Đang đóng gói',
   shipping: 'Đang giao',
+  shipped: 'Đang giao',
+  ready: 'Sẵn sàng giao',
   ready_to_ship: 'Sẵn sàng giao',
   delivered: 'Đã giao',
   cancelled: 'Đã huỷ',
@@ -125,6 +136,53 @@ export const saleOrderStatusLabels: Record<string, string> = {
   transfer_failed: 'Chuyển khoản thất bại',
   returned: 'Đã hoàn',
   partially_returned: 'Hoàn một phần',
+  partial_return: 'Hoàn một phần',
+  fully_returned: 'Hoàn toàn bộ',
+};
+
+export const packingOrderStatusLabels: Record<string, string> = {
+  pending: 'Chờ đóng gói',
+  packing: 'Đang đóng gói',
+  packed: 'Đã đóng gói',
+  completed: 'Hoàn tất',
+  cancelled: 'Đã huỷ',
+};
+
+export const outboundOrderStatusLabels: Record<string, string> = {
+  pending: 'Chờ xử lý',
+  picking: 'Đang lấy hàng',
+  ready: 'Sẵn sàng giao',
+  completed: 'Hoàn tất',
+  cancelled: 'Đã huỷ',
+};
+
+export const returnOrderStatusLabels: Record<string, string> = {
+  pending: 'Chờ xử lý',
+  processing: 'Đang xử lý',
+  completed: 'Hoàn tất',
+  cancelled: 'Đã huỷ',
+};
+
+export const shipmentStatusLabels: Record<string, string> = {
+  pending: 'Chờ xử lý',
+  picking: 'Đang lấy hàng',
+  picked_up: 'Đã lấy hàng',
+  in_transit: 'Đang vận chuyển',
+  shipping: 'Đang giao',
+  delivered: 'Đã giao',
+  failed: 'Giao thất bại',
+  failed_delivery: 'Giao thất bại',
+  cancelled: 'Đã huỷ',
+  returning: 'Đang hoàn',
+  returned: 'Đã hoàn',
+};
+
+export const packingBoxStatusLabels: Record<string, string> = {
+  pending: 'Chờ',
+  packing: 'Đang đóng',
+  packed: 'Đã đóng',
+  completed: 'Hoàn tất',
+  cancelled: 'Đã huỷ',
 };
 
 export const orderStatusFilterLabels: Record<OrderStatusFilter, string> = {

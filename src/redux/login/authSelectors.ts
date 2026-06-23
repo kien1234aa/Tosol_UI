@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { searchCopy } from '@/src/configs/search';
 import { isAllWarehouses } from '@/src/configs/warehouse';
+import { normalizeAuthWarehouses } from '@/src/helpers/login/auth.helpers';
 import { isAdminUser } from '@/src/helpers/profile';
 import type { RootState } from '../store';
 
@@ -50,6 +51,11 @@ export const selectAuthSeller = createSelector(
   user => user?.seller ?? null,
 );
 
+export const selectAuthSellerId = createSelector(
+  selectAuthSeller,
+  seller => seller?.id ?? null,
+);
+
 export const selectAuthToken = createSelector(
   selectAuthState,
   auth => auth.token,
@@ -61,7 +67,7 @@ export const selectIsSwitchingWarehouse = createSelector(
 );
 
 export const selectAuthWarehouses = createSelector(selectAuthUser, user =>
-  user?.warehouses.filter(warehouse => warehouse.is_active) ?? [],
+  normalizeAuthWarehouses(user?.warehouses),
 );
 
 export const selectCurrentWarehouseId = createSelector(

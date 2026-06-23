@@ -78,7 +78,7 @@ export interface CustomerApiItem {
   seller_id: number;
   name: string;
   email: string | null;
-  phone: string;
+  phone: string | null;
   address: string | null;
   province: unknown;
   district: unknown;

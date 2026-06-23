@@ -22,13 +22,11 @@ import {
 } from '@/src/configs/theme/buttonLayout';
 import type {
   OrderDetail,
+  OrderDetailChildOrder,
   OrderDetailProduct,
   OrderDetailShipping as OrderDetailShippingInfo,
 } from '@/src/types/orders/orders.types';
-import {
-  ProductThumbnailImage,
-  productThumbnailContainerStyle,
-} from '@/src/shared/components/ui/ProductThumbnailImage';
+import { ProductThumbnailWithQuantityBadge } from '@/src/shared/components/ui/ProductThumbnailImage';
 import { Box } from '@/src/uikits/box';
 import { HStack } from '@/src/uikits/hstack';
 import { Pressable } from '@/src/uikits/pressable';
@@ -156,12 +154,6 @@ function OrderDetailSummaryComponent({ order }: OrderDetailSummaryProps) {
           label={orderDetailCopy.warehouseLabel}
           value={order.warehouseName}
         />
-        {order.packingOrderNumber ? (
-          <DetailRow
-            label={orderDetailCopy.packingOrderLabel}
-            value={order.packingOrderNumber}
-          />
-        ) : null}
         <DetailRow
           label={orderDetailCopy.creatorLabel}
           value={order.creatorName}
@@ -180,9 +172,12 @@ function OrderDetailProductRowComponent({
 }: OrderDetailProductRowProps) {
   return (
     <HStack className="w-full items-start gap-3">
-      <Box style={styles.productThumbnail}>
-        <ProductThumbnailImage uri={product.thumbnailUrl} />
-      </Box>
+      <ProductThumbnailWithQuantityBadge
+        uri={product.thumbnailUrl}
+        quantity={product.quantity}
+        size={64}
+        borderRadius={12}
+      />
 
       <VStack className="min-w-0 flex-1" space="xs">
         <Text
@@ -208,6 +203,74 @@ function OrderDetailProductRowComponent({
   );
 }
 
+interface OrderDetailChildOrdersProps {
+  childOrders: OrderDetailChildOrder[];
+}
+
+function childOrderKindLabel(kind: OrderDetailChildOrder['kind']): string {
+  switch (kind) {
+    case 'packing':
+      return orderDetailCopy.childOrderPackingLabel;
+    case 'outbound':
+      return orderDetailCopy.childOrderOutboundLabel;
+    case 'return':
+      return orderDetailCopy.childOrderReturnLabel;
+    case 'box':
+      return orderDetailCopy.childOrderBoxLabel;
+    default:
+      return orderDetailCopy.childOrderPackingLabel;
+  }
+}
+
+function OrderDetailChildOrderRow({
+  childOrder,
+}: {
+  childOrder: OrderDetailChildOrder;
+}) {
+  return (
+    <HStack className="w-full items-start justify-between gap-3">
+      <VStack space="xs" className="min-w-0 flex-1">
+        <Text size="xs" className="text-typography-500">
+          {childOrderKindLabel(childOrder.kind)}
+        </Text>
+        <Text size="sm" className="font-medium text-typography-900">
+          {childOrder.orderNumber}
+        </Text>
+      </VStack>
+      <Box style={styles.childOrderStatusBadge}>
+        <Text size="xs" className="font-medium text-typography-700">
+          {childOrder.statusLabel}
+        </Text>
+      </Box>
+    </HStack>
+  );
+}
+
+function OrderDetailChildOrdersComponent({
+  childOrders,
+}: OrderDetailChildOrdersProps) {
+  if (childOrders.length === 0) {
+    return null;
+  }
+
+  return (
+    <Box style={styles.sectionCard}>
+      <VStack space="md">
+        <Text size="sm" className="font-semibold text-typography-900">
+          {orderDetailCopy.childOrdersTitle}
+        </Text>
+        {childOrders.map((childOrder, index) => (
+          <React.Fragment
+            key={`${childOrder.kind}-${childOrder.orderNumber}-${index}`}>
+            {index > 0 ? <Box style={styles.divider} /> : null}
+            <OrderDetailChildOrderRow childOrder={childOrder} />
+          </React.Fragment>
+        ))}
+      </VStack>
+    </Box>
+  );
+}
+
 interface OrderDetailProductsProps {
   products: OrderDetailProduct[];
 }
@@ -224,7 +287,7 @@ function OrderDetailProductsComponent({ products }: OrderDetailProductsProps) {
           {orderDetailCopy.productsTitle}
         </Text>
         {products.map((product, index) => (
-          <React.Fragment key={product.id}>
+          <React.Fragment key={`${product.id}-${index}`}>
             {index > 0 ? <Box style={styles.divider} /> : null}
             <OrderDetailProductRowComponent product={product} />
           </React.Fragment>
@@ -261,6 +324,12 @@ function OrderDetailShippingComponent({ shipping }: OrderDetailShippingProps) {
           label={orderDetailCopy.trackingNumberLabel}
           value={shipping.trackingNumber ?? '—'}
         />
+        {shipping.shipmentStatusLabel ? (
+          <DetailRow
+            label={orderDetailCopy.shipmentStatusLabel}
+            value={shipping.shipmentStatusLabel}
+          />
+        ) : null}
         <DetailRow
           label={orderDetailCopy.shippingPayerLabel}
           value={formatOrderLabel(
@@ -472,18 +541,16 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: lightTokens.background100,
   },
+  childOrderStatusBadge: {
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: lightTokens.background100,
+    flexShrink: 0,
+  },
   divider: {
     height: 1,
     backgroundColor: lightTokens.outline100,
-  },
-  productThumbnail: {
-    width: 64,
-    height: 64,
-    borderRadius: 12,
-    backgroundColor: lightTokens.tertiary50,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: lightTokens.outline100,
-    ...productThumbnailContainerStyle,
   },
   footer: {
     width: '100%',
@@ -506,6 +573,7 @@ const styles = StyleSheet.create({
 
 export const OrderDetailHeader = memo(OrderDetailHeaderComponent);
 export const OrderDetailSummary = memo(OrderDetailSummaryComponent);
+export const OrderDetailChildOrders = memo(OrderDetailChildOrdersComponent);
 export const OrderDetailProducts = memo(OrderDetailProductsComponent);
 export const OrderDetailShipping = memo(OrderDetailShippingComponent);
 export const OrderDetailNote = memo(OrderDetailNoteComponent);

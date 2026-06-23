@@ -1,3 +1,4 @@
+import { normalizeCustomerPhone } from '@/src/helpers/createOrder/createOrder.helpers';
 import type { PreferenceEntry } from '@/src/types/preferences/preferences.types';
 import type { CreateOrderSelectOption } from '@/src/types/orders/createOrder.types';
 import type { CustomerSearchResult } from '@/src/types/orders/createOrder.types';
@@ -96,7 +97,7 @@ export function preferenceEntryToCustomerSearchResult(
   return {
     id,
     name: entry.label,
-    phone: entry.meta?.phone ?? '',
+    phone: normalizeCustomerPhone(entry.meta?.phone ?? entry.subtitle),
     address: entry.meta?.address ?? '',
     fullAddress: entry.meta?.fullAddress ?? '',
     email: entry.meta?.email ?? null,
@@ -110,7 +111,7 @@ export function customerSearchResultToPreferenceMeta(
   customer: CustomerSearchResult,
 ): Record<string, string> {
   return {
-    phone: customer.phone,
+    phone: normalizeCustomerPhone(customer.phone),
     address: customer.address,
     fullAddress: customer.fullAddress,
     ...(customer.email ? { email: customer.email } : {}),

@@ -12,7 +12,7 @@ class HttpSellerWarehousesService implements ISellerWarehousesService {
       apiEndpoints.sellerWarehouses(sellerCode),
     );
 
-    return data.filter(warehouse => warehouse.is_active);
+    return data.filter(warehouse => warehouse.is_active !== false);
   }
 }
 

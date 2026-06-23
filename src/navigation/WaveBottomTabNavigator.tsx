@@ -99,7 +99,12 @@ function WaveBottomTabNavigatorComponent({
       tabBarActiveTintColor: colors.activeTint,
       tabBarInactiveTintColor: colors.inactiveTint,
       tabBarActiveBackgroundColor: colors.activeBackground,
-      tabBarShowLabel: false,
+      tabBarShowLabel: true,
+      tabBarLabelStyle: {
+        fontSize: tabBarLayout.labelFontSize,
+        fontWeight: '500' as const,
+        marginTop: 2,
+      },
       tabBarItemStyle: {
         backgroundColor: 'transparent',
       },
@@ -107,6 +112,11 @@ function WaveBottomTabNavigatorComponent({
         backgroundColor: 'transparent',
         borderTopWidth: 0,
         elevation: 0,
+        overflow: 'visible' as const,
+        position: 'absolute' as const,
+        left: 0,
+        right: 0,
+        bottom: 0,
       },
     }),
     [colors.activeBackground, colors.activeTint, colors.inactiveTint],
@@ -146,7 +156,7 @@ function WaveBottomTabNavigatorComponent({
                 tab.renderIcon({
                   focused,
                   color: color ?? colors.inactiveTint,
-                  size: focused ? 26 : tabBarLayout.iconSize,
+                  size: tabBarLayout.iconSize,
                 }),
             }}
             component={tab.Screen}
