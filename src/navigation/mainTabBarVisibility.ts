@@ -9,7 +9,16 @@ export const mainTabBarHiddenRoutes: {
   Search: ['ProductDetail'],
   CreateOrder: ['CreateOrderEdit'],
   Orders: ['OrderDetail'],
-  Profile: ['PersonalInfo', 'ChangePassword', 'StaffList', 'StaffDetail'],
+  Profile: [
+    'PersonalInfo',
+    'ChangePassword',
+    'StaffList',
+    'StaffDetail',
+    'ProductList',
+    'ProductDetail',
+    'EditProduct',
+    'CreateProduct',
+  ],
 };
 
 export function isMainTabBarVisibleForRoute(

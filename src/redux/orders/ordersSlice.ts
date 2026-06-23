@@ -6,6 +6,8 @@ import {
 } from '@/src/helpers/home/orderBadge.helpers';
 import type { OrderListItem } from '@/src/types/orders/orders.types';
 import type { OrderAdvancedFilters } from '@/src/types/orders/orderFilters.types';
+import { mapSellerCountersToOrderHomeBadges } from '@/src/helpers/counters/counters.helpers';
+import { fetchCountersThunk } from '@/src/redux/counters/countersThunks';
 import { fetchOrdersThunk, fetchOrderDashboardCountsThunk } from './ordersThunks';
 
 export type OrdersListStatus = 'idle' | 'loading' | 'loadingMore' | 'success' | 'error';
@@ -23,6 +25,7 @@ export interface OrdersState {
   total: number;
   dashboardBadgeCounts: OrderHomeBadgeCounts;
   dashboardBadgeStatus: OrderDashboardBadgeStatus;
+  dashboardBadgeFetchedAt: number | null;
 }
 
 const initialState: OrdersState = {
@@ -37,6 +40,7 @@ const initialState: OrdersState = {
   total: 0,
   dashboardBadgeCounts: { ...EMPTY_ORDER_HOME_BADGE_COUNTS },
   dashboardBadgeStatus: 'idle',
+  dashboardBadgeFetchedAt: null,
 };
 
 function resetListPagination(state: OrdersState): void {
@@ -125,9 +129,17 @@ const ordersSlice = createSlice({
       .addCase(fetchOrderDashboardCountsThunk.fulfilled, (state, action) => {
         state.dashboardBadgeStatus = 'success';
         state.dashboardBadgeCounts = action.payload;
+        state.dashboardBadgeFetchedAt = Date.now();
       })
       .addCase(fetchOrderDashboardCountsThunk.rejected, state => {
         state.dashboardBadgeStatus = 'error';
+      })
+      .addCase(fetchCountersThunk.fulfilled, (state, action) => {
+        state.dashboardBadgeStatus = 'success';
+        state.dashboardBadgeCounts = mapSellerCountersToOrderHomeBadges(
+          action.payload.seller,
+        );
+        state.dashboardBadgeFetchedAt = Date.now();
       });
   },
 });

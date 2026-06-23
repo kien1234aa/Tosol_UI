@@ -1,6 +1,10 @@
 import { productDetailCopy, searchCopy } from '@/src/configs/search';
 import { exchangeConfig } from '@/src/configs/search';
 import { formatProductPrice } from '@/src/helpers/search/search.helpers';
+import {
+  getProductDetailHeroImageUrl,
+  mapProductDetailApiToProfileDetail,
+} from '@/src/helpers/products';
 import type {
   ProductApiItem,
   ProductDetailApiItem,
@@ -121,21 +125,33 @@ export function mapApiProductToSearchProduct(
 export function mapApiProductDetailToSearchProduct(
   item: ProductDetailApiItem,
 ): SearchProduct {
+  const profile = mapProductDetailApiToProfileDetail(item);
   const product = mapBaseProductFields(item);
-  const primaryImage = item.primary_image ?? item.images?.[0];
 
   return {
     ...product,
-    imageUrl: primaryImage?.original_url ?? item.image_url ?? product.imageUrl,
+    imageUrl: getProductDetailHeroImageUrl(profile),
     thumbnailUrl:
-      primaryImage?.thumbnail_url ??
-      item.thumbnail_url ??
-      item.image_url ??
+      profile.primaryImage?.thumbnailUrl ??
+      profile.thumbnailUrl ??
       product.thumbnailUrl,
-    seller: item.seller?.name ?? product.seller,
-    sellerName: item.seller?.name,
-    sellerEmail: item.seller?.email,
-    sellerPhone: item.seller?.phone,
-    description: item.description?.trim() || productDetailCopy.noDescription,
+    seller: profile.seller?.name ?? product.seller,
+    sellerName: profile.seller?.name,
+    sellerEmail: profile.seller?.email,
+    sellerPhone: profile.seller?.phone,
+    sellerCode: profile.seller?.code,
+    sellerAddress: profile.seller?.address,
+    sellerTaxNumber: profile.seller?.taxNumber,
+    sellerIsActive: profile.seller?.isActive,
+    description:
+      profile.description?.trim() || productDetailCopy.noDescription,
+    isActive: profile.isActive,
+    isCombo: profile.isCombo,
+    minStock: profile.minStock,
+    isBelowMinStock: profile.isBelowMinStock,
+    unitLabel: profile.unitLabel,
+    createdAt: profile.createdAt,
+    updatedAt: profile.updatedAt,
+    recipeItems: profile.recipeItems,
   };
 }

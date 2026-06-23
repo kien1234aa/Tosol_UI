@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import { saleOrdersService } from '@/src/apis/orders/saleOrders.api';
 import { ordersCopy } from '@/src/configs/orders';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
-import { fetchOrderDashboardCountsThunk } from '@/src/redux/orders';
+import { fetchCountersThunk } from '@/src/redux/counters';
 
 export interface UseOrderCancelOptions {
   onSuccess?: () => void;
@@ -73,7 +73,7 @@ export function useOrderCancel(
       setOrderNumber(null);
       setReason('');
       onSuccess?.();
-      void dispatch(fetchOrderDashboardCountsThunk());
+      void dispatch(fetchCountersThunk({ force: true }));
       Alert.alert(ordersCopy.cancelSuccess);
     } catch (cancelError) {
       setError(

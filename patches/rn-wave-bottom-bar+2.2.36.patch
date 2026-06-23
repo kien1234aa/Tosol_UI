@@ -1,24 +1,95 @@
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
-index f1d127f..3e56753 100644
+index f1d127f..fd2deb7 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/bottom.tab.js
-@@ -10,13 +10,13 @@ var _reactNativeReanimated = _interopRequireWildcard(require("react-native-reani
+@@ -4,19 +4,12 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.defaultSpringConfig = exports.default = exports.FabTabBar = void 0;
+-var _react = _interopRequireWildcard(require("react"));
++var _react = _interopRequireDefault(require("react"));
+ var _reactNative = require("react-native");
+-var _reactNativeReanimated = _interopRequireWildcard(require("react-native-reanimated"));
  var _reactNativeSafeAreaContext = require("react-native-safe-area-context");
- var _reactNativeSvg = require("react-native-svg");
+-var _reactNativeSvg = require("react-native-svg");
  var _bottomTab = require("../styles/bottom.tab.styles");
 -var _tabBar = _interopRequireWildcard(require("./tab.bar.button"));
-+var _tabBar = require("./tab.bar.button");
- var _tab = require("./tab.shape");
- var _tabSquare = require("./tab.square.shape");
- function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
- function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
- const ReanimatedSvg = _reactNativeReanimated.default.createAnimatedComponent(_reactNativeSvg.Svg);
+-var _tab = require("./tab.shape");
+-var _tabSquare = require("./tab.square.shape");
+-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+-const ReanimatedSvg = _reactNativeReanimated.default.createAnimatedComponent(_reactNativeSvg.Svg);
 -const tabWidth = 110;
-+const tabWidth = 52;
++var _tabBar = require("./tab.bar.button");
++function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
  const defaultSpringConfig = {
    damping: 30,
    mass: 0.7,
-@@ -92,65 +92,14 @@ const FabTabBar = _ref => {
+@@ -28,129 +21,27 @@ const FabTabBar = _ref => {
+     state,
+     descriptors,
+     navigation,
+-    springConfig,
+     bottomBarContainerStyle,
+     focusedButtonStyle,
+     mode = 'default',
+     isRtl = false
+   } = _ref;
+-  const currentDescriptor = descriptors[state.routes[state.index].key];
+-  const [{
+-    width,
+-    height
+-  }, setDimensions] = (0, _react.useState)({
+-    width: _reactNative.Dimensions.get('window').width,
+-    height: _reactNative.Dimensions.get('window').height
+-  });
+   const {
+     bottom
+   } = (0, _reactNativeSafeAreaContext.useSafeAreaInsets)();
+-  const d = mode === 'default' ? (0, _tab.getTabShape)(width, height, tabWidth, _bottomTab.TAB_BAR_HEIGHT) : (0, _tabSquare.getSquareTabShape)(width, height, tabWidth, _bottomTab.TAB_BAR_HEIGHT);
+-  const tabsWidthValue = _react.default.useMemo(() => width / state.routes.length, [width, state.routes]);
+-  const tabsRealWidth = width / state.routes.length;
+-  const initialPosition = isRtl ? -width + tabsWidthValue * (state.routes.length - 1 - state.index) : -width + tabsWidthValue * state.index;
+-  const animatedValueLength = (0, _reactNativeReanimated.useSharedValue)(initialPosition);
+-  const offset = tabsRealWidth < tabWidth ? tabWidth - tabsRealWidth : (tabsRealWidth - tabWidth) * -1;
+-  (0, _react.useEffect)(() => {
+-    animatedValueLength.value = initialPosition;
+-  }, [isRtl]);
+-  const animatedStyles = (0, _reactNativeReanimated.useAnimatedStyle)(() => {
+-    return {
+-      transform: [{
+-        translateX: animatedValueLength.value
+-      }]
+-    };
+-  });
+-  (0, _react.useEffect)(() => {
+-    animatedValueLength.value = (0, _reactNativeReanimated.withSpring)(initialPosition - offset / 2, springConfig || defaultSpringConfig);
+-  }, [width, height, state, tabsWidthValue, offset, animatedValueLength, springConfig, initialPosition]);
+-  const animationValueThreshold = (0, _reactNativeReanimated.useSharedValue)(0);
+-  (0, _react.useEffect)(() => {
+-    animationValueThreshold.value = (0, _reactNativeReanimated.withSpring)(state.index, springConfig || defaultSpringConfig);
+-    /*Animated.spring(animationValueThreshold, {
+-      toValue: state.index,
+-      ...(springConfig || defaultSpringConfig),
+-      useNativeDriver: false,
+-    }).start();*/
+-  }, [animationValueThreshold, state.index, springConfig]);
+   return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+-    onLayout: _ref2 => {
+-      let {
+-        nativeEvent: {
+-          layout: {
+-            height: lHeight,
+-            width: lWidth
+-          }
+-        }
+-      } = _ref2;
+-      setDimensions({
+-        width: lWidth,
+-        height: lHeight
+-      });
+-    },
+     style: [_bottomTab.style.container, {
        marginBottom: bottom,
        height: _bottomTab.TAB_BAR_HEIGHT,
        flexDirection: isRtl ? 'row-reverse' : 'row'
@@ -87,8 +158,14 @@ index f1d127f..3e56753 100644
      const {
        options
      } = descriptors[route.key];
+@@ -188,4 +79,3 @@ const FabTabBar = _ref => {
+ exports.FabTabBar = FabTabBar;
+ var _default = FabTabBar;
+ exports.default = _default;
+-//# sourceMappingURL=bottom.tab.js.map
+\ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
-index 27c9f3b..18dcb70 100644
+index 27c9f3b..bffe4af 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/components/tab.bar.button.js
 @@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
@@ -304,7 +381,7 @@ index 4395c9e..d6b6429 100644
 -//# sourceMappingURL=tab.shape.js.map
 \ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js b/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
-index dcfdb5b..a4230c4 100644
+index dcfdb5b..0f86722 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/commonjs/styles/bottom.tab.styles.js
 @@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
@@ -372,38 +449,122 @@ index 8c0355c..0123953 100644
 -//# sourceMappingURL=tab.bar.button.styles.js.map
 \ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
-index e97bc3c..23080b3 100644
+index e97bc3c..d45b31b 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/components/bottom.tab.js
-@@ -4,11 +4,11 @@ import RNReanimated, { useAnimatedStyle, useSharedValue, withSpring } from 'reac
+@@ -1,111 +1,51 @@
+-import React, { useEffect, useState } from 'react';
+-import { Dimensions, StyleSheet, View } from 'react-native';
+-import RNReanimated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
++import React from 'react';
++import { View } from 'react-native';
  import { useSafeAreaInsets } from 'react-native-safe-area-context';
- import { Path, Svg } from 'react-native-svg';
+-import { Path, Svg } from 'react-native-svg';
  import { style, TAB_BAR_HEIGHT } from '../styles/bottom.tab.styles';
 -import FabBarButton, { BarButton } from './tab.bar.button';
-+import { BarButton } from './tab.bar.button';
- import { getTabShape } from './tab.shape';
- import { getSquareTabShape } from './tab.square.shape';
- const ReanimatedSvg = RNReanimated.createAnimatedComponent(Svg);
+-import { getTabShape } from './tab.shape';
+-import { getSquareTabShape } from './tab.square.shape';
+-const ReanimatedSvg = RNReanimated.createAnimatedComponent(Svg);
 -const tabWidth = 110;
-+const tabWidth = 52;
++import { BarButton } from './tab.bar.button';
++
  export const defaultSpringConfig = {
    damping: 30,
    mass: 0.7,
-@@ -83,65 +83,14 @@ export const FabTabBar = _ref => {
-       marginBottom: bottom,
-       height: TAB_BAR_HEIGHT,
-       flexDirection: isRtl ? 'row-reverse' : 'row'
+-  stiffness: 250
++  stiffness: 250,
+ };
++
+ export const FabTabBar = _ref => {
+   let {
+     state,
+     descriptors,
+     navigation,
+-    springConfig,
+     bottomBarContainerStyle,
+     focusedButtonStyle,
+     mode = 'default',
+-    isRtl = false
++    isRtl = false,
+   } = _ref;
+-  const currentDescriptor = descriptors[state.routes[state.index].key];
+-  const [{
+-    width,
+-    height
+-  }, setDimensions] = useState({
+-    width: Dimensions.get('window').width,
+-    height: Dimensions.get('window').height
+-  });
+-  const {
+-    bottom
+-  } = useSafeAreaInsets();
+-  const d = mode === 'default' ? getTabShape(width, height, tabWidth, TAB_BAR_HEIGHT) : getSquareTabShape(width, height, tabWidth, TAB_BAR_HEIGHT);
+-  const tabsWidthValue = React.useMemo(() => width / state.routes.length, [width, state.routes]);
+-  const tabsRealWidth = width / state.routes.length;
+-  const initialPosition = isRtl ? -width + tabsWidthValue * (state.routes.length - 1 - state.index) : -width + tabsWidthValue * state.index;
+-  const animatedValueLength = useSharedValue(initialPosition);
+-  const offset = tabsRealWidth < tabWidth ? tabWidth - tabsRealWidth : (tabsRealWidth - tabWidth) * -1;
+-  useEffect(() => {
+-    animatedValueLength.value = initialPosition;
+-  }, [isRtl]);
+-  const animatedStyles = useAnimatedStyle(() => {
+-    return {
+-      transform: [{
+-        translateX: animatedValueLength.value
+-      }]
+-    };
+-  });
+-  useEffect(() => {
+-    animatedValueLength.value = withSpring(initialPosition - offset / 2, springConfig || defaultSpringConfig);
+-  }, [width, height, state, tabsWidthValue, offset, animatedValueLength, springConfig, initialPosition]);
+-  const animationValueThreshold = useSharedValue(0);
+-  useEffect(() => {
+-    animationValueThreshold.value = withSpring(state.index, springConfig || defaultSpringConfig);
+-    /*Animated.spring(animationValueThreshold, {
+-      toValue: state.index,
+-      ...(springConfig || defaultSpringConfig),
+-      useNativeDriver: false,
+-    }).start();*/
+-  }, [animationValueThreshold, state.index, springConfig]);
++  const { bottom } = useSafeAreaInsets();
++
+   return /*#__PURE__*/React.createElement(View, {
+-    onLayout: _ref2 => {
+-      let {
+-        nativeEvent: {
+-          layout: {
+-            height: lHeight,
+-            width: lWidth
+-          }
+-        }
+-      } = _ref2;
+-      setDimensions({
+-        width: lWidth,
+-        height: lHeight
+-      });
+-    },
+-    style: [style.container, {
+-      marginBottom: bottom,
+-      height: TAB_BAR_HEIGHT,
+-      flexDirection: isRtl ? 'row-reverse' : 'row'
 -    }, bottomBarContainerStyle,
 -    // apply style from descriptor
 -    currentDescriptor.options.tabBarStyle]
-+    }, bottomBarContainerStyle]
++    style: [
++      style.container,
++      {
++        marginBottom: bottom,
++        height: TAB_BAR_HEIGHT,
++        flexDirection: isRtl ? 'row-reverse' : 'row',
++      },
++      bottomBarContainerStyle,
++    ],
    }, bottom > 0 && /*#__PURE__*/React.createElement(View, {
      style: [{
        height: bottom,
 -      backgroundColor: Object.values(descriptors)[state.index].options.tabBarActiveBackgroundColor,
-+      backgroundColor: 'transparent',
-       bottom: bottom * -1
-     }, style.bottomFill]
+-      bottom: bottom * -1
+-    }, style.bottomFill]
 -  }), /*#__PURE__*/React.createElement(View, {
 -    style: [style.fabButtonsContainer, {
 -      flexDirection: isRtl ? 'row-reverse' : 'row'
@@ -412,20 +573,25 @@ index e97bc3c..23080b3 100644
 -    const {
 -      options
 -    } = descriptors[route.key];
--    const isFocused = state.index === index;
--    const onPress = () => {
--      const event = navigation.emit({
--        type: 'tabPress',
--        target: route.key,
++      backgroundColor: 'transparent',
++      bottom: bottom * -1,
++    }, style.bottomFill],
++  }), state.routes.map((route, index) => {
++    const { options } = descriptors[route.key];
+     const isFocused = state.index === index;
+     const onPress = () => {
+       const event = navigation.emit({
+         type: 'tabPress',
+         target: route.key,
 -        canPreventDefault: true
--      });
--      if (!isFocused && !event.defaultPrevented) {
--        navigation.navigate(route.name);
--      }
--    };
--    const onLongPress = () => {
--      navigation.emit({
--        type: 'tabLongPress',
++        canPreventDefault: true,
+       });
+       if (!isFocused && !event.defaultPrevented) {
+         navigation.navigate(route.name);
+@@ -114,52 +54,7 @@ export const FabTabBar = _ref => {
+     const onLongPress = () => {
+       navigation.emit({
+         type: 'tabLongPress',
 -        target: route.key
 -      });
 -    };
@@ -454,12 +620,41 @@ index e97bc3c..23080b3 100644
 -    d: d,
 -    fill: Object.values(descriptors)[state.index].options.tabBarActiveBackgroundColor || '#FF5252'
 -  }))), state.routes.map((route, index) => {
-+  }), state.routes.map((route, index) => {
-     const {
-       options
-     } = descriptors[route.key];
+-    const {
+-      options
+-    } = descriptors[route.key];
+-    const isFocused = state.index === index;
+-    const onPress = () => {
+-      const event = navigation.emit({
+-        type: 'tabPress',
+         target: route.key,
+-        canPreventDefault: true
+-      });
+-      if (!isFocused && !event.defaultPrevented) {
+-        navigation.navigate(route.name);
+-      }
+-    };
+-    const onLongPress = () => {
+-      navigation.emit({
+-        type: 'tabLongPress',
+-        target: route.key
+       });
+     };
+     return /*#__PURE__*/React.createElement(BarButton, {
+@@ -172,9 +67,8 @@ export const FabTabBar = _ref => {
+       index: index,
+       isFocused: isFocused,
+       activeTintColor: options.tabBarActiveTintColor,
+-      inactiveTintColor: options.tabBarInactiveTintColor
++      inactiveTintColor: options.tabBarInactiveTintColor,
+     });
+   }));
+ };
+ export default FabTabBar;
+-//# sourceMappingURL=bottom.tab.js.map
+\ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
-index c84e9c6..9e24e8d 100644
+index c84e9c6..25747f9 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/components/tab.bar.button.js
 @@ -1,12 +1,13 @@
@@ -691,7 +886,7 @@ index 1d974c8..06870fe 100644
 -//# sourceMappingURL=tab.shape.js.map
 \ No newline at end of file
 diff --git a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js b/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
-index 42497e9..a8d441f 100644
+index 42497e9..8ed6c6f 100644
 --- a/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
 +++ b/node_modules/rn-wave-bottom-bar/lib/module/styles/bottom.tab.styles.js
 @@ -1,8 +1,8 @@

@@ -38,6 +38,7 @@ export const apiEndpoints = {
   shippingRatesEstimateCost: '/shipping-rates/estimate-cost',
   saleOrders: '/sale-orders',
   notifications: '/notifications',
+  counters: '/counters',
   users: '/users',
   deviceTokens: '/device-tokens',
 } as const;

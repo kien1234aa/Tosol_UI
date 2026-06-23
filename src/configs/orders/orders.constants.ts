@@ -197,3 +197,6 @@ export const orderStatusFilterLabels: Record<OrderStatusFilter, string> = {
 
 /** @deprecated Use saleOrderStatusLabels for API statuses. */
 export const orderStatusLabels = saleOrderStatusLabels;
+
+/** Home dashboard badges — không refetch nếu cache còn trong khoảng này (ms). */
+export const orderDashboardBadgeStaleMs = 60_000;

@@ -1,4 +1,5 @@
-import { isAnyOf, type Middleware } from '@reduxjs/toolkit';
+import { isAnyOf, type Middleware, type MiddlewareAPI } from '@reduxjs/toolkit';
+import { draftPersistDebounceMs } from '@/src/configs/createOrder/draft.constants';
 import { createOrderDraftStorage } from '@/src/storage/createOrderDraft.storage';
 import {
   addDraftProduct,
@@ -42,11 +43,52 @@ const draftMutationActions = isAnyOf(
   ensureDraftWithProduct,
 );
 
+/** Ghi ngay — thao tác cấu trúc draft, không nên trễ. */
+const immediateDraftPersistActions = isAnyOf(
+  createDraft,
+  removeDraft,
+  removeAllDrafts,
+  addDraftProduct,
+  ensureDraftWithProduct,
+  removeDraftProduct,
+  removeDraftGroup,
+);
+
+let persistTimer: ReturnType<typeof setTimeout> | null = null;
+let persistStore: MiddlewareAPI<AppDispatch, RootState> | null = null;
+
+function clearPersistTimer(): void {
+  if (persistTimer != null) {
+    clearTimeout(persistTimer);
+    persistTimer = null;
+  }
+}
+
 async function persistDraftForUser(
   userId: string,
   draft: RootState['createOrderDraft'],
 ): Promise<void> {
   await createOrderDraftStorage.save(userId, draft);
+}
+
+function flushPersistDraft(store: MiddlewareAPI<AppDispatch, RootState>): void {
+  const { auth, createOrderDraft } = store.getState();
+  const userId = auth.user?.id;
+
+  if (auth.status === 'authenticated' && userId) {
+    void persistDraftForUser(userId, createOrderDraft);
+  }
+}
+
+function schedulePersistDraft(store: MiddlewareAPI<AppDispatch, RootState>): void {
+  persistStore = store;
+  clearPersistTimer();
+  persistTimer = setTimeout(() => {
+    persistTimer = null;
+    if (persistStore) {
+      flushPersistDraft(persistStore);
+    }
+  }, draftPersistDebounceMs);
 }
 
 async function restoreDraftForUser(
@@ -68,6 +110,8 @@ export const createOrderDraftPersistenceMiddleware: Middleware<{}, RootState> =
     const result = next(action);
 
     if (logout.match(action)) {
+      clearPersistTimer();
+      persistStore = null;
       store.dispatch(resetDraftState());
       return result;
     }
@@ -76,18 +120,28 @@ export const createOrderDraftPersistenceMiddleware: Middleware<{}, RootState> =
       loginThunk.fulfilled.match(action) ||
       restoreSessionThunk.fulfilled.match(action)
     ) {
+      clearPersistTimer();
+      persistStore = null;
       const userId = action.payload.user.id;
       void restoreDraftForUser(userId, store.dispatch);
       return result;
     }
 
     if (draftMutationActions(action)) {
-      const { auth, createOrderDraft } = store.getState();
+      const { auth } = store.getState();
       const userId = auth.user?.id;
 
-      if (auth.status === 'authenticated' && userId) {
-        void persistDraftForUser(userId, createOrderDraft);
+      if (auth.status !== 'authenticated' || !userId) {
+        return result;
       }
+
+      if (immediateDraftPersistActions(action)) {
+        clearPersistTimer();
+        flushPersistDraft(store);
+        return result;
+      }
+
+      schedulePersistDraft(store);
     }
 
     return result;

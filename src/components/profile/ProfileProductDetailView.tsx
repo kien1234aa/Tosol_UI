@@ -106,7 +106,7 @@ function ProfileProductDetailViewComponent({
   return (
     <VStack className="w-full" space="lg">
       <Box style={[styles.hero, { height: heroHeight }]}>
-        <ProductThumbnailImage uri={heroImageUrl} />
+        <ProductThumbnailImage uri={heroImageUrl} priority="high" />
 
         {stockStatusLabel ? (
           <View style={[styles.stockBadge, stockBadgeStyle]}>

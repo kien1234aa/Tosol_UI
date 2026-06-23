@@ -4,6 +4,7 @@ import {
   filterNotifications,
 } from '@/src/helpers/notifications';
 import type { NotificationFilter } from '@/src/types/notifications/notifications.types';
+import { selectCountersState } from '@/src/redux/counters/countersSelectors';
 import type { RootState } from '@/src/redux/rootReducer';
 
 const selectNotificationsState = (state: RootState) => state.notifications;
@@ -49,8 +50,14 @@ export const selectIsLoadingMoreNotifications = createSelector(
 );
 
 export const selectUnreadNotificationCount = createSelector(
-  selectNotificationItems,
-  items => countUnreadNotifications(items),
+  [selectCountersState, selectNotificationItems],
+  (counters, items) => {
+    if (counters.status === 'success') {
+      return counters.unreadNotifications;
+    }
+
+    return countUnreadNotifications(items);
+  },
 );
 
 export const selectFilteredNotifications = createSelector(

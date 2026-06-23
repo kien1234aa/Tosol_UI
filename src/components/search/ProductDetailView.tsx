@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Store } from 'lucide-react-native';
+import { productsCopy } from '@/src/configs/products';
 import { productDetailCopy, searchCopy } from '@/src/configs/search';
 import {
   formatCatalogPrice,
@@ -10,6 +11,14 @@ import {
   getProductHeroImageUrl,
   getProductStockStatusLabel,
 } from '@/src/helpers/search';
+import {
+  formatProductDetailActiveStatus,
+  formatProductDetailBoolean,
+  formatProductDetailComboType,
+  formatProductDetailDateTime,
+  formatProductDetailNumber,
+  formatProductDetailText,
+} from '@/src/helpers/products';
 import { lightTokens } from '@/src/configs/theme';
 import {
   ProductThumbnailImage,
@@ -67,15 +76,56 @@ function InfoRow({
 }) {
   return (
     <HStack className="items-start justify-between gap-3">
-      <Text size="sm" className="text-typography-500">
+      <Text size="sm" className="shrink text-typography-500">
         {label}
       </Text>
       <Text
         size="sm"
+        selectable
         className="flex-1 text-right font-medium text-typography-900">
         {value}
       </Text>
     </HStack>
+  );
+}
+
+function DetailSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Box style={styles.sectionCard}>
+      <Text size="sm" className="mb-3 font-semibold text-typography-900">
+        {title}
+      </Text>
+      <VStack space="sm">{children}</VStack>
+    </Box>
+  );
+}
+
+function StatusBadge({
+  label,
+  variant,
+}: {
+  label: string;
+  variant: 'success' | 'neutral' | 'combo';
+}) {
+  const style =
+    variant === 'success'
+      ? styles.activeBadge
+      : variant === 'combo'
+        ? styles.comboBadge
+        : styles.inactiveBadge;
+
+  return (
+    <Box style={[styles.statusBadge, style]}>
+      <Text size="2xs" className="font-medium text-typography-700">
+        {label}
+      </Text>
+    </Box>
   );
 }
 
@@ -120,7 +170,7 @@ function ProductDetailContentComponent({
   return (
     <VStack className="w-full" space="lg">
       <Box style={[styles.hero, { height: heroHeight }]}>
-        <ProductThumbnailImage uri={heroImageUrl} />
+        <ProductThumbnailImage uri={heroImageUrl} priority="high" />
 
         {stockStatusLabel ? (
           <View style={[styles.stockBadge, stockBadgeStyle]}>
@@ -140,6 +190,21 @@ function ProductDetailContentComponent({
           {formatCatalogPrice(product.priceVnd)}
         </Text>
 
+        <HStack className="flex-wrap gap-2">
+          {product.isActive != null ? (
+            <StatusBadge
+              label={formatProductDetailActiveStatus(product.isActive)}
+              variant={product.isActive ? 'success' : 'neutral'}
+            />
+          ) : null}
+          {product.isCombo ? (
+            <StatusBadge
+              label={productsCopy.detailCombo}
+              variant="combo"
+            />
+          ) : null}
+        </HStack>
+
         {product.sku ? (
           <Text size="sm" className="text-typography-500">
             {searchCopy.skuLabel}: {product.sku}
@@ -147,31 +212,79 @@ function ProductDetailContentComponent({
         ) : null}
       </VStack>
 
-      <Box style={styles.sectionCard}>
-        <VStack space="sm">
-          <Text size="sm" className="font-semibold text-typography-900">
-            {productDetailCopy.stockSection}
-          </Text>
+      <DetailSection title={productsCopy.detailBasicSection}>
+        <InfoRow
+          label={productsCopy.skuLabel}
+          value={formatProductDetailText(product.sku)}
+        />
+        <InfoRow
+          label={productsCopy.detailBarcodeLabel}
+          value={formatProductDetailText(product.barcode)}
+        />
+        <InfoRow
+          label={productsCopy.detailUnitLabel}
+          value={
+            product.unitLabel && product.unit
+              ? `${product.unitLabel} (${product.unit})`
+              : formatProductUnit(product.unit)
+          }
+        />
+        <InfoRow
+          label={productsCopy.detailPriceLabel}
+          value={formatCatalogPrice(product.priceVnd)}
+        />
+        {product.isActive != null ? (
           <InfoRow
-            label={productDetailCopy.availableStockLabel}
-            value={formatStockQuantity(product.availableStock ?? 0)}
+            label={productsCopy.detailStatusLabel}
+            value={formatProductDetailActiveStatus(product.isActive)}
           />
+        ) : null}
+        {product.isCombo != null ? (
           <InfoRow
-            label={productDetailCopy.reservedStockLabel}
-            value={formatStockQuantity(product.reservedStock ?? 0)}
+            label={productsCopy.detailIsComboLabel}
+            value={formatProductDetailComboType(product.isCombo)}
           />
-          <InfoRow
-            label={productDetailCopy.totalStockLabel}
-            value={formatStockQuantity(product.totalStock ?? 0)}
-          />
-          {(product.warehousesCount ?? 0) > 0 ? (
-            <InfoRow
-              label={searchCopy.warehouseCountLabel}
-              value={String(product.warehousesCount)}
-            />
-          ) : null}
-        </VStack>
-      </Box>
+        ) : null}
+      </DetailSection>
+
+      <DetailSection title={productsCopy.detailStockSection}>
+        <InfoRow
+          label={productsCopy.detailAvailableStockLabel}
+          value={formatStockQuantity(product.availableStock ?? 0)}
+        />
+        <InfoRow
+          label={productsCopy.detailReservedStockLabel}
+          value={formatStockQuantity(product.reservedStock ?? 0)}
+        />
+        <InfoRow
+          label={productsCopy.detailTotalStockLabel}
+          value={formatStockQuantity(product.totalStock ?? 0)}
+        />
+        <InfoRow
+          label={productsCopy.detailMinStockLabel}
+          value={formatProductDetailNumber(product.minStock)}
+        />
+        <InfoRow
+          label={productsCopy.detailWarehousesCountLabel}
+          value={String(product.warehousesCount ?? 0)}
+        />
+        <InfoRow
+          label={productsCopy.detailIsInStockLabel}
+          value={formatProductDetailBoolean(product.isInStock)}
+        />
+        <InfoRow
+          label={productsCopy.detailIsLowStockLabel}
+          value={formatProductDetailBoolean(product.isLowStock)}
+        />
+        <InfoRow
+          label={productsCopy.detailIsBelowMinStockLabel}
+          value={formatProductDetailBoolean(product.isBelowMinStock)}
+        />
+        <InfoRow
+          label={productsCopy.detailIsOutOfStockLabel}
+          value={formatProductDetailBoolean(product.isOutOfStock)}
+        />
+      </DetailSection>
 
       <Box style={styles.sectionCard}>
         <HStack className="items-center justify-between">
@@ -194,76 +307,129 @@ function ProductDetailContentComponent({
         </HStack>
       </Box>
 
-      {(product.weight ?? 0) > 0 || dimensions ? (
-        <Box style={styles.sectionCard}>
-          <VStack space="sm">
-            <Text size="sm" className="font-semibold text-typography-900">
-              {productDetailCopy.dimensionsSection}
-            </Text>
-            {(product.weight ?? 0) > 0 ? (
-              <InfoRow
-                label={productDetailCopy.weightLabel}
-                value={`${formatStockQuantity(product.weight ?? 0)} g`}
-              />
-            ) : null}
-            {dimensions ? (
-              <InfoRow
-                label={productDetailCopy.dimensionsLabel}
-                value={dimensions}
-              />
-            ) : null}
-            {product.unit ? (
-              <InfoRow
-                label={productDetailCopy.unitLabel}
-                value={formatProductUnit(product.unit)}
-              />
-            ) : null}
-            {product.barcode ? (
-              <InfoRow
-                label={productDetailCopy.barcodeLabel}
-                value={product.barcode}
-              />
-            ) : null}
-          </VStack>
-        </Box>
-      ) : null}
+      <DetailSection title={productsCopy.detailDimensionsSection}>
+        <InfoRow
+          label={productsCopy.detailWeightLabel}
+          value={formatProductDetailNumber(product.weight, ' g')}
+        />
+        <InfoRow
+          label={productsCopy.detailLengthLabel}
+          value={formatProductDetailNumber(product.length, ' cm')}
+        />
+        <InfoRow
+          label={productsCopy.detailWidthLabel}
+          value={formatProductDetailNumber(product.width, ' cm')}
+        />
+        <InfoRow
+          label={productsCopy.detailHeightLabel}
+          value={formatProductDetailNumber(product.height, ' cm')}
+        />
+        {dimensions ? (
+          <InfoRow
+            label={productDetailCopy.dimensionsLabel}
+            value={dimensions}
+          />
+        ) : null}
+        <InfoRow
+          label={productsCopy.detailVolumetricWeightLabel}
+          value={formatProductDetailNumber(product.volumetricWeight)}
+        />
+      </DetailSection>
 
       {product.sellerName ? (
-        <Box style={styles.sectionCard}>
-          <HStack className="items-start gap-2">
+        <DetailSection title={productsCopy.detailSellerSection}>
+          <HStack className="mb-1 items-start gap-2">
             <Store color={lightTokens.tertiary600} size={18} />
-            <VStack className="flex-1" space="xs">
-              <Text size="xs" className="text-typography-500">
-                {productDetailCopy.sellerSection}
-              </Text>
-              <Text size="sm" className="font-semibold text-typography-900">
-                {product.sellerName}
-              </Text>
-              {product.sellerPhone ? (
-                <Text size="sm" className="text-typography-600">
-                  {product.sellerPhone}
-                </Text>
-              ) : null}
-              {product.sellerEmail ? (
-                <Text size="sm" className="text-typography-500">
-                  {product.sellerEmail}
-                </Text>
-              ) : null}
-            </VStack>
+            <Text size="sm" className="flex-1 font-semibold text-typography-900">
+              {product.sellerName}
+            </Text>
           </HStack>
-        </Box>
+          {product.sellerCode ? (
+            <InfoRow
+              label={productsCopy.detailSellerCodeLabel}
+              value={formatProductDetailText(product.sellerCode)}
+            />
+          ) : null}
+          {product.sellerPhone ? (
+            <InfoRow
+              label={productsCopy.detailSellerPhoneLabel}
+              value={formatProductDetailText(product.sellerPhone)}
+            />
+          ) : null}
+          {product.sellerEmail ? (
+            <InfoRow
+              label={productsCopy.detailSellerEmailLabel}
+              value={formatProductDetailText(product.sellerEmail)}
+            />
+          ) : null}
+          {product.sellerAddress ? (
+            <InfoRow
+              label={productsCopy.detailSellerAddressLabel}
+              value={formatProductDetailText(product.sellerAddress)}
+            />
+          ) : null}
+          {product.sellerTaxNumber ? (
+            <InfoRow
+              label={productsCopy.detailSellerTaxLabel}
+              value={formatProductDetailText(product.sellerTaxNumber)}
+            />
+          ) : null}
+          {product.sellerIsActive != null ? (
+            <InfoRow
+              label={productsCopy.detailSellerStatusLabel}
+              value={formatProductDetailActiveStatus(product.sellerIsActive)}
+            />
+          ) : null}
+        </DetailSection>
       ) : null}
 
-      <VStack space="sm">
-        <Text size="lg" className="font-bold text-typography-900">
-          {productDetailCopy.descriptionSection}
+      {product.isCombo && (product.recipeItems?.length ?? 0) > 0 ? (
+        <DetailSection title={productsCopy.detailRecipeSection}>
+          {product.recipeItems?.map((item, index) => (
+            <Box
+              key={item.id ?? `recipe-${index}`}
+              style={styles.recipeItemCard}>
+              <VStack space="xs">
+                <InfoRow
+                  label={productsCopy.detailRecipeComponentLabel}
+                  value={formatProductDetailText(item.componentName)}
+                />
+                <InfoRow
+                  label={searchCopy.skuLabel}
+                  value={formatProductDetailText(item.componentSku)}
+                />
+                <InfoRow
+                  label={productsCopy.detailRecipeQuantityLabel}
+                  value={formatProductDetailText(item.quantity)}
+                />
+              </VStack>
+            </Box>
+          ))}
+        </DetailSection>
+      ) : null}
+
+      <DetailSection title={productsCopy.detailDescriptionSection}>
+        <Text size="sm" className="leading-6 text-typography-700">
+          {product.description || productsCopy.detailNoDescription}
         </Text>
-        <Box style={styles.sectionCard}>
-          <Text size="sm" className="leading-6 text-typography-700">
-            {product.description || productDetailCopy.noDescription}
-          </Text>
-        </Box>
-      </VStack>
+      </DetailSection>
+
+      {product.createdAt || product.updatedAt ? (
+        <DetailSection title={productsCopy.detailTimestampsSection}>
+          {product.createdAt ? (
+            <InfoRow
+              label={productsCopy.detailCreatedAtLabel}
+              value={formatProductDetailDateTime(product.createdAt)}
+            />
+          ) : null}
+          {product.updatedAt ? (
+            <InfoRow
+              label={productsCopy.detailUpdatedAtLabel}
+              value={formatProductDetailDateTime(product.updatedAt)}
+            />
+          ) : null}
+        </DetailSection>
+      ) : null}
     </VStack>
   );
 }
@@ -369,6 +535,28 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.5,
+  },
+  statusBadge: {
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  activeBadge: {
+    backgroundColor: 'rgb(220, 252, 231)',
+  },
+  inactiveBadge: {
+    backgroundColor: lightTokens.background100,
+  },
+  comboBadge: {
+    backgroundColor: lightTokens.tertiary50,
+  },
+  recipeItemCard: {
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: lightTokens.background50,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: lightTokens.outline100,
   },
 });
 

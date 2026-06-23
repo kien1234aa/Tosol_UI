@@ -35,7 +35,7 @@ export type HomeStackParamList = {
 /** Nested stack inside the Search tab. */
 export type SearchStackParamList = {
   SearchMain: undefined;
-  ProductDetail: { productId: string };
+  ProductDetail: { productId: string; manage?: boolean };
 };
 
 /** Nested stack inside the Orders tab. */
@@ -55,7 +55,7 @@ export type ProfileStackParamList = {
   ProductList: undefined;
   CreateProduct: undefined;
   EditProduct: { productId: string };
-  ProductDetail: { productId: string };
+  ProductDetail: { productId: string; manage?: boolean };
 };
 
 /** Central route registry for the root stack navigator. */

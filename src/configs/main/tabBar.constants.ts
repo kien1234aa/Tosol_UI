@@ -25,7 +25,8 @@ export const tabBarLayout = {
   bubbleOverflow: 26,
   iconSize: 24,
   focusedIconSize: 26,
-  homeLogoSize: 32,
+  /** Logo tab Home — lớn hơn icon tab thường một chút. */
+  homeLogoSize: 30,
   labelFontSize: 12,
   spring: {
     damping: 18,

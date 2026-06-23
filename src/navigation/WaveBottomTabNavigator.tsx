@@ -7,6 +7,16 @@ import { WaveTabBar } from '@/src/components/main/WaveTabBar';
 import { useTabHaptics } from '@/src/hooks/common/useTabHaptics';
 import { tabBarLayout, type WaveBottomTabColors } from '@/src/configs/main';
 import { isMainTabBarVisibleForRoute } from './mainTabBarVisibility';
+import type { MainTabParamList } from './types';
+import {
+  getMainTabNavigation,
+  getMainTabNestedStackIndex,
+  isMainTabRouteFocused,
+  navigateMainTabToRoot,
+  shouldPopTabStackOnBlur,
+  shouldPopTabToRootOnRepress,
+  switchMainTab,
+} from './tabNavigation.helpers';
 
 const Tab = createBottomTabNavigator();
 
@@ -94,8 +104,7 @@ function WaveBottomTabNavigatorComponent({
     () => ({
       headerShown: false,
       lazy: true,
-      freezeOnBlur: true,
-      popToTopOnBlur: false,
+      freezeOnBlur: false,
       tabBarActiveTintColor: colors.activeTint,
       tabBarInactiveTintColor: colors.inactiveTint,
       tabBarActiveBackgroundColor: colors.activeBackground,
@@ -141,17 +150,43 @@ function WaveBottomTabNavigatorComponent({
       screenOptions={screenOptions}>
       {orderedVisible.map(tab => {
         const a11yLabel = tab.accessibilityLabel ?? tab.label ?? tab.id;
+        const tabRouteName = (tab.routeName ??
+          defaultRouteName(tab.id)) as keyof MainTabParamList;
 
         return (
           <Tab.Screen
             key={tab.id}
-            name={tab.routeName ?? defaultRouteName(tab.id)}
-            listeners={{
-              tabPress: () => handleTabPress(tab.id),
-            }}
+            name={tabRouteName}
+            listeners={({ navigation }) => ({
+              tabPress: event => {
+                handleTabPress(tab.id);
+
+                const tabNavigation = getMainTabNavigation(navigation);
+                const isFocused = isMainTabRouteFocused(
+                  tabNavigation,
+                  tabRouteName,
+                );
+                const nestedIndex = getMainTabNestedStackIndex(
+                  tabNavigation,
+                  tabRouteName,
+                );
+
+                if (shouldPopTabToRootOnRepress(isFocused, nestedIndex)) {
+                  event.preventDefault();
+                  navigateMainTabToRoot(tabNavigation, tabRouteName);
+                  return;
+                }
+
+                if (!isFocused) {
+                  event.preventDefault();
+                  switchMainTab(tabNavigation, tabRouteName);
+                }
+              },
+            })}
             options={{
               tabBarAccessibilityLabel: a11yLabel,
               tabBarLabel: tab.label,
+              popToTopOnBlur: shouldPopTabStackOnBlur(tabRouteName),
               tabBarIcon: ({ focused, color }) =>
                 tab.renderIcon({
                   focused,

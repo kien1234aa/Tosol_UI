@@ -39,6 +39,25 @@ export interface SearchProduct {
   height?: number;
   volumetricWeight?: number;
   barcode?: string | null;
+  isActive?: boolean;
+  isCombo?: boolean;
+  minStock?: number | null;
+  isBelowMinStock?: boolean;
+  unitLabel?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  sellerCode?: string;
+  sellerAddress?: string | null;
+  sellerTaxNumber?: string | null;
+  sellerIsActive?: boolean;
+  recipeItems?: ProductDetailRecipeItem[];
+}
+
+export interface ProductDetailRecipeItem {
+  id: number | null;
+  componentName: string | null;
+  componentSku: string | null;
+  quantity: string | null;
 }
 
 export interface ProductDetailPricing {

@@ -9,6 +9,7 @@ import { ordersReducer } from './orders/ordersSlice';
 import { consignmentReducer } from './consignment/consignmentSlice';
 import { profileReducer } from './profile/profileSlice';
 import { notificationsReducer } from './notifications/notificationsSlice';
+import { countersReducer } from './counters/countersSlice';
 import { preferencesReducer } from './preferences/preferencesSlice';
 
 /**
@@ -26,6 +27,7 @@ export const rootReducer = combineReducers({
   consignment: consignmentReducer,
   profile: profileReducer,
   notifications: notificationsReducer,
+  counters: countersReducer,
   preferences: preferencesReducer,
 });
 

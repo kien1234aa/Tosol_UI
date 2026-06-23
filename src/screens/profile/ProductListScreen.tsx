@@ -54,7 +54,10 @@ export function ProductListScreen({ navigation }: ProductListScreenProps) {
 
   const handleOpenProduct = useCallback(
     (id: number) => {
-      navigation.navigate('ProductDetail', { productId: String(id) });
+      navigation.navigate('ProductDetail', {
+        productId: String(id),
+        manage: true,
+      });
     },
     [navigation],
   );

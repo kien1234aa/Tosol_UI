@@ -3,7 +3,6 @@ import { Platform, StyleSheet, useColorScheme, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSequence,
   withSpring,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -71,7 +70,6 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
   const [width, setWidth] = useState(0);
   const bubbleCenterX = useSharedValue(0);
   const bubbleTranslateX = useSharedValue(0);
-  const bubbleScale = useSharedValue(1);
   const tabCount = state.routes.length;
 
   const activeRoute = state.routes[state.index];
@@ -88,13 +86,8 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
 
     bubbleCenterX.value = withSpring(centerX, tabBarLayout.spring);
     bubbleTranslateX.value = withSpring(leftX, tabBarLayout.spring);
-    bubbleScale.value = withSequence(
-      withSpring(1.14, tabBarLayout.bubblePopSpring),
-      withSpring(1, tabBarLayout.spring),
-    );
   }, [
     bubbleCenterX,
-    bubbleScale,
     bubbleTranslateX,
     state.index,
     tabCount,
@@ -102,10 +95,7 @@ function WaveTabBarComponent(props: BottomTabBarProps) {
   ]);
 
   const bubbleStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: bubbleTranslateX.value },
-      { scale: bubbleScale.value },
-    ],
+    transform: [{ translateX: bubbleTranslateX.value }],
   }));
 
   const focusedButtonStyle = useMemo(() => HIDDEN_LIBRARY_FAB_STYLE, []);

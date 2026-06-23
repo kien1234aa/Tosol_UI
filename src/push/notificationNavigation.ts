@@ -2,6 +2,7 @@ import type { NavigationContainerRef } from '@react-navigation/native';
 import type { RootStackParamList } from '@/src/navigation/types';
 import type { NotificationActionPayload } from '@/src/types/notifications/notifications.types';
 import { store } from '@/src/redux';
+import { fetchCountersThunk } from '@/src/redux/counters';
 import {
   fetchNotificationsThunk,
   markNotificationReadThunk,
@@ -17,6 +18,7 @@ export function setNavigationRef(ref: RootNavigationRef | null): void {
 
 function refreshNotifications(): void {
   void store.dispatch(fetchNotificationsThunk({ page: 1, append: false }));
+  void store.dispatch(fetchCountersThunk({ force: true }));
 }
 
 function markNotificationReadIfNeeded(notificationId: string | null): void {

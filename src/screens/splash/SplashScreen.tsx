@@ -5,7 +5,7 @@ import { animationConfig, lightTokens } from '@/src/configs/theme';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { restoreSessionThunk, fetchCurrentUserThunk } from '@/src/redux/login';
 import { fetchNotificationsThunk } from '@/src/redux/notifications';
-import { fetchOrderDashboardCountsThunk } from '@/src/redux/orders';
+import { fetchCountersThunk } from '@/src/redux/counters';
 import { store } from '@/src/redux';
 import { syncFcmTokenWithBackend } from '@/src/push';
 import type { RootStackScreenProps } from '@/src/navigation/types';
@@ -42,7 +42,7 @@ export function SplashScreen({ navigation }: SplashScreenProps) {
         await Promise.all([
           dispatch(fetchCurrentUserThunk()),
           dispatch(fetchNotificationsThunk({ page: 1, append: false })),
-          dispatch(fetchOrderDashboardCountsThunk()),
+          dispatch(fetchCountersThunk()),
         ]);
 
         if (cancelled) {

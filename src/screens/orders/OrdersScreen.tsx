@@ -1,13 +1,12 @@
 import React, { useCallback, useLayoutEffect, useMemo } from 'react';
+import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import {
   ActivityIndicator,
-  FlatList,
-  ListRenderItem,
   RefreshControl,
   StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { mainLayout } from '@/src/configs/main';
+import { mainLayout, orderListFlashListProps } from '@/src/configs/main';
 import { ordersCopy } from '@/src/configs/orders';
 import { EMPTY_ORDER_ADVANCED_FILTERS } from '@/src/configs/orders/orderFilters.constants';
 import { lightTokens } from '@/src/configs/theme';
@@ -269,8 +268,9 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
           itemCount={orders.length}
           options={{ canShowSkeleton: !loadError }}
           skeleton={listSkeleton}>
-          <FlatList
+          <FlashList
             data={orders}
+            style={styles.flex}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
@@ -285,6 +285,7 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
             refreshControl={refreshControl}
             onEndReached={handleEndReached}
             onEndReachedThreshold={0.4}
+            {...orderListFlashListProps}
           />
         </ListLoadingGate>
 

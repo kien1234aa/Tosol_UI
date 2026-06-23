@@ -62,3 +62,6 @@ export const draftTaxRateLimits = {
   min: 0,
   max: 100,
 } as const;
+
+/** Ghi AsyncStorage sau khi ngừng chỉnh sửa draft (ms). */
+export const draftPersistDebounceMs = 800;

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { saleOrdersService } from '@/src/apis/orders/saleOrders.api';
+import { orderDashboardBadgeStaleMs } from '@/src/configs/orders/orders.constants';
 import type { OrderHomeBadgeCounts } from '@/src/helpers/home/orderBadge.helpers';
 import { mapSaleOrdersToListItems } from '@/src/helpers/orders/saleOrder.helpers';
 import type { OrderAdvancedFilters } from '@/src/types/orders/orderFilters.types';
@@ -100,30 +101,57 @@ export const fetchOrdersThunk = createAsyncThunk<
 /** Lấy tổng số đơn theo từng nhóm để hiển thị badge trên màn Home. */
 export const fetchOrderDashboardCountsThunk = createAsyncThunk<
   OrderHomeBadgeCounts,
-  void,
-  { rejectValue: string }
->('orders/fetchDashboardCounts', async (_, { rejectWithValue }) => {
-  try {
-    const [all, partialPayment, ready] = await Promise.all([
-      saleOrdersService.list({ page: 1, perPage: 1 }),
-      saleOrdersService.list({
-        page: 1,
-        perPage: 1,
-        paymentStatus: 'partial_paid',
-      }),
-      saleOrdersService.list({ page: 1, perPage: 1, status: 'ready_to_ship' }),
-    ]);
+  { force?: boolean } | void,
+  { rejectValue: string; state: RootState }
+>(
+  'orders/fetchDashboardCounts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const [all, partialPayment, ready] = await Promise.all([
+        saleOrdersService.list({ page: 1, perPage: 1 }),
+        saleOrdersService.list({
+          page: 1,
+          perPage: 1,
+          paymentStatus: 'partial_paid',
+        }),
+        saleOrdersService.list({ page: 1, perPage: 1, status: 'ready_to_ship' }),
+      ]);
 
-    return {
-      orderList: all.meta.total,
-      orderPayment: partialPayment.meta.total,
-      orderReady: ready.meta.total,
-    };
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : 'Không thể tải số lượng đơn hàng';
-    return rejectWithValue(message);
-  }
-});
+      return {
+        orderList: all.meta.total,
+        orderPayment: partialPayment.meta.total,
+        orderReady: ready.meta.total,
+      };
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Không thể tải số lượng đơn hàng';
+      return rejectWithValue(message);
+    }
+  },
+  {
+    condition: (arg, { getState }) => {
+      const force = arg?.force === true;
+      const { dashboardBadgeStatus, dashboardBadgeFetchedAt } = getState().orders;
+
+      if (dashboardBadgeStatus === 'loading') {
+        return false;
+      }
+
+      if (force) {
+        return true;
+      }
+
+      if (dashboardBadgeStatus === 'idle' || dashboardBadgeStatus === 'error') {
+        return true;
+      }
+
+      if (dashboardBadgeFetchedAt == null) {
+        return true;
+      }
+
+      return Date.now() - dashboardBadgeFetchedAt >= orderDashboardBadgeStaleMs;
+    },
+  },
+);

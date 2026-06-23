@@ -8,7 +8,7 @@ import { StaffDetailScreen } from '@/src/screens/profile/StaffDetailScreen';
 import { ProductListScreen } from '@/src/screens/profile/ProductListScreen';
 import { CreateProductScreen } from '@/src/screens/profile/CreateProductScreen';
 import { EditProductScreen } from '@/src/screens/profile/EditProductScreen';
-import { ProfileProductDetailScreen } from '@/src/screens/profile/ProfileProductDetailScreen';
+import { ProductDetailScreen } from '@/src/screens/product/ProductDetailScreen';
 import type { ProfileStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -29,7 +29,7 @@ export function ProfileStackNavigator() {
       <Stack.Screen name="ProductList" component={ProductListScreen} />
       <Stack.Screen name="CreateProduct" component={CreateProductScreen} />
       <Stack.Screen name="EditProduct" component={EditProductScreen} />
-      <Stack.Screen name="ProductDetail" component={ProfileProductDetailScreen} />
+      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
     </Stack.Navigator>
   );
 }

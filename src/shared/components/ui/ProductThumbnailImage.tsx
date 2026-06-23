@@ -1,12 +1,16 @@
 import React, { memo, useMemo } from 'react';
 import {
-  Image,
   StyleSheet,
   type ImageResizeMode,
-  type ImageSourcePropType,
+  type ImageRequireSource,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import FastImage, {
+  type ImageStyle as FastImageStyle,
+  type ResizeMode as FastImageResizeMode,
+  type Source,
+} from '@d11/react-native-fast-image';
 import { lightTokens } from '@/src/configs/theme';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -20,34 +24,61 @@ export const productThumbnailContainerStyle: ViewStyle = {
   position: 'relative',
 };
 
+export type ProductThumbnailPriority = 'low' | 'normal' | 'high';
+
 export function resolveProductImageSource(
   uri?: string | null,
-): ImageSourcePropType {
+  priority: ProductThumbnailPriority = 'low',
+): Source | ImageRequireSource {
   if (uri) {
-    return { uri };
+    return {
+      uri,
+      priority: FastImage.priority[priority],
+      cache: FastImage.cacheControl.immutable,
+    };
   }
 
   return productPlaceholderSource;
 }
 
+function mapResizeMode(mode: ImageResizeMode): FastImageResizeMode {
+  switch (mode) {
+    case 'contain':
+      return FastImage.resizeMode.contain;
+    case 'stretch':
+      return FastImage.resizeMode.stretch;
+    case 'center':
+      return FastImage.resizeMode.center;
+    default:
+      return FastImage.resizeMode.cover;
+  }
+}
+
 interface ProductThumbnailImageProps {
   uri?: string | null;
   resizeMode?: ImageResizeMode;
-  style?: StyleProp<ViewStyle>;
+  /** `low` cho list scroll; `high` cho ảnh hero chi tiết. */
+  priority?: ProductThumbnailPriority;
+  style?: StyleProp<FastImageStyle>;
 }
 
 function ProductThumbnailImageComponent({
   uri,
   resizeMode = 'cover',
+  priority = 'low',
   style,
 }: ProductThumbnailImageProps) {
-  const source = useMemo(() => resolveProductImageSource(uri), [uri]);
+  const source = useMemo(
+    () => resolveProductImageSource(uri, priority),
+    [priority, uri],
+  );
 
   return (
-    <Image
+    <FastImage
       source={source}
       style={[styles.image, style]}
-      resizeMode={resizeMode}
+      resizeMode={mapResizeMode(resizeMode)}
+      transition={FastImage.transition.none}
     />
   );
 }

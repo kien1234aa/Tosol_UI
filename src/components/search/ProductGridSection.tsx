@@ -1,14 +1,13 @@
 import React, { memo, useCallback, useMemo } from 'react';
+import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import {
   ActivityIndicator,
-  FlatList,
   StyleSheet,
-  type ListRenderItem,
 } from 'react-native';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
 import { Text } from '@/src/uikits/text';
-import { mainLayout } from '@/src/configs/main';
+import { mainLayout, productGridFlashListProps } from '@/src/configs/main';
 import { searchCopy } from '@/src/configs/search';
 import { lightTokens } from '@/src/configs/theme';
 import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
@@ -36,13 +35,21 @@ function ProductGridSectionComponent({
 }: ProductGridSectionProps) {
   const { productGridColumns, gridGap } = useResponsiveLayout();
 
+  const cellGapStyle = useMemo(
+    () => ({
+      marginBottom: 12,
+      paddingHorizontal: gridGap / 2,
+    }),
+    [gridGap],
+  );
+
   const renderItem = useCallback<ListRenderItem<SearchProduct>>(
     ({ item }) => (
-      <Box style={styles.cell}>
+      <Box style={[styles.cell, cellGapStyle]}>
         <ProductCard product={item} onPress={onPressProduct} />
       </Box>
     ),
-    [onPressProduct],
+    [cellGapStyle, onPressProduct],
   );
 
   const keyExtractor = useCallback((item: SearchProduct) => item.id, []);
@@ -95,16 +102,13 @@ function ProductGridSectionComponent({
       itemCount={products.length}
       options={{ canShowSkeleton: !error }}
       skeleton={listSkeleton}>
-      <FlatList
+      <FlashList
         key={`product-grid-${productGridColumns}`}
         data={products}
         style={styles.list}
         numColumns={productGridColumns}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        columnWrapperStyle={
-          products.length > 0 ? [styles.row, { gap: gridGap }] : undefined
-        }
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -114,6 +118,7 @@ function ProductGridSectionComponent({
         ListFooterComponent={ListFooterComponent}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.35}
+        {...productGridFlashListProps}
       />
     </ListLoadingGate>
   );
@@ -125,9 +130,6 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingBottom: mainLayout.tabContentBottomPadding,
-  },
-  row: {
-    marginBottom: 12,
   },
   cell: {
     flex: 1,

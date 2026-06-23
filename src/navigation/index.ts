@@ -6,6 +6,22 @@ export { OrdersStackNavigator } from './OrdersStackNavigator';
 export { ProfileStackNavigator } from './ProfileStackNavigator';
 export { useStackGoBack } from './useStackGoBack';
 export {
+  getRootNavigation,
+  navigateRootScreen,
+} from './rootNavigation.helpers';
+export {
+  getMainTabNavigation,
+  getMainTabNestedStackIndex,
+  isMainTabRouteFocused,
+  mainTabNavigationKind,
+  mainTabRootScreens,
+  navigateMainTabScreen,
+  navigateMainTabToRoot,
+  shouldPopTabStackOnBlur,
+  shouldPopTabToRootOnRepress,
+  switchMainTab,
+} from './tabNavigation.helpers';
+export {
   isMainTabBarVisibleForRoute,
   mainTabBarHiddenRoutes,
 } from './mainTabBarVisibility';

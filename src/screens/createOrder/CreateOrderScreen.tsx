@@ -13,6 +13,7 @@ import { lightTokens } from '@/src/configs/theme';
 import { mainLayout } from '@/src/configs/main';
 import { useCreateOrder } from '@/src/hooks/createOrder';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
+import { navigateMainTabScreen } from '@/src/navigation/tabNavigation.helpers';
 import type { CreateOrderStackScreenProps } from '@/src/navigation/types';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
@@ -72,7 +73,7 @@ export function CreateOrderScreen({
   }, [draft, navigation]);
 
   const handleAddProduct = useCallback(() => {
-    navigation.getParent()?.navigate('Search', { screen: 'SearchMain' });
+    navigateMainTabScreen(navigation, 'Search', { screen: 'SearchMain' });
   }, [navigation]);
 
   const handleDeleteDraft = useCallback(() => {

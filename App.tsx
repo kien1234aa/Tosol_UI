@@ -14,6 +14,7 @@ import {
 import { Provider as ReduxProvider } from 'react-redux';
 import { configureApiClient } from '@/src/apis/http';
 import { GluestackUIProvider } from '@/src/uikits/gluestack-ui-provider';
+import { CountersPollingHost } from '@/src/components/counters/CountersPollingHost';
 import { RootNavigator } from '@/src/navigation';
 import type { RootStackParamList } from '@/src/navigation/types';
 import { store } from '@/src/redux';
@@ -74,7 +75,9 @@ function App() {
                   setNavigationRef(navigationRef);
                   flushPendingFcmNotificationOpen();
                 }}>
-                <RootNavigator />
+                <CountersPollingHost>
+                  <RootNavigator />
+                </CountersPollingHost>
               </NavigationContainer>
             </ForegroundPushBannerHost>
           </GluestackUIProvider>

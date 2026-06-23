@@ -19,8 +19,13 @@ import { useAppSelector } from '@/src/hooks/common/useAppSelector';
 import { selectUnreadNotificationCount } from '@/src/redux/notifications';
 import { useAppDispatch } from '@/src/hooks';
 import { fetchCurrentUserThunk, logout, selectIsAdminUser } from '@/src/redux/login';
+import { resetCountersState } from '@/src/redux/counters';
 import { resetNotificationsState } from '@/src/redux/notifications';
 import { resetProfileState } from '@/src/redux/profile';
+import {
+  getRootNavigation,
+  navigateRootScreen,
+} from '@/src/navigation/rootNavigation.helpers';
 import type { ProfileStackScreenProps } from '@/src/navigation/types';
 import { Box } from '@/src/uikits/box';
 import { Center } from '@/src/uikits/center';
@@ -30,7 +35,7 @@ import { VStack } from '@/src/uikits/vstack';
 type ProfileScreenProps = ProfileStackScreenProps<'ProfileMain'>;
 
 export function ProfileScreen({ navigation }: ProfileScreenProps) {
-  const rootNavigation = navigation.getParent()?.getParent();
+  const rootNavigation = getRootNavigation(navigation);
   const dispatch = useAppDispatch();
   const { displayName, email, roleLabel, sellerName, balanceVnd, reload } =
     useProfile();
@@ -77,13 +82,14 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
   }, [navigation]);
 
   const handleNotifications = useCallback(() => {
-    navigation.navigate('Notifications');
+    navigateRootScreen(navigation, 'Notifications');
   }, [navigation]);
 
   const handleLogout = useCallback(() => {
     dispatch(logout());
     dispatch(resetProfileState());
     dispatch(resetNotificationsState());
+    dispatch(resetCountersState());
     rootNavigation?.reset({
       index: 0,
       routes: [{ name: 'Login' }],
