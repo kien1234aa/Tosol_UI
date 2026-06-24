@@ -1,3 +1,19 @@
+apply from: "./node-env.gradle"
+
+ext {
+    REACT_NATIVE_NODE_MODULES_DIR = file("../node_modules/react-native")
+    REACT_NATIVE_WORKLETS_NODE_MODULES_DIR = file("../node_modules/react-native-worklets")
+}
+
+allprojects {
+    tasks.withType(Exec).configureEach { execTask ->
+        def currentPath = execTask.environment["PATH"] ?: System.getenv("PATH") ?: ""
+        if (!currentPath.split(":").contains(nodeBinDir)) {
+            execTask.environment("PATH", "${nodeBinDir}:${currentPath}")
+        }
+    }
+}
+
 buildscript {
     ext {
         buildToolsVersion = "36.0.0"

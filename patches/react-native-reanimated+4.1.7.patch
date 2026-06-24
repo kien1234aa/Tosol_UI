@@ -1,0 +1,64 @@
+--- a/node_modules/react-native-reanimated/android/build.gradle
++++ b/node_modules/react-native-reanimated/android/build.gradle
+@@ -12,6 +12,25 @@
+     appProject?.ext?.has(prop) ? appProject.ext.get(prop) : fallback
+ }
+ 
++def resolveNodeCommand() {
++    if (rootProject.ext.has("nodeExecutable")) {
++        return rootProject.ext.nodeExecutable
++    }
++    def envNode = System.getenv("NODE_BINARY")
++    if (envNode != null && !envNode.trim().isEmpty()) {
++        return envNode.trim()
++    }
++    def candidates = ["/opt/homebrew/bin/node", "/usr/local/bin/node"]
++    for (def candidate : candidates) {
++        if (new File(candidate).exists()) {
++            return candidate
++        }
++    }
++    return "node"
++}
++
++def nodeCommand = resolveNodeCommand()
++
+ def isNewArchitectureEnabled() {
+     // To opt-in for the New Architecture, you can either:
+     // - Set `newArchEnabled` to true inside the `gradle.properties` file
+@@ -30,7 +49,7 @@
+     def reactNativePackage = file(
+         providers.exec {
+             workingDir(rootDir)
+-            commandLine("node", "--print", "require.resolve('react-native/package.json')")
++            commandLine(nodeCommand, "--print", "require.resolve('react-native/package.json')")
+         }.standardOutput.asText.get().trim()
+     )
+     if (reactNativePackage.exists()) {
+@@ -52,7 +71,7 @@
+     def reactNativeWorkletsPackage = file(
+         providers.exec {
+             workingDir(rootDir)
+-            commandLine("node", "--print", "require.resolve('react-native-worklets/package.json')")
++            commandLine(nodeCommand, "--print", "require.resolve('react-native-worklets/package.json')")
+         }.standardOutput.asText.get().trim()
+     )
+     if (reactNativeWorkletsPackage.exists()) {
+@@ -278,7 +297,7 @@
+ 
+ def validateReactNativeVersionResult = providers.exec {
+     workingDir(projectDir.path)
+-    commandLine("node", "./../scripts/validate-react-native-version.js", REACT_NATIVE_VERSION.toString())
++    commandLine(nodeCommand, "./../scripts/validate-react-native-version.js", REACT_NATIVE_VERSION.toString())
+     ignoreExitValue = true
+ }
+ 
+@@ -303,7 +322,7 @@
+ 
+ def validateWorkletsBuildResult = providers.exec {
+     workingDir(projectDir.path)
+-    commandLine("node", "./../scripts/validate-worklets-build.js")
++    commandLine(nodeCommand, "./../scripts/validate-worklets-build.js")
+     ignoreExitValue = true
+ }
+ 

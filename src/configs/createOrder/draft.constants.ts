@@ -25,6 +25,8 @@ export const draftCopy = {
   increaseQuantity: 'Tăng số lượng',
   removeProduct: 'Xoá sản phẩm',
   emptyDraft: 'Chưa có sản phẩm. Bấm "Thêm Sản Phẩm" để bắt đầu.',
+  addProductRequiresWarehouse:
+    'Vui lòng chọn kho đóng gói ở phần trên trước khi thêm sản phẩm.',
   defaultVariant: 'Mặc định',
   defaultSupplier: 'Tosol',
   outOfStockError: 'Sản phẩm đã hết hàng',
@@ -51,6 +53,17 @@ export const draftCopy = {
   deleteDraftConfirmAction: 'Xoá',
   deleteAllDrafts: 'Xoá tất cả',
   deleteAllDraftsConfirm: 'Bạn có chắc muốn xoá tất cả đơn nháp?',
+  addProductSheetTitle: 'Thêm sản phẩm',
+  addProductSheetSearchPlaceholder: 'Tìm theo tên hoặc SKU...',
+  addProductSheetStagedSection: 'Đã chọn',
+  addProductSheetEmpty: 'Không tìm thấy sản phẩm',
+  addProductSheetDone: 'Hoàn thành',
+  addProductSheetCancel: 'Huỷ',
+  addProductSheetRecentProducts: 'Sản phẩm gần đây',
+  addProductSheetSuggestions: 'Gợi ý',
+  addProductSheetSellerRequired: 'Không thể tải sản phẩm. Vui lòng đăng nhập lại.',
+  addProductSheetContextRequired: 'Vui lòng chọn kho đóng gói trước khi thêm sản phẩm.',
+  addProductSheetCommitError: 'Không thể thêm sản phẩm',
 } as const;
 
 export const draftQuantityLimits = {

@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { Plus } from 'lucide-react-native';
+import { StyleSheet } from 'react-native';
 import { draftCopy } from '@/src/configs/createOrder';
 import { lightTokens } from '@/src/configs/theme';
 import type { DraftProductGroupViewModel } from '@/src/types/createOrderDraft/createOrderDraft.types';
@@ -18,6 +19,7 @@ import { DraftProductItemCard } from './DraftProductItemCard';
 interface CreateOrderProductsSectionProps {
   sectionNumber?: number;
   groups: DraftProductGroupViewModel[];
+  canAddProduct?: boolean;
   onPressAddProduct: () => void;
   onChangeQuantity: (
     groupId: string,
@@ -40,6 +42,7 @@ interface CreateOrderProductsSectionProps {
 function CreateOrderProductsSectionComponent({
   sectionNumber = 2,
   groups,
+  canAddProduct = true,
   onPressAddProduct,
   onChangeQuantity,
   onChangeUnitPrice,
@@ -48,13 +51,25 @@ function CreateOrderProductsSectionComponent({
 }: CreateOrderProductsSectionProps) {
   const addProductAction = (
     <Pressable
-      onPress={onPressAddProduct}
+      onPress={canAddProduct ? onPressAddProduct : undefined}
+      disabled={!canAddProduct}
       accessibilityRole="button"
       accessibilityLabel={draftCopy.addProductAction}
-      hitSlop={8}>
+      accessibilityState={{ disabled: !canAddProduct }}
+      hitSlop={8}
+      style={!canAddProduct ? styles.addProductDisabled : undefined}>
       <HStack className="items-center gap-1">
-        <Plus color={lightTokens.tertiary600} size={16} />
-        <Text size="sm" className="font-semibold text-tertiary-600">
+        <Plus
+          color={canAddProduct ? lightTokens.tertiary600 : lightTokens.typography500}
+          size={16}
+        />
+        <Text
+          size="sm"
+          className={
+            canAddProduct
+              ? 'font-semibold text-tertiary-600'
+              : 'font-semibold text-typography-500'
+          }>
           {draftCopy.addProductAction}
         </Text>
       </HStack>
@@ -98,7 +113,9 @@ function CreateOrderProductsSectionComponent({
       ) : (
         <Center className="py-6">
           <Text size="sm" className="text-center text-typography-500">
-            {draftCopy.emptyDraft}
+            {canAddProduct
+              ? draftCopy.emptyDraft
+              : draftCopy.addProductRequiresWarehouse}
           </Text>
         </Center>
       )}
@@ -109,3 +126,9 @@ function CreateOrderProductsSectionComponent({
 export const CreateOrderProductsSection = memo(
   CreateOrderProductsSectionComponent,
 );
+
+const styles = StyleSheet.create({
+  addProductDisabled: {
+    opacity: 0.45,
+  },
+});

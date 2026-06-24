@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Pressable,
@@ -13,7 +13,6 @@ import { lightTokens } from '@/src/configs/theme';
 import { mainLayout } from '@/src/configs/main';
 import { useCreateOrder } from '@/src/hooks/createOrder';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
-import { navigateMainTabScreen } from '@/src/navigation/tabNavigation.helpers';
 import type { CreateOrderStackScreenProps } from '@/src/navigation/types';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
@@ -24,6 +23,10 @@ import {
   setActiveDraftId,
 } from '@/src/redux/createOrderDraft';
 import {
+  selectAuthSeller,
+} from '@/src/redux/login/authSelectors';
+import {
+  AddDraftProductSheet,
   CreateCustomerModal,
   CreateOrderFooter,
   CreateOrderForm,
@@ -44,11 +47,15 @@ export function CreateOrderScreen({
   const dispatch = useAppDispatch();
   const selectDraftById = useMemo(() => makeSelectDraftById(draftId), [draftId]);
   const draft = useAppSelector(selectDraftById);
+  const seller = useAppSelector(selectAuthSeller);
+  const [isAddProductSheetOpen, setIsAddProductSheetOpen] = useState(false);
   const handleBack = useStackGoBack(navigation, 'CreateOrderList');
   const handleSubmitSuccess = useCallback(() => {
     navigation.navigate('CreateOrderList');
   }, [navigation]);
   const order = useCreateOrder(draftId, { onSubmitSuccess: handleSubmitSuccess });
+  const canAddProduct = order.form.packagingWarehouseId != null;
+  const suggestionWarehouseId = order.form.packagingWarehouseId;
   const { horizontalPadding, contentMaxWidth, isTablet } = useResponsiveLayout();
   const {
     groups,
@@ -73,8 +80,17 @@ export function CreateOrderScreen({
   }, [draft, navigation]);
 
   const handleAddProduct = useCallback(() => {
-    navigateMainTabScreen(navigation, 'Search', { screen: 'SearchMain' });
-  }, [navigation]);
+    if (order.form.packagingWarehouseId == null) {
+      Alert.alert(draftCopy.addProductSheetTitle, draftCopy.addProductRequiresWarehouse);
+      return;
+    }
+
+    setIsAddProductSheetOpen(true);
+  }, [order.form.packagingWarehouseId]);
+
+  const handleCloseAddProductSheet = useCallback(() => {
+    setIsAddProductSheetOpen(false);
+  }, []);
 
   const handleDeleteDraft = useCallback(() => {
     Alert.alert(draftCopy.deleteDraft, draftCopy.deleteDraftConfirm, [
@@ -200,6 +216,7 @@ export function CreateOrderScreen({
               <CreateOrderProductsSection
                 sectionNumber={2}
                 groups={groups}
+                canAddProduct={canAddProduct}
                 onPressAddProduct={handleAddProduct}
                 onChangeQuantity={onChangeQuantity}
                 onChangeUnitPrice={onChangeUnitPrice}
@@ -283,6 +300,14 @@ export function CreateOrderScreen({
           </ScrollView>
         </FormKeyboardAvoidingView>
       </SafeAreaView>
+
+      <AddDraftProductSheet
+        visible={isAddProductSheetOpen}
+        draftId={draftId}
+        sellerName={seller?.name ?? draftCopy.defaultSupplier}
+        warehouseId={suggestionWarehouseId}
+        onClose={handleCloseAddProductSheet}
+      />
 
       <CreateCustomerModal
         visible={order.createCustomer.visible}

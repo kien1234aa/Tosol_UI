@@ -170,7 +170,18 @@ export function createEmptyComboRow(): CreateProductComboRow {
 
 export function mapProductSuggestionApiToItem(
   item: ProductSuggestionApiItem,
+  options: { useWarehouseStock?: boolean } = {},
 ): ProductSuggestionItem {
+  const totalStock = parseApiNumber(item.available_stock);
+  const warehouseStock =
+    item.warehouse_available_stock != null &&
+    Number.isFinite(item.warehouse_available_stock)
+      ? item.warehouse_available_stock
+      : null;
+  const availableStock = options.useWarehouseStock
+    ? (warehouseStock ?? totalStock)
+    : totalStock;
+
   return {
     id: item.id,
     sku: item.sku,
@@ -178,6 +189,9 @@ export function mapProductSuggestionApiToItem(
     unit: item.unit,
     unitLabel: getProductUnitLabel(item.unit),
     thumbnailUrl: item.thumbnail_url ?? item.image_url,
+    priceVnd: parseApiNumber(item.price),
+    availableStock,
+    isOutOfStock: availableStock <= 0,
   };
 }
 

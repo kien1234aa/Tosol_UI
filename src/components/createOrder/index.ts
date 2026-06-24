@@ -1,3 +1,4 @@
+export { AddDraftProductSheet } from './AddDraftProductSheet';
 export { DraftProductRow } from './DraftProductRow';
 export { DraftProductItemCard } from './DraftProductItemCard';
 export { CreateOrderForm } from './CreateOrderForm';

@@ -27,7 +27,7 @@ export interface ListProductsOptions {
 }
 
 export interface ProductSuggestionsOptions {
-  sellerId: number;
+  sellerId?: number | null;
   warehouseId?: number | null;
   search?: string;
   excludeCombos?: boolean;
@@ -147,9 +147,11 @@ class HttpProductsService implements IProductsService {
   async suggestions(
     options: ProductSuggestionsOptions,
   ): Promise<ProductSuggestionItem[]> {
-    const params: Record<string, string | number> = {
-      seller_id: options.sellerId,
-    };
+    const params: Record<string, string | number> = {};
+
+    if (options.sellerId != null && Number.isFinite(options.sellerId)) {
+      params.seller_id = options.sellerId;
+    }
 
     if (options.warehouseId != null && Number.isFinite(options.warehouseId)) {
       params.warehouse_id = options.warehouseId;
@@ -169,7 +171,10 @@ class HttpProductsService implements IProductsService {
       { signal: options.signal },
     );
 
-    return data.map(mapProductSuggestionApiToItem);
+    const useWarehouseStock = options.warehouseId != null;
+    return data.map(item =>
+      mapProductSuggestionApiToItem(item, { useWarehouseStock }),
+    );
   }
 
   async create(payload: CreateProductPayload): Promise<ProductApiItem> {

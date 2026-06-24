@@ -172,6 +172,9 @@ export interface ProductSuggestionItem {
   unit: string;
   unitLabel: string;
   thumbnailUrl: string | null;
+  priceVnd: number;
+  availableStock: number;
+  isOutOfStock: boolean;
 }
 
 /** Ảnh chọn từ thiết bị (react-native-image-picker). */
