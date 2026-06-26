@@ -22,15 +22,3 @@ export interface PersonalInfoValidationErrors {
   phone?: string;
   address?: string;
 }
-
-export interface ChangePasswordFormValues {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
-
-export interface ChangePasswordValidationErrors {
-  currentPassword?: string;
-  newPassword?: string;
-  confirmPassword?: string;
-}

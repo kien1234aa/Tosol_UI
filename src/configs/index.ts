@@ -1,7 +1,5 @@
 export * from './api';
-export * from './app';
 export * from './login/auth.constants';
-export * from './register';
 export * from './forgotPassword';
 export * from './main';
 export * from './home';

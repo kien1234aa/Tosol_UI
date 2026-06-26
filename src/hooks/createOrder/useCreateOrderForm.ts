@@ -49,10 +49,12 @@ import {
   findBestExpressSellerPartner,
   getWarehouseCodeFromRecords,
   isCreateOrderLocationComplete,
+  isValidOrderDiscountPercent,
   resolveCreateOrderWarehouseId,
   resolveCustomerLocationLabelsForOrder,
   resolveCustomerRecipientAddress,
   normalizeCustomerPhone,
+  sanitizeOrderDiscountPercentInput,
 } from '@/src/helpers/createOrder/createOrder.helpers';
 import {
   makeSelectDraftById,
@@ -109,6 +111,7 @@ export interface UseCreateOrderFormResult {
   selectedShopLabel: string;
   selectedWarehouseLabel: string;
   selectedShippingPartnerLabel: string;
+  selectedShippingWarehouseLabel: string;
   selectedShopBadge: string | null;
   orderTotalVnd: number;
   shippingFeeVnd: number;
@@ -148,6 +151,10 @@ export interface UseCreateOrderFormResult {
   onSelectWard: (wardId: number) => void;
   onToggleCod: (value: boolean) => void;
   onToggleAdvanced: () => void;
+  onChangeOrderDate: (isoDate: string) => void;
+  onSelectShippingWarehouse: (warehouseId: number) => void;
+  onChangeDiscountPercent: (value: string) => void;
+  onChangeNote: (value: string) => void;
   onSubmit: () => void;
   createCustomer: UseCreateCustomerFormResult;
   onPressCreateCustomer: () => void;
@@ -412,7 +419,13 @@ export function useCreateOrderForm(
 
   useEffect(() => {
     if (draft) {
-      setForm(draft.form);
+      setForm({
+        ...defaultCreateOrderFormState,
+        ...draft.form,
+        orderDate: draft.form.orderDate || defaultCreateOrderFormState.orderDate,
+        discountPercent: draft.form.discountPercent ?? '',
+        note: draft.form.note ?? '',
+      });
     }
   }, [draftId]);
 
@@ -663,6 +676,20 @@ export function useCreateOrderForm(
     [form.warehousePartnerId, shippingPartnerOptions],
   );
 
+  const selectedShippingWarehouseLabel = useMemo(
+    () =>
+      findSelectOptionLabel(
+        warehouseOptions,
+        form.shippingWarehouseId ?? form.packagingWarehouseId,
+        createOrderCopy.selectShippingWarehouse,
+      ),
+    [
+      form.packagingWarehouseId,
+      form.shippingWarehouseId,
+      warehouseOptions,
+    ],
+  );
+
   const selectedShopBadge = useMemo(() => {
     if (form.shopId == null) {
       return null;
@@ -828,6 +855,11 @@ export function useCreateOrderForm(
           ...current,
           packagingWarehouseId: warehouseId,
           warehousePartnerId: null,
+          shippingWarehouseId:
+            current.shippingWarehouseId == null ||
+            current.shippingWarehouseId === current.packagingWarehouseId
+              ? warehouseId
+              : current.shippingWarehouseId,
         };
       });
     },
@@ -1041,6 +1073,39 @@ export function useCreateOrderForm(
     setForm(current => ({ ...current, isAdvancedOpen: !current.isAdvancedOpen }));
   }, []);
 
+  const onChangeOrderDate = useCallback((isoDate: string) => {
+    setForm(current => ({ ...current, orderDate: isoDate }));
+  }, []);
+
+  const onSelectShippingWarehouse = useCallback(
+    (warehouseId: number) => {
+      setForm(current => ({ ...current, shippingWarehouseId: warehouseId }));
+      const option = findSelectOptionById(warehouseOptions, warehouseId);
+      if (option) {
+        dispatch(
+          recordPreference({
+            key: preferenceKeys.packagingWarehouse,
+            id: warehouseId,
+            label: option.label,
+            subtitle: option.subtitle,
+          }),
+        );
+      }
+    },
+    [dispatch, warehouseOptions],
+  );
+
+  const onChangeDiscountPercent = useCallback((value: string) => {
+    setForm(current => ({
+      ...current,
+      discountPercent: sanitizeOrderDiscountPercentInput(value),
+    }));
+  }, []);
+
+  const onChangeNote = useCallback((value: string) => {
+    setForm(current => ({ ...current, note: value }));
+  }, []);
+
   const onSubmit = useCallback(() => {
     if (isSubmitting) {
       return;
@@ -1115,6 +1180,16 @@ export function useCreateOrderForm(
 
     if (activeWarehouseId == null) {
       Alert.alert(createOrderCopy.title, createOrderCopy.searchWarehouseRequired);
+      return;
+    }
+
+    if (!form.orderDate.trim()) {
+      Alert.alert(createOrderCopy.title, createOrderCopy.orderDateRequired);
+      return;
+    }
+
+    if (!isValidOrderDiscountPercent(form.discountPercent)) {
+      Alert.alert(createOrderCopy.title, createOrderCopy.discountPercentInvalid);
       return;
     }
 
@@ -1224,6 +1299,7 @@ export function useCreateOrderForm(
     selectedShopLabel,
     selectedWarehouseLabel,
     selectedShippingPartnerLabel,
+    selectedShippingWarehouseLabel,
     selectedShopBadge,
     orderTotalVnd,
     shippingFeeVnd,
@@ -1263,6 +1339,10 @@ export function useCreateOrderForm(
     onSelectWard,
     onToggleCod,
     onToggleAdvanced,
+    onChangeOrderDate,
+    onSelectShippingWarehouse,
+    onChangeDiscountPercent,
+    onChangeNote,
     onSubmit,
     createCustomer,
     onPressCreateCustomer: createCustomer.openCreateCustomer,

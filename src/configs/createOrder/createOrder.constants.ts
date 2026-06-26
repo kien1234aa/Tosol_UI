@@ -1,3 +1,4 @@
+import { dateToIsoDateOnly } from '@/src/helpers/orders/orderFilters.helpers';
 import { labelFromCustomerLocationField, normalizeCustomerPhone } from '@/src/helpers/createOrder/createOrder.helpers';
 import type {
   CreateOrderFormState,
@@ -33,6 +34,19 @@ export const createOrderCopy = {
   districtLabel: 'Quận/Huyện',
   wardLabel: 'Phường/Xã',
   codLabel: 'Thu hộ COD',
+  orderDateLabel: 'Ngày đặt hàng',
+  selectOrderDate: 'Chọn ngày',
+  orderDatePickerTitle: 'Chọn ngày đặt hàng',
+  shippingWarehouseLabel: 'Kho xuất hàng',
+  selectShippingWarehouse: 'Chọn kho xuất hàng',
+  shippingWarehousePickerTitle: 'Chọn kho xuất hàng',
+  discountPercentLabel: 'Giảm giá (%)',
+  discountPercentPlaceholder: '0',
+  discountPercentSuffix: '%',
+  orderNoteLabel: 'Ghi chú',
+  orderNotePlaceholder: 'Nhập ghi chú cho đơn hàng',
+  orderDateRequired: 'Vui lòng chọn ngày đặt hàng',
+  discountPercentInvalid: 'Giảm giá phải từ 0 đến 100',
   totalLabel: 'Tổng cộng',
   submit: 'Tạo Đơn Hàng',
   cancel: 'Hủy',
@@ -62,7 +76,6 @@ export const createOrderCopy = {
   customerComingSoon: 'Chưa có danh sách khách hàng',
   partnerComingSoon: 'Chưa có danh sách đối tác',
   locationComingSoon: 'Chưa có danh sách địa chỉ',
-  advancedComingSoon: 'Tuỳ chọn nâng cao sẽ được bổ sung sau',
   searchWarehouseRequired: 'Vui lòng chọn kho ở màn hình tìm kiếm',
   itemsRequired: 'Vui lòng chọn ít nhất một sản phẩm',
   locationRequired: 'Vui lòng chọn đủ Tỉnh / Quận / Phường',
@@ -115,6 +128,10 @@ export const defaultCreateOrderFormState: CreateOrderFormState = {
   wardId: null,
   isCodEnabled: false,
   isAdvancedOpen: false,
+  orderDate: dateToIsoDateOnly(new Date()),
+  shippingWarehouseId: null,
+  discountPercent: '',
+  note: '',
 };
 
 export function mapShopToSelectOption(shop: ShopApiItem): CreateOrderSelectOption {

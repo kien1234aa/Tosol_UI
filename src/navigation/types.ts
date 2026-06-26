@@ -23,13 +23,6 @@ export type MainTabParamList = {
 /** Nested stack inside the Home tab. */
 export type HomeStackParamList = {
   HomeMain: undefined;
-  AwaitingPayment: undefined;
-  CreateConsignment: undefined;
-  ConsignmentList: undefined;
-  ConsignmentDetail: { orderId: string };
-  DeliveredConsignment: undefined;
-  Wallet: undefined;
-  Estimate: undefined;
 };
 
 /** Nested stack inside the Search tab. */
@@ -42,14 +35,12 @@ export type SearchStackParamList = {
 export type OrdersStackParamList = {
   OrdersMain: { status?: string } | undefined;
   OrderDetail: { orderId: string };
-  DeliveredOrders: undefined;
 };
 
 /** Nested stack inside the Profile tab. */
 export type ProfileStackParamList = {
   ProfileMain: undefined;
   PersonalInfo: undefined;
-  ChangePassword: undefined;
   StaffList: undefined;
   StaffDetail: { staffUuid: string };
   ProductList: undefined;
@@ -62,7 +53,6 @@ export type ProfileStackParamList = {
 export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
-  Register: undefined;
   ForgotPassword: undefined;
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
   Notifications: undefined;

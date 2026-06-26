@@ -11,9 +11,6 @@ export { OrderFilterCalendarPicker } from './OrderFilterCalendarPicker';
 export { OrderListCard } from './OrderListCard';
 export { OrderCancelReasonModal } from './OrderCancelReasonModal';
 export { OrderEditModal } from './OrderEditModal';
-export { AwaitingPaymentSummary } from './AwaitingPaymentSummary';
-export { AwaitingPaymentCard } from './AwaitingPaymentCard';
-export { DeliveredOrderCard } from './DeliveredOrderCard';
 export {
   OrderDetailHeader,
   OrderDetailSummary,

@@ -1,6 +1,5 @@
 export { useProfile } from './useProfile';
 export { usePersonalInfo } from './usePersonalInfo';
-export { useChangePassword } from './useChangePassword';
 export { useStaffList } from './useStaffList';
 export { useStaffDetail } from './useStaffDetail';
 export { useProductList } from './useProductList';
@@ -9,7 +8,6 @@ export { useEditProduct } from './useEditProduct';
 export { useProfileProductDetail } from './useProfileProductDetail';
 export type { UseProfileResult } from './useProfile';
 export type { UsePersonalInfoResult } from './usePersonalInfo';
-export type { UseChangePasswordResult } from './useChangePassword';
 export type { UseStaffListResult } from './useStaffList';
 export type { UseStaffDetailResult } from './useStaffDetail';
 export type { UseProductListResult } from './useProductList';

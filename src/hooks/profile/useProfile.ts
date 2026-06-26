@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { mockProfileBalanceVnd, profileCopy } from '@/src/configs/profile';
+import { profileCopy } from '@/src/configs/profile';
 import { formatUserRole } from '@/src/helpers/profile';
 import { useAppDispatch } from '@/src/hooks/common/useAppDispatch';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
@@ -11,7 +11,6 @@ export interface UseProfileResult {
   email: string;
   roleLabel: string;
   sellerName: string;
-  balanceVnd: number;
   reload: () => Promise<void>;
 }
 
@@ -38,7 +37,6 @@ export function useProfile(): UseProfileResult {
     email,
     roleLabel,
     sellerName,
-    balanceVnd: mockProfileBalanceVnd,
     reload,
   };
 }

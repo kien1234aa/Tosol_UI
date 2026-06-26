@@ -456,67 +456,33 @@ function OrderDetailCostBreakdownComponent({
 }
 
 interface OrderDetailActionsProps {
-  canPay: boolean;
   canCancel: boolean;
-  remainingVnd: number;
-  onPressPay: () => void;
   onPressCancel: () => void;
 }
 
 function OrderDetailActionsComponent({
-  canPay,
   canCancel,
-  remainingVnd,
-  onPressPay,
   onPressCancel,
 }: OrderDetailActionsProps) {
-  if (!canPay && !canCancel) {
+  if (!canCancel) {
     return null;
   }
 
   return (
     <Box style={styles.footer}>
-      {canPay ? (
-        <HStack className="mb-3 w-full items-center justify-between">
-          <Text size="sm" className="text-typography-500">
-            {orderDetailCopy.remainingAmount}
-          </Text>
-          <Text size="md" className="font-bold text-tertiary-600">
-            {formatOrderPrice(remainingVnd)}
-          </Text>
-        </HStack>
-      ) : null}
-
       <HStack className="w-full" space="md">
-        {canCancel ? (
-          <Pressable
-            onPress={onPressCancel}
-            accessibilityRole="button"
-            accessibilityLabel={orderDetailCopy.cancelOrder}
-            style={[buttonFooterAction, buttonFlex, styles.outlineButton]}>
-            <Text
-              size="sm"
-              className="font-semibold text-error-500"
-              style={buttonLabelStyle}>
-              {orderDetailCopy.cancelOrder}
-            </Text>
-          </Pressable>
-        ) : null}
-
-        {canPay ? (
-          <Pressable
-            onPress={onPressPay}
-            accessibilityRole="button"
-            accessibilityLabel={orderDetailCopy.payOrder}
-            style={[buttonFooterAction, buttonFlex, styles.primaryButton]}>
-            <Text
-              size="sm"
-              className="font-semibold text-typography-0"
-              style={buttonLabelStyle}>
-              {orderDetailCopy.payOrder}
-            </Text>
-          </Pressable>
-        ) : null}
+        <Pressable
+          onPress={onPressCancel}
+          accessibilityRole="button"
+          accessibilityLabel={orderDetailCopy.cancelOrder}
+          style={[buttonFooterAction, buttonFlex, styles.outlineButton]}>
+          <Text
+            size="sm"
+            className="font-semibold text-error-500"
+            style={buttonLabelStyle}>
+            {orderDetailCopy.cancelOrder}
+          </Text>
+        </Pressable>
       </HStack>
     </Box>
   );

@@ -117,7 +117,7 @@ export function OrdersScreen({ navigation, route }: OrdersScreenProps) {
   );
 
   const handleOrderAction = useCallback(
-    (orderId: string, action: 'view' | 'edit' | 'pay' | 'cancel') => {
+    (orderId: string, action: 'view' | 'edit' | 'cancel') => {
       if (action === 'view') {
         handleViewOrder(orderId);
         return;

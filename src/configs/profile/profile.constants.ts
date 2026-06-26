@@ -1,14 +1,8 @@
-/** Static copy and mock values for the profile tab. */
+/** Static copy for the profile tab. */
 export const profileCopy = {
   greeting: 'Xin chào',
-  balancePrefix: 'Số dư:',
   accountSection: 'Quản lý tài khoản',
   personalInfo: 'Thông tin cá nhân',
-  changePassword: 'Thay đổi mật khẩu',
-  deleteAccount: 'Xoá tài khoản',
-  deliverySection: 'Giao hàng',
-  createDeliveryRequest: 'Tạo yêu cầu giao hàng',
-  deliveryRequestList: 'Danh sách yêu cầu giao hàng',
   supportSection: 'Nhân viên chăm sóc',
   supportStaffName: 'Tomoni VN',
   supportPhone: '0844.713.555',
@@ -18,7 +12,6 @@ export const profileCopy = {
   notifications: 'Thông báo',
   openZalo: 'Mở Zalo',
   callSupport: 'Gọi điện',
-  featureComingSoon: 'Tính năng đang được phát triển',
   staffSection: 'Nhân viên',
   staffList: 'Danh sách nhân viên',
 } as const;
@@ -125,33 +118,6 @@ export const personalInfoCopy = {
   addressRequired: 'Vui lòng nhập địa chỉ nhận hàng',
 } as const;
 
-export const changePasswordCopy = {
-  screenTitle: 'Thay đổi mật khẩu',
-  back: 'Quay lại',
-  subtitle:
-    'Nhập mật khẩu hiện tại và mật khẩu mới để cập nhật tài khoản của bạn.',
-  currentPasswordLabel: 'Mật khẩu hiện tại',
-  currentPasswordPlaceholder: 'Nhập mật khẩu hiện tại',
-  newPasswordLabel: 'Mật khẩu mới',
-  newPasswordPlaceholder: 'Nhập mật khẩu mới',
-  confirmPasswordLabel: 'Xác nhận mật khẩu mới',
-  confirmPasswordPlaceholder: 'Nhập lại mật khẩu mới',
-  submit: 'Cập nhật mật khẩu',
-  submitSuccess: 'Đã thay đổi mật khẩu thành công',
-  currentPasswordRequired: 'Vui lòng nhập mật khẩu hiện tại',
-  currentPasswordIncorrect: 'Mật khẩu hiện tại không đúng',
-  newPasswordRequired: 'Vui lòng nhập mật khẩu mới',
-  newPasswordTooShort: 'Mật khẩu mới phải có ít nhất 6 ký tự',
-  newPasswordSameAsCurrent: 'Mật khẩu mới phải khác mật khẩu hiện tại',
-  confirmPasswordRequired: 'Vui lòng xác nhận mật khẩu mới',
-  confirmPasswordMismatch: 'Mật khẩu xác nhận không khớp',
-} as const;
-
-export const changePasswordRules = {
-  minPasswordLength: 6,
-  mockWrongPassword: 'wrong',
-} as const;
-
 /** Default empty profile before user data is loaded. */
 export const emptyUserProfile = {
   fullName: '',
@@ -160,9 +126,6 @@ export const emptyUserProfile = {
   phone: '',
   address: '',
 } as const;
-
-/** Mock wallet balance shown in the profile header. */
-export const mockProfileBalanceVnd = 0;
 
 export const profileSupportLinks = {
   zaloPhone: '0844713555',

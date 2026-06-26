@@ -4,8 +4,10 @@ import {
   Building2,
   ChevronDown,
   ChevronUp,
+  FileText,
   Home,
   Package,
+  Percent,
   Phone,
   Settings,
   Store,
@@ -34,6 +36,7 @@ import {
 } from './createOrderFormFields';
 import { CreateOrderSelectField } from './CreateOrderSelectField';
 import { CreateOrderCustomerSearch } from './CreateOrderCustomerSearch';
+import { CreateOrderDateField } from './CreateOrderDateField';
 
 type CreateOrderFormProps = Pick<
   UseCreateOrderFormResult,
@@ -53,6 +56,7 @@ type CreateOrderFormProps = Pick<
   | 'selectedShopLabel'
   | 'selectedWarehouseLabel'
   | 'selectedShippingPartnerLabel'
+  | 'selectedShippingWarehouseLabel'
   | 'shippingFeeVnd'
   | 'isLoadingShippingFee'
   | 'shippingEstimateError'
@@ -90,6 +94,10 @@ type CreateOrderFormProps = Pick<
   | 'onSelectWard'
   | 'onToggleCod'
   | 'onToggleAdvanced'
+  | 'onChangeOrderDate'
+  | 'onSelectShippingWarehouse'
+  | 'onChangeDiscountPercent'
+  | 'onChangeNote'
 > & {
   part?: 'setup' | 'shipping' | 'all';
   setupSectionNumber?: number;
@@ -116,6 +124,7 @@ function CreateOrderFormComponent({
   selectedShopLabel,
   selectedWarehouseLabel,
   selectedShippingPartnerLabel,
+  selectedShippingWarehouseLabel,
   shippingFeeVnd,
   isLoadingShippingFee,
   shippingEstimateError,
@@ -153,6 +162,10 @@ function CreateOrderFormComponent({
   onSelectWard,
   onToggleCod,
   onToggleAdvanced,
+  onChangeOrderDate,
+  onSelectShippingWarehouse,
+  onChangeDiscountPercent,
+  onChangeNote,
 }: CreateOrderFormProps) {
   const showShippingPartner =
     form.shippingMethod === 'warehouse_partner' ||
@@ -422,9 +435,55 @@ function CreateOrderFormComponent({
 
           {form.isAdvancedOpen ? (
             <Box className={createOrderSectionCardClass}>
-              <Text size="sm" className="text-typography-500">
-                {createOrderCopy.advancedComingSoon}
-              </Text>
+              <VStack space="lg">
+                <CreateOrderDateField
+                  label={createOrderCopy.orderDateLabel}
+                  value={form.orderDate}
+                  onChange={onChangeOrderDate}
+                />
+
+                <CreateOrderSelectField
+                  label={createOrderCopy.shippingWarehouseLabel}
+                  value={selectedShippingWarehouseLabel}
+                  options={warehouseOptions}
+                  selectedId={
+                    form.shippingWarehouseId ?? form.packagingWarehouseId
+                  }
+                  placeholder={createOrderCopy.selectShippingWarehouse}
+                  pickerTitle={createOrderCopy.shippingWarehousePickerTitle}
+                  isLoading={isLoadingWarehouses}
+                  disabled={form.packagingWarehouseId == null}
+                  formatOptionLabel={formatWarehouseOptionLabel}
+                  leadingIcon={
+                    <Package color={lightTokens.tertiary600} size={18} />
+                  }
+                  suggestedOptions={suggestedWarehouseOptions}
+                  onSelect={onSelectShippingWarehouse}
+                />
+
+                <CreateOrderTextField
+                  label={createOrderCopy.discountPercentLabel}
+                  value={form.discountPercent}
+                  onChangeText={onChangeDiscountPercent}
+                  placeholder={createOrderCopy.discountPercentPlaceholder}
+                  keyboardType="decimal-pad"
+                  autoCapitalize="none"
+                  leadingIcon={
+                    <Percent color={lightTokens.tertiary600} size={18} />
+                  }
+                />
+
+                <CreateOrderTextField
+                  label={createOrderCopy.orderNoteLabel}
+                  value={form.note}
+                  onChangeText={onChangeNote}
+                  placeholder={createOrderCopy.orderNotePlaceholder}
+                  leadingIcon={
+                    <FileText color={lightTokens.tertiary600} size={18} />
+                  }
+                  multiline
+                />
+              </VStack>
             </Box>
           ) : null}
         </>

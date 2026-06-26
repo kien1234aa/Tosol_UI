@@ -100,6 +100,82 @@ function toOrderDateYmd(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+/** Parses order discount percent; clamps to 0–100. */
+export function parseOrderDiscountPercent(value: string): number {
+  const normalized = value.replace(',', '.').trim();
+  if (!normalized) {
+    return 0;
+  }
+
+  const parsed = Number(normalized);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return 0;
+  }
+
+  return Math.min(parsed, 100);
+}
+
+/** Keeps only valid characters for a percentage input. */
+export function sanitizeOrderDiscountPercentInput(value: string): string {
+  const normalized = value.replace(',', '.');
+  let result = '';
+  let hasDecimal = false;
+
+  for (const char of normalized) {
+    if (char >= '0' && char <= '9') {
+      result += char;
+      continue;
+    }
+
+    if (char === '.' && !hasDecimal) {
+      hasDecimal = true;
+      result += char;
+    }
+  }
+
+  if (!result) {
+    return '';
+  }
+
+  const parsed = Number(result);
+  if (!Number.isFinite(parsed)) {
+    return result;
+  }
+
+  if (parsed > 100) {
+    return '100';
+  }
+
+  return result;
+}
+
+export function computeOrderDiscountAmount(
+  items: CreateSaleOrderItemPayload[],
+  discountPercentRaw: string,
+): number {
+  const percent = parseOrderDiscountPercent(discountPercentRaw);
+  if (percent <= 0) {
+    return 0;
+  }
+
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.unit_price * item.quantity,
+    0,
+  );
+
+  return Math.round((subtotal * percent) / 100);
+}
+
+export function isValidOrderDiscountPercent(value: string): boolean {
+  const normalized = value.replace(',', '.').trim();
+  if (!normalized) {
+    return true;
+  }
+
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= 100;
+}
+
 /** Prefer warehouse selected on the search screen; fall back to form selection. */
 export function resolveCreateOrderWarehouseId(
   currentWarehouseId: number | null | undefined,
@@ -186,6 +262,12 @@ export function buildCreateOrderPayload(
     shippingPartnerOptions,
     form.warehousePartnerId,
   );
+  const resolvedShippingWarehouseId =
+    form.shippingWarehouseId ?? form.packagingWarehouseId ?? warehouseId;
+  const trimmedNote = form.note.trim();
+  const discountAmount = computeOrderDiscountAmount(items, form.discountPercent);
+  const orderDate =
+    form.orderDate.trim() || toOrderDateYmd(new Date());
 
   let shipment: CreateSaleOrderPayload['shipment'];
 
@@ -220,12 +302,13 @@ export function buildCreateOrderPayload(
   return {
     shop_id: form.shopId as number,
     warehouse_id: warehouseId,
-    shipping_warehouse_id: warehouseId,
+    shipping_warehouse_id: resolvedShippingWarehouseId,
     customer_id: form.customerId as number,
     currency_id: shop.currency_id,
-    discount_amount: 0,
+    discount_amount: discountAmount,
     collect_cod: form.isCodEnabled,
-    order_date: toOrderDateYmd(new Date()),
+    order_date: orderDate,
+    ...(trimmedNote ? { note: trimmedNote } : {}),
     items,
     shipment,
     shipping_fee:

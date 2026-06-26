@@ -3,7 +3,6 @@ import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { profileCopy } from '@/src/configs/profile';
 import { productsCopy } from '@/src/configs/products';
-import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import { mainLayout } from '@/src/configs/main';
 import {
   ProfileDivider,
@@ -37,8 +36,7 @@ type ProfileScreenProps = ProfileStackScreenProps<'ProfileMain'>;
 export function ProfileScreen({ navigation }: ProfileScreenProps) {
   const rootNavigation = getRootNavigation(navigation);
   const dispatch = useAppDispatch();
-  const { displayName, email, roleLabel, sellerName, balanceVnd, reload } =
-    useProfile();
+  const { displayName, email, roleLabel, sellerName, reload } = useProfile();
   const isAdmin = useAppSelector(selectIsAdminUser);
   const unreadNotificationCount = useAppSelector(selectUnreadNotificationCount);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -57,17 +55,9 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
     }
   }, [reload]);
 
-  const showComingSoon = useCallback(() => {
-    showFeatureInDevelopmentAlert();
-  }, []);
-
   const handlePersonalInfo = useCallback(() => {
     navigation.navigate('PersonalInfo');
   }, [navigation]);
-
-  const handleChangePassword = useCallback(() => {
-    showFeatureInDevelopmentAlert();
-  }, []);
 
   const handleStaffList = useCallback(() => {
     navigation.navigate('StaffList');
@@ -111,7 +101,6 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
           email={email}
           roleLabel={roleLabel}
           sellerName={sellerName}
-          balanceVnd={balanceVnd}
           unreadCount={unreadNotificationCount}
           onPressNotifications={handleNotifications}
         />
@@ -134,21 +123,6 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
                 label={profileCopy.personalInfo}
                 onPress={handlePersonalInfo}
               />
-              {isAdmin ? (
-                <>
-                  <ProfileDivider />
-                  <ProfileMenuRow
-                    label={profileCopy.changePassword}
-                    onPress={handleChangePassword}
-                  />
-                  <ProfileDivider />
-                  <ProfileMenuRow
-                    label={profileCopy.deleteAccount}
-                    onPress={showComingSoon}
-                    danger
-                  />
-                </>
-              ) : null}
             </ProfileSectionCard>
 
             {isAdmin ? (
@@ -169,18 +143,6 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
               <ProfileMenuRow
                 label={productsCopy.createProduct}
                 onPress={handleCreateProduct}
-              />
-            </ProfileSectionCard>
-
-            <ProfileSectionCard title={profileCopy.deliverySection}>
-              <ProfileMenuRow
-                label={profileCopy.createDeliveryRequest}
-                onPress={showComingSoon}
-              />
-              <ProfileDivider />
-              <ProfileMenuRow
-                label={profileCopy.deliveryRequestList}
-                onPress={showComingSoon}
               />
             </ProfileSectionCard>
 

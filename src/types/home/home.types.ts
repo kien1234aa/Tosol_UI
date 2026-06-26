@@ -1,33 +1,15 @@
 /** Domain models for the home dashboard feature. */
 
-/** Keys for the order + package icon actions on the dashboard. */
+/** Keys for the order icon actions on the dashboard. */
 export type HomeActionKey =
   | 'orderCreate'
   | 'orderList'
   | 'orderPayment'
-  | 'orderReady'
-  | 'packageCreate'
-  | 'packageList'
-  | 'packagePayment'
-  | 'packageReady';
+  | 'orderReady';
 
-/** Keys for the "Thao tác nhanh" (quick action) cards. */
-export type QuickActionKey =
-  | 'walletTopup'
-  | 'costEstimate'
-  | 'transactionHistory'
-  | 'complaints'
-  | 'deliveryRequest';
-
-/** A single icon action shown in the order/package grids. */
+/** A single icon action shown in the order grid. */
 export interface HomeActionItem {
   key: HomeActionKey;
-  label: string;
-}
-
-/** A single quick-action card. */
-export interface QuickActionItem {
-  key: QuickActionKey;
   label: string;
 }
 

@@ -25,10 +25,6 @@ const HOME_ACTION_ICONS: Record<HomeActionKey, LucideIcon> = {
   orderList: ClipboardList,
   orderPayment: CreditCard,
   orderReady: Truck,
-  packageCreate: FilePlus,
-  packageList: ClipboardList,
-  packagePayment: CreditCard,
-  packageReady: Truck,
 };
 
 interface ActionIconGridProps {

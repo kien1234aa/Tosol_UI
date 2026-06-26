@@ -1,6 +1,5 @@
-/** Base URL resolved from the active API environment. */
-export { getApiBaseUrl, resolveApiEnvironment, setApiEnvironment } from './api.environment';
-export type { ApiEnvironment } from './api.environment';
+/** Base URL for the production API. */
+export { getApiBaseUrl, PRODUCTION_API_BASE_URL } from './api.environment';
 export * from './http.constants';
 
 import { getApiBaseUrl } from './api.environment';

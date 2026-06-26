@@ -11,7 +11,6 @@ export const mainTabBarHiddenRoutes: {
   Orders: ['OrderDetail'],
   Profile: [
     'PersonalInfo',
-    'ChangePassword',
     'StaffList',
     'StaffDetail',
     'ProductList',

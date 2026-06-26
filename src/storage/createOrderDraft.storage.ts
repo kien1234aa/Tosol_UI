@@ -74,7 +74,12 @@ function isCreateOrderFormState(value: unknown): value is CreateOrderFormState {
     (form.districtId == null || typeof form.districtId === 'number') &&
     (form.wardId == null || typeof form.wardId === 'number') &&
     typeof form.isCodEnabled === 'boolean' &&
-    typeof form.isAdvancedOpen === 'boolean'
+    typeof form.isAdvancedOpen === 'boolean' &&
+    (form.orderDate == null || typeof form.orderDate === 'string') &&
+    (form.shippingWarehouseId == null ||
+      typeof form.shippingWarehouseId === 'number') &&
+    (form.discountPercent == null || typeof form.discountPercent === 'string') &&
+    (form.note == null || typeof form.note === 'string')
   );
 }
 

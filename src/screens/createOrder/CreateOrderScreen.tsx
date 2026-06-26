@@ -174,6 +174,7 @@ export function CreateOrderScreen({
                 selectedShopLabel={order.selectedShopLabel}
                 selectedWarehouseLabel={order.selectedWarehouseLabel}
                 selectedShippingPartnerLabel={order.selectedShippingPartnerLabel}
+                selectedShippingWarehouseLabel={order.selectedShippingWarehouseLabel}
                 shippingFeeVnd={order.shippingFeeVnd}
                 isLoadingShippingFee={order.isLoadingShippingFee}
                 shippingEstimateError={order.shippingEstimateError}
@@ -211,6 +212,10 @@ export function CreateOrderScreen({
                 onSelectWard={order.onSelectWard}
                 onToggleCod={order.onToggleCod}
                 onToggleAdvanced={order.onToggleAdvanced}
+                onChangeOrderDate={order.onChangeOrderDate}
+                onSelectShippingWarehouse={order.onSelectShippingWarehouse}
+                onChangeDiscountPercent={order.onChangeDiscountPercent}
+                onChangeNote={order.onChangeNote}
               />
 
               <CreateOrderProductsSection
@@ -245,6 +250,7 @@ export function CreateOrderScreen({
                 selectedShopLabel={order.selectedShopLabel}
                 selectedWarehouseLabel={order.selectedWarehouseLabel}
                 selectedShippingPartnerLabel={order.selectedShippingPartnerLabel}
+                selectedShippingWarehouseLabel={order.selectedShippingWarehouseLabel}
                 shippingFeeVnd={order.shippingFeeVnd}
                 isLoadingShippingFee={order.isLoadingShippingFee}
                 shippingEstimateError={order.shippingEstimateError}
@@ -282,6 +288,10 @@ export function CreateOrderScreen({
                 onSelectWard={order.onSelectWard}
                 onToggleCod={order.onToggleCod}
                 onToggleAdvanced={order.onToggleAdvanced}
+                onChangeOrderDate={order.onChangeOrderDate}
+                onSelectShippingWarehouse={order.onSelectShippingWarehouse}
+                onChangeDiscountPercent={order.onChangeDiscountPercent}
+                onChangeNote={order.onChangeNote}
               />
 
               <CreateOrderFooter

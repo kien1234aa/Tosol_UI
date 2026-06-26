@@ -4,15 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Box } from '@/src/uikits/box';
 import { VStack } from '@/src/uikits/vstack';
-import {
-  homeCopy,
-  orderActions,
-  packageActions,
-  quickActions,
-} from '@/src/configs/home';
+import { homeCopy, orderActions } from '@/src/configs/home';
 import { mainLayout } from '@/src/configs/main';
 import { animationConfig } from '@/src/configs/theme';
-import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import { useHomeDashboard } from '@/src/hooks/home';
 import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import { useAppSelector } from '@/src/hooks/common/useAppSelector';
@@ -20,15 +14,8 @@ import { selectUnreadNotificationCount } from '@/src/redux/notifications';
 import { navigateMainTabScreen } from '@/src/navigation/tabNavigation.helpers';
 import { navigateRootScreen } from '@/src/navigation/rootNavigation.helpers';
 import type { HomeStackScreenProps } from '@/src/navigation/types';
-import type {
-  HomeActionKey,
-  QuickActionKey,
-} from '@/src/types/home/home.types';
-import {
-  ActionIconGrid,
-  DashboardHeader,
-  QuickActionsSection,
-} from '@/src/components/home';
+import type { HomeActionKey } from '@/src/types/home/home.types';
+import { ActionIconGrid, DashboardHeader } from '@/src/components/home';
 
 type HomeScreenProps = HomeStackScreenProps<'HomeMain'>;
 
@@ -50,10 +37,6 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
         navigateMainTabScreen(navigation, 'Orders', { screen: 'OrdersMain' });
         return;
       }
-      if (key === 'orderPayment') {
-        navigateMainTabScreen(navigation, 'Orders', { screen: 'OrdersMain' });
-        return;
-      }
       if (key === 'orderReady') {
         navigateMainTabScreen(navigation, 'Orders', {
           screen: 'OrdersMain',
@@ -66,31 +49,9 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
     [navigation],
   );
 
-  const handlePackageAction = useCallback(
-    (key: HomeActionKey) => {
-      if (
-        key === 'packageCreate' ||
-        key === 'packageList' ||
-        key === 'packagePayment' ||
-        key === 'packageReady'
-      ) {
-        showFeatureInDevelopmentAlert();
-        return;
-      }
-      navigateMainTabScreen(navigation, 'Orders');
-    },
-    [navigation],
-  );
-
   const handleNotifications = useCallback(() => {
     navigateRootScreen(navigation, 'Notifications');
   }, [navigation]);
-
-  const handleQuickAction = useCallback((key: QuickActionKey) => {
-    if (key === 'walletTopup' || key === 'costEstimate') {
-      showFeatureInDevelopmentAlert();
-    }
-  }, []);
 
   const noop = useCallback(() => {}, []);
 
@@ -125,25 +86,6 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 items={orderActions}
                 badges={badges}
                 onPressItem={handleOrderAction}
-              />
-            </Animated.View>
-
-            <Animated.View
-              entering={FadeInDown.duration(screenEntry).delay(stagger * 2)}>
-              <ActionIconGrid
-                title={homeCopy.packagesSection}
-                items={packageActions}
-                badges={badges}
-                onPressItem={handlePackageAction}
-              />
-            </Animated.View>
-
-            <Animated.View
-              entering={FadeInDown.duration(screenEntry).delay(stagger * 3)}>
-              <QuickActionsSection
-                title={homeCopy.quickActionsSection}
-                items={quickActions}
-                onPressItem={handleQuickAction}
               />
             </Animated.View>
           </VStack>

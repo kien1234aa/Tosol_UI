@@ -1,5 +1,4 @@
 export { LoginScreen } from './login';
-export { RegisterScreen } from './register';
 export { ForgotPasswordScreen } from './forgotPassword';
 export { SplashScreen } from './splash';
 export { HomeScreen } from './home';

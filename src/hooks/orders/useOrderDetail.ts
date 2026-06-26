@@ -8,7 +8,6 @@ export interface UseOrderDetailResult {
   order: OrderDetail | undefined;
   isLoading: boolean;
   error: string | null;
-  canPay: boolean;
   canCancel: boolean;
   reload: () => void;
 }
@@ -41,19 +40,12 @@ export function useOrderDetail(orderId: string): UseOrderDetailResult {
     void loadOrder();
   }, [loadOrder]);
 
-  const canPay =
-    order != null &&
-    order.remainingVnd > 0 &&
-    (order.paymentStatus === 'pending' ||
-      order.paymentStatus === 'partial_paid');
-
   const canCancel = order != null && canCancelSaleOrder(order.status);
 
   return {
     order,
     isLoading,
     error,
-    canPay,
     canCancel,
     reload: loadOrder,
   };

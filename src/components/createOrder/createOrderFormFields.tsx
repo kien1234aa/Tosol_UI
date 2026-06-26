@@ -59,6 +59,7 @@ interface CreateOrderTextInputProps {
   keyboardType?: KeyboardTypeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   autoCorrect?: boolean;
+  multiline?: boolean;
 }
 
 function CreateOrderTextInputComponent({
@@ -70,6 +71,7 @@ function CreateOrderTextInputComponent({
   keyboardType = 'default',
   autoCapitalize = 'sentences',
   autoCorrect = true,
+  multiline = false,
 }: CreateOrderTextInputProps) {
   return (
     <Box className={createOrderFieldShellClass}>
@@ -85,7 +87,9 @@ function CreateOrderTextInputComponent({
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
           autoCorrect={autoCorrect}
-          style={styles.textInput}
+          multiline={multiline}
+          textAlignVertical={multiline ? 'top' : 'center'}
+          style={[styles.textInput, multiline ? styles.textInputMultiline : null]}
         />
         {trailingIcon ? (
           <HStack className={createOrderFieldIconWrapClass}>{trailingIcon}</HStack>
@@ -106,6 +110,7 @@ interface CreateOrderTextFieldProps {
   keyboardType?: KeyboardTypeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   placeholder?: string;
+  multiline?: boolean;
 }
 
 function CreateOrderTextFieldComponent({
@@ -117,6 +122,7 @@ function CreateOrderTextFieldComponent({
   keyboardType = 'default',
   autoCapitalize,
   placeholder,
+  multiline,
 }: CreateOrderTextFieldProps) {
   return (
     <FormControl className="w-full">
@@ -128,6 +134,7 @@ function CreateOrderTextFieldComponent({
         leadingIcon={leadingIcon}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
+        multiline={multiline}
       />
     </FormControl>
   );
@@ -258,5 +265,11 @@ const styles = StyleSheet.create({
         lineHeight: lineHeights.sm,
       },
     }),
+  },
+  textInputMultiline: {
+    minHeight: 72,
+    paddingTop: 4,
+    paddingBottom: 4,
+    textAlignVertical: 'top',
   },
 });

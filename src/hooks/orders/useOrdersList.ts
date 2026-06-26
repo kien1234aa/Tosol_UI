@@ -53,7 +53,7 @@ export interface UseOrdersListResult {
   onSelectCustomer: (customer: CustomerSearchResult) => void;
   onClearCustomer: () => void;
   onRemoveOrder: (orderId: string) => void;
-  onOrderAction: (orderId: string, action: 'view' | 'edit' | 'pay' | 'cancel') => void;
+  onOrderAction: (orderId: string, action: 'view' | 'edit' | 'cancel') => void;
   reloadOrders: () => void;
   loadMoreOrders: () => void;
 }
@@ -225,7 +225,7 @@ export function useOrdersList(): UseOrdersListResult {
   }, []);
 
   const onOrderAction = useCallback(
-    (_orderId: string, _action: 'view' | 'edit' | 'pay' | 'cancel') => {
+    (_orderId: string, _action: 'view' | 'edit' | 'cancel') => {
       // Order action routes are not registered yet.
     },
     [],

@@ -4,7 +4,6 @@ import type { RootStackParamList } from './types';
 const ROOT_ROUTE_NAMES = new Set<keyof RootStackParamList>([
   'Splash',
   'Login',
-  'Register',
   'ForgotPassword',
   'Main',
   'Notifications',

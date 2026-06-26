@@ -21,7 +21,6 @@ import {
   OrderDetailShipping,
   OrderDetailSummary,
 } from '@/src/components/orders/OrderDetailView';
-import { showFeatureInDevelopmentAlert } from '@/src/helpers/app';
 import { useOrderCancel, useOrderDetail } from '@/src/hooks/orders';
 import { useStackGoBack } from '@/src/navigation/useStackGoBack';
 import type { OrdersStackScreenProps } from '@/src/navigation/types';
@@ -39,9 +38,7 @@ interface OrderDetailBodyProps {
   isLoading: boolean;
   error: string | null;
   reload: () => void;
-  canPay: boolean;
   canCancel: boolean;
-  onPressPay: () => void;
   onPressCancel: () => void;
 }
 
@@ -50,9 +47,7 @@ function OrderDetailBody({
   isLoading,
   error,
   reload,
-  canPay,
   canCancel,
-  onPressPay,
   onPressCancel,
 }: OrderDetailBodyProps) {
   const refreshControl = useMemo(
@@ -111,10 +106,7 @@ function OrderDetailBody({
         <OrderDetailNote note={order.note} />
         <OrderDetailCostBreakdown order={order} />
         <OrderDetailActions
-          canPay={canPay}
           canCancel={canCancel}
-          remainingVnd={order.costs.remainingVnd}
-          onPressPay={onPressPay}
           onPressCancel={onPressCancel}
         />
       </VStack>
@@ -127,7 +119,7 @@ export function OrderDetailScreen({
   route,
 }: OrderDetailScreenProps) {
   const { orderId } = route.params;
-  const { order, isLoading, error, reload, canPay, canCancel } =
+  const { order, isLoading, error, reload, canCancel } =
     useOrderDetail(orderId);
 
   const {
@@ -144,10 +136,6 @@ export function OrderDetailScreen({
 
   const handleBack = useStackGoBack(navigation, 'OrdersMain');
 
-  const handlePay = useCallback(() => {
-    showFeatureInDevelopmentAlert();
-  }, []);
-
   const handleCancel = useCallback(() => {
     openCancel(orderId);
   }, [openCancel, orderId]);
@@ -162,9 +150,7 @@ export function OrderDetailScreen({
             isLoading={isLoading}
             error={error}
             reload={reload}
-            canPay={canPay}
             canCancel={canCancel}
-            onPressPay={handlePay}
             onPressCancel={handleCancel}
           />
         </VStack>

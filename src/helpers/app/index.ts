@@ -1,4 +1,3 @@
-export { showFeatureInDevelopmentAlert } from './showFeatureInDevelopmentAlert';
 export {
   isAndroidEmulator,
   isCameraBlockedByEnvironment,

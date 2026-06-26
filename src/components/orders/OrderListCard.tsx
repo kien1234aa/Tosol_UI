@@ -28,7 +28,7 @@ interface OrderListCardProps {
   order: OrderListItem;
   onPress: (orderId: string) => void;
   onRemove: (orderId: string) => void;
-  onAction: (orderId: string, action: 'view' | 'edit' | 'pay' | 'cancel') => void;
+  onAction: (orderId: string, action: 'view' | 'edit' | 'cancel') => void;
 }
 
 interface DetailRowProps {
@@ -83,7 +83,7 @@ function OrderListCardComponent({
   }, []);
 
   const handleAction = useCallback(
-    (action: 'view' | 'edit' | 'pay' | 'cancel') => {
+    (action: 'view' | 'edit' | 'cancel') => {
       onAction(order.id, action);
       setIsActionsOpen(false);
     },
@@ -191,13 +191,6 @@ function OrderListCardComponent({
                   </Text>
                 </Pressable>
               ) : null}
-              <Pressable
-                onPress={() => handleAction('pay')}
-                style={styles.actionOption}>
-                <Text size="sm" className="text-typography-900">
-                  {ordersCopy.payOrder}
-                </Text>
-              </Pressable>
               {canCancelSaleOrder(order.status) ? (
                 <Pressable
                   onPress={() => handleAction('cancel')}

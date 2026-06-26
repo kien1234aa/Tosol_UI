@@ -29,6 +29,7 @@ export interface CreateSaleOrderPayload {
   discount_amount: number;
   collect_cod: boolean;
   order_date: string;
+  note?: string;
   items: CreateSaleOrderItemPayload[];
   shipment: CreateSaleOrderShipmentPayload;
   shipping_fee: number;

@@ -66,6 +66,12 @@ export interface CreateOrderFormState {
   wardId: number | null;
   isCodEnabled: boolean;
   isAdvancedOpen: boolean;
+  /** ISO date (YYYY-MM-DD). */
+  orderDate: string;
+  shippingWarehouseId: number | null;
+  /** Order-level discount percentage (0–100). */
+  discountPercent: string;
+  note: string;
 }
 
 export interface CreateOrderModalContext {

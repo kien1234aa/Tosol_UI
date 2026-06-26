@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
-import { Bell, User, Wallet } from 'lucide-react-native';
+import { Bell, User } from 'lucide-react-native';
 import { profileCopy } from '@/src/configs/profile';
-import { formatVndPrice } from '@/src/helpers/createOrder';
 import { lightTokens } from '@/src/configs/theme';
 import { useResponsiveLayout } from '@/src/hooks/common/useResponsiveLayout';
 import { Box } from '@/src/uikits/box';
@@ -17,7 +16,6 @@ interface ProfileHeaderProps {
   email?: string;
   roleLabel?: string;
   sellerName?: string;
-  balanceVnd: number;
   unreadCount?: number;
   onPressNotifications?: () => void;
 }
@@ -27,7 +25,6 @@ function ProfileHeaderComponent({
   email,
   roleLabel,
   sellerName,
-  balanceVnd,
   unreadCount = 0,
   onPressNotifications,
 }: ProfileHeaderProps) {
@@ -115,13 +112,6 @@ function ProfileHeaderComponent({
               </Box>
             ) : null}
           </Pressable>
-
-          <HStack className="items-center gap-1">
-            <Wallet color={lightTokens.tertiary600} size={scale(16)} />
-            <Text size="xs" className="font-medium text-typography-900">
-              {profileCopy.balancePrefix} {formatVndPrice(balanceVnd)}
-            </Text>
-          </HStack>
         </VStack>
       </HStack>
     </Box>

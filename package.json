@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "bash scripts/run-android.sh",
-    "android:clean": "bash scripts/clean-android.sh",
-    "ios": "react-native run-ios --mode Debug",
+    "android": "react-native run-android --mode release",
+    "android:codegen": "node scripts/generate-android-codegen.js",
+    "android:clean": "node scripts/clean-android.js",
+    "ios": "react-native run-ios --mode Release",
     "lint": "eslint .",
     "start": "react-native start",
     "start:reset": "react-native start --reset-cache",
